@@ -13,3 +13,5 @@ export function createGrid(game_config) {
   }
   return game
 }
+
+function dropDisc(column) {}

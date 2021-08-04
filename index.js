@@ -11,6 +11,11 @@ const game_config = {
 let grid = createGrid(game_config)
 loadGrid(grid)
 
+elementGame.onclick = (event) => {
+  if (!event.target.classList.contains('tile')) return
+  dropDisc(event.target.dataset.x)
+}
+
 function loadGrid(grid) {
   grid.forEach((row, xIndex) => {
     row.forEach((tile, yIndex) => {
