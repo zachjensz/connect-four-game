@@ -23,7 +23,13 @@ body {
   background-color: #111;
   border-radius: 50%;
   width: 95%;
-  height: %;
+  height: 95%;
+}
+.tile[data-value='1'] {
+  background-color: mediumblue;
+}
+.tile[data-value='2'] {
+  background-color: orange;
 }
 .tile:hover {
   cursor: pointer;
