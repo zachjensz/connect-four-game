@@ -4,12 +4,14 @@ const elementGame = document.querySelector('#grid')
 const elementTileTemplate = document.querySelector('#tile-template')
 
 const game_config = {
-  width: 7,
-  height: 5
+  width: 12,
+  height: 8
 }
 
 const grid = createGrid(game_config)
 loadGrid(grid)
+elementGame.style.setProperty('--width', game_config.width)
+elementGame.style.setProperty('--height', game_config.height)
 
 function loadGrid(grid) {
   grid.forEach((row, xIndex) => {

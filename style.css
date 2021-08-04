@@ -9,8 +9,6 @@ body {
   text-align: center;
 }
 #grid {
-  --width: 7;
-  --height: 5;
   width: 80vmin;
   height: calc(80vmin / var(--width) * var(--height));
   display: grid;
