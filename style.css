@@ -11,6 +11,9 @@ body {
 }
 #grid {
   --size: 90vmin;
+  background-color: #333;
+  padding: 1vmin;
+  border-radius: 2vmin;
   width: var(--size);
   height: calc(var(--size) / var(--width) * var(--height));
   display: grid;
@@ -20,7 +23,7 @@ body {
   background-color: #111;
   border-radius: 50%;
   width: 95%;
-  height: 95%;
+  height: %;
 }
 .tile:hover {
   cursor: pointer;
