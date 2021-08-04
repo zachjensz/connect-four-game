@@ -1,6 +1,6 @@
 import { createGrid } from './logic.js'
 
-const elementGame = document.querySelector('#game-area')
+const elementGame = document.querySelector('#grid')
 const elementTileTemplate = document.querySelector('#tile-template')
 
 const game_config = {
