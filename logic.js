@@ -31,9 +31,8 @@ function checkWin(state) {
   if (maxSequence > MIN_SEQUENCE - 2) return true
   return false
 }
-function checkDir([grid, value, newDiscY, newDiscX], checkDirY, checkDirX) {
-  const checkY = newDiscY + checkDirY
-  const checkX = newDiscX + checkDirX
-  if (grid[checkY]?.[checkX] != value) return 0
-  return 1 + checkDir([grid, value, checkY, checkX], checkDirY, checkDirX)
+function checkDir([grid, value, newDiscY, newDiscX], dirY, dirX) {
+  for (let i = 1; i < 100000; i++) {
+    if (grid[newDiscY + dirY * i]?.[newDiscX + dirX * i] != value) return i - 1
+  }
 }
