@@ -5,7 +5,7 @@ const elementTileTemplate = document.querySelector('#tile-template')
 
 const game_config = {
   width: 7,
-  height: 5
+  height: 6
 }
 
 let grid = createGrid(game_config)
@@ -17,6 +17,7 @@ elementGame.onclick = (event) => {
     grid,
     event.target.dataset.x
   )
+  console.log(outcomes)
   grid = newGrid
   renderDisc(newDiscLocation)
 }
@@ -37,10 +38,8 @@ function loadGrid(grid) {
   elementGame.style.setProperty('--height', game_config.height)
 }
 
-function renderDisc([value, x, y]) {
+function renderDisc([value, y, x]) {
   elementGame.querySelector(
     `.tile[data-x="${x}"][data-y="${y}"]`
   ).dataset.value = value
-  console.log(value, x, y)
-  console.log(elementGame.querySelector(`.tile[data-x="${x}"][data-y="${y}"]`))
 }
