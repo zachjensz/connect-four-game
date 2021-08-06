@@ -31,6 +31,9 @@ body {
 .tile[data-value='2'] {
   background-color: orange;
 }
+.tile[data-glow] {
+  border: 2px solid white;
+}
 .tile:hover {
   cursor: pointer;
 }

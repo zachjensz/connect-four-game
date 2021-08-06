@@ -16,8 +16,11 @@ loadGrid(grid)
 elementGame.onclick = (event) => {
   if (!event.target.classList.contains('tile')) return
   const discDrop = dropDisc(game_config, grid, event.target.dataset.x)
-  console.log(discDrop.win)
   renderDisc(discDrop.location)
+  if (discDrop.seq.length > 0) {
+    discDrop.seq[0].push([discDrop.location[1], discDrop.location[2]])
+    renderWin(discDrop.seq[0])
+  }
 }
 
 function loadGrid(grid) {
@@ -40,4 +43,11 @@ function renderDisc([value, y, x]) {
   elementGame.querySelector(
     `.tile[data-x="${x}"][data-y="${y}"]`
   ).dataset.value = value
+}
+function renderWin(discs) {
+  discs.forEach((disc) => {
+    elementGame.querySelector(
+      `.tile[data-x="${disc[1]}"][data-y="${disc[0]}"]`
+    ).dataset.glow = true
+  })
 }

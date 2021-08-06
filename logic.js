@@ -11,28 +11,34 @@ export function dropDisc(game_config, grid, x) {
     grid[i][+x] = 1
     return {
       location: [1, i, +x],
-      win: checkWin([grid, 1, i, +x], game_config.min_sequence)
+      seq: validSeq([grid, 1, i, +x], game_config.min_sequence)
     }
   }
   grid[grid.length - 1][+x] = 1
   return {
     location: [1, game_config.width - 1, +x],
-    win: checkWin([grid, 1, grid.length - 1, +x], game_config.min_sequence)
+    seq: validSeq([grid, 1, grid.length - 1, +x], game_config.min_sequence)
   }
 }
 
-function checkWin(state, min_sequence) {
-  return (
-    Math.max(
-      checkDir(state, 0, -1) + checkDir(state, 0, 1),
-      checkDir(state, -1, 0) + checkDir(state, 1, 0),
-      checkDir(state, 1, -1) + checkDir(state, -1, 1),
-      checkDir(state, 1, 1) + checkDir(state, -1, -1)
-    ) > min_sequence
-  )
+function validSeq(state, min_sequence) {
+  const winningSequences = []
+  const directions = [
+    { v: 1, h: 0 },
+    { v: 1, h: 1 },
+    { v: 0, h: 1 },
+    { v: 1, h: -1 }
+  ]
+  directions.forEach((dir) => {
+    const seq = [...cast(state, dir.v, dir.h), ...cast(state, -dir.v, -dir.h)]
+    if (seq.length > min_sequence - 2) winningSequences.push(seq)
+  })
+  return winningSequences
 }
-function checkDir([grid, value, newDiscY, newDiscX], dirY, dirX) {
-  let i = 1
-  while (grid[newDiscY + dirY * i]?.[newDiscX + dirX * i] == value) i++
-  return i--
+function cast([grid, value, y, x], dY, dX) {
+  let discs = []
+  for (let i = 1; grid[y + dY * i]?.[x + dX * i] == value; i++) {
+    discs.push([y + dY * i, x + dX * i])
+  }
+  return discs
 }
