@@ -28,11 +28,11 @@ function checkWin(state) {
     checkDir(state, 1, -1) + checkDir(state, -1, 1),
     checkDir(state, 1, 1) + checkDir(state, -1, -1)
   )
-  if (maxSequence > MIN_SEQUENCE - 2) return true
+  if (maxSequence > MIN_SEQUENCE) return true
   return false
 }
 function checkDir([grid, value, newDiscY, newDiscX], dirY, dirX) {
-  for (let i = 1; i < 100000; i++) {
-    if (grid[newDiscY + dirY * i]?.[newDiscX + dirX * i] != value) return i - 1
-  }
+  let i = 1
+  while (grid[newDiscY + dirY * i]?.[newDiscX + dirX * i] == value) i++
+  return i--
 }
