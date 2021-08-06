@@ -5,7 +5,9 @@ const elementTileTemplate = document.querySelector('#tile-template')
 
 const game_config = {
   width: 7,
-  height: 6
+  height: 6,
+  players: 2,
+  min_sequence: 4
 }
 
 let grid = createGrid(game_config)
@@ -13,13 +15,9 @@ loadGrid(grid)
 
 elementGame.onclick = (event) => {
   if (!event.target.classList.contains('tile')) return
-  const [newGrid, outcomes, newDiscLocation] = dropDisc(
-    grid,
-    event.target.dataset.x
-  )
-  console.log(outcomes)
-  grid = newGrid
-  renderDisc(newDiscLocation)
+  const discDrop = dropDisc(game_config, grid, event.target.dataset.x)
+  console.log(discDrop.win)
+  renderDisc(discDrop.location)
 }
 
 function loadGrid(grid) {
