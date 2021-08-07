@@ -40,18 +40,22 @@ function cast([grid, value, y, x], dY, dX) {
   return discs
 }
 
-export const computerMove = (game_config, grid, playerDrop) => {
-  let column = -1
-  console.log(playerDrop, grid)
+const isGridFull = (grid) => {
   let full = true
   grid[0].forEach((disc) => disc === 0 ? full = false : undefined)
-  if (full) return
+  return full;
+}
+
+export const computerMove = (game_config, grid, playerDrop) => {
+  let column = -1
+  if (isGridFull(grid)) return
+  // console.log(playerDrop, grid)
   while (column < 0) {
     const test =  Math.floor(Math.random() * 7)
     if (grid[0][test] !== 0) continue
     column = test
   }
   const drop = dropDisc(game_config, grid, column, 2)
-  console.log(drop, grid)
+  // console.log(drop, grid)
   return drop
 }
