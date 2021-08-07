@@ -16,11 +16,15 @@ loadGrid(grid)
 elementGame.onclick = (event) => {
   if (!event.target.classList.contains('tile')) return
   const discDrop = dropDisc(game_config, grid, event.target.dataset.x, 1)
-  renderDisc(discDrop.location)
-  renderHighlight(discDrop);
-  const computerDrop = computerMove(game_config, grid)
-  renderDisc(computerDrop.location)
-  renderHighlight(computerDrop, true);
+  if (discDrop) {
+    renderDisc(discDrop.location)
+    renderHighlight(discDrop);
+    const computerDrop = computerMove(game_config, grid)
+    if (computerDrop) {
+      renderDisc(computerDrop.location)
+      renderHighlight(computerDrop, true);
+    }  
+  }
 }
 
 function renderHighlight(drop, alert = false) {
