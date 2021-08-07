@@ -13,7 +13,7 @@ export function dropDisc(game_config, grid, x, player = 1) {
     break;
   }
   return {
-    location: [1, i, +x],
+    location: [player, i, +x],
     seq: validSeq([grid, player, i, +x], game_config.min_sequence)
   }
 }
@@ -42,6 +42,6 @@ function cast([grid, value, y, x], dY, dX) {
 
 export const computerMove = (game_config, grid) => {
   const drop = dropDisc(game_config, grid, 1, 2)
-  
+
   return drop;
 }
