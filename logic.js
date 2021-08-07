@@ -48,7 +48,7 @@ const isGridFull = (grid) => {
 
 // Credit: https://stackoverflow.com/questions/15170942/how-to-rotate-a-matrix-in-an-array-in-javascript
 const rotateColumns = (grid) => {
-  return grid[0].map((val, index) => grid.map(row => row[index]).reverse())
+  return grid[0].map((val, index) => grid.map((row) => row[index]).reverse())
 }
 
 const shearDiagonals = (grid) => {
@@ -76,45 +76,60 @@ const shearDiagonals = (grid) => {
   return result
 }
 
-const blockOpponent = (grid) => {
-  let winner = 0
+const blockOpponent = (grid, player) => {
+  let result = {
+    block: [],
+    win: [],
+  }
+
+  const processResults = (resultStr, index) => {
+    if (
+      resultStr.indexOf("111") >= 0 ||
+      resultStr.indexOf("1101") >= 0 ||
+      resultStr.indexOf("1011") >= 0
+    ) {
+      if (player === 1) result.win.push(index)
+      else result.block.push(index)
+    }
+    if (
+      resultStr.indexOf("222") >= 0 ||
+      resultStr.indexOf("2202") >= 0 ||
+      resultStr.indexOf("2022") >= 0
+    ) {
+      if (player === 1) result.block.push(index)
+      else result.win.push(index)
+    }
+  }
 
   // Row
   grid.forEach((row, idx) => {
     const resultStr = row.toString().replaceAll(",", "")
-    if (resultStr.indexOf("1111") >= 0 || resultStr.indexOf("2222") >= 0) {
-      winner = resultStr.indexOf("1111") >= 0 ? 1 : 2
-    }
+    processResults(resultStr, idx)
   })
-  if (winner) return winner
 
   // Columns
   const rotated = rotateColumns(grid)
   for (let i = 0; i < rotated.length; i++) {
     const resultStr = rotated[i].toString().replaceAll(",", "")
-    if (resultStr.indexOf("1111") >= 0 || resultStr.indexOf("2222") >= 0) {
-      winner = resultStr.indexOf("1111") >= 0 ? 1 : 2
-    }
+    processResults(resultStr, i)
   }
-  if (winner) return winner
 
   // Diagonals
   const sheared = shearDiagonals(grid)
   for (let i = 0; i < sheared.length; i++) {
     const resultStr = sheared[i].toString().replaceAll(",", "")
-    if (resultStr.indexOf("1111") >= 0 || resultStr.indexOf("2222") >= 0) {
-      winner = resultStr.indexOf("1111") >= 0 ? 1 : 2
-    }
+    processResults(resultStr, i)
   }
-  return winner
+
+  return result
 }
 
 export const computerMove = (game_config, grid, playerDrop) => {
   let column = -1
   if (isGridFull(grid)) return
 
-  const blockResult = blockOpponent(grid)
-  console.log(`blockResult: ${blockResult}`, playerDrop)
+  const blockResult = blockOpponent(grid, 2) // Computer is player 2 atm
+  console.log(blockResult, playerDrop)
 
   // Random Drop
   while (column < 0) {
@@ -123,7 +138,7 @@ export const computerMove = (game_config, grid, playerDrop) => {
     column = test
   }
   const drop = dropDisc(game_config, grid, column, 2)
-  
+
   console.log(drop, grid)
   return drop
 }
