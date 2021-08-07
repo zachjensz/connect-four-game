@@ -17,6 +17,10 @@ let clickLock = false;
 elementGame.onclick = (event) => {
   if (!event.target.classList.contains("tile") || clickLock) return
   clickLock = true;
+  setTimeout(() => {
+    clickLock = false
+  }, 1500)
+
   const discDrop = dropDisc(game_config, grid, event.target.dataset.x)
   if (discDrop) {
     renderDisc(discDrop.location)
@@ -27,8 +31,7 @@ elementGame.onclick = (event) => {
         renderDisc(computerDrop.location)
         renderHighlight(computerDrop, true)
       }
-      clickLock = false
-    }, 1000)
+    }, 500)
   }
 }
 
