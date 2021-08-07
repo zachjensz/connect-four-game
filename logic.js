@@ -96,7 +96,7 @@ const blockOpponent = (grid) => {
       winner = resultStr.indexOf("1111") >= 0 ? 1 : 2
     }
   }
-  if (winner) return
+  if (winner) return winner
 
   // Diagonals
   const sheared = shearDiagonals(grid)
@@ -114,7 +114,7 @@ export const computerMove = (game_config, grid, playerDrop) => {
   if (isGridFull(grid)) return
 
   const blockResult = blockOpponent(grid)
-  console.log(playerDrop, `blockResult: ${blockResult}`)
+  console.log(`blockResult: ${blockResult}`, playerDrop)
 
   // Random Drop
   while (column < 0) {
