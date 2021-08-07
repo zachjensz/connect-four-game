@@ -19,7 +19,7 @@ elementGame.onclick = (event) => {
   clickLock = true;
   setTimeout(() => {
     clickLock = false
-  }, 1200)
+  }, 1000)
 
   const discDrop = dropDisc(game_config, grid, event.target.dataset.x)
   if (discDrop) {
@@ -31,7 +31,7 @@ elementGame.onclick = (event) => {
         renderDisc(computerDrop.location)
         renderHighlight(computerDrop, true)
       }
-    }, 500)
+    }, 400)
   }
 }
 
