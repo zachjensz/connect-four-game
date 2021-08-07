@@ -5,19 +5,19 @@ export function createGrid(game_config) {
   return board
 }
 
-export function dropDisc(game_config, grid, x) {
+export function dropDisc(game_config, grid, x, playerId = 1) {
   for (let i = 0; i < grid.length; i++) {
     if (grid[i + 1]?.[+x] == 0) continue
-    grid[i][+x] = 1
+    grid[i][+x] = playerId
     return {
-      location: [1, i, +x],
-      seq: validSeq([grid, 1, i, +x], game_config.min_sequence)
+      location: [playerId, i, +x],
+      seq: validSeq([grid, playerId, i, +x], game_config.min_sequence)
     }
   }
-  grid[grid.length - 1][+x] = 1
+  grid[grid.length - 1][+x] = playerId
   return {
-    location: [1, game_config.width - 1, +x],
-    seq: validSeq([grid, 1, grid.length - 1, +x], game_config.min_sequence)
+    location: [playerId, game_config.width - 1, +x],
+    seq: validSeq([grid, playerId, grid.length - 1, +x], game_config.min_sequence)
   }
 }
 
@@ -42,3 +42,9 @@ function cast([grid, value, y, x], dY, dX) {
   }
   return discs
 }
+
+const computerMove = (game_config, grid) => {
+  dropDisc(game_config, grid, 1, 2)
+}
+
+computerMove()
