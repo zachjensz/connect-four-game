@@ -81,7 +81,7 @@ const blockOpponent = (grid) => {
   let winner = 0
 
   // Row
-  console.log("grid: ", grid)
+  //console.log("grid: ", grid)
   grid.forEach((row, idx) => {
     const resultStr = row.toString().replaceAll(",", "")
     if (resultStr.indexOf("1111") >= 0 || resultStr.indexOf("2222") >= 0) {
@@ -92,7 +92,7 @@ const blockOpponent = (grid) => {
 
   // Columns
   const rotated = rotateColumns(grid)
-  console.log("rotated: ", rotated)
+  //console.log("rotated: ", rotated)
   for (let i = 0; i < rotated.length; i++) {
     const resultStr = rotated[i].toString().replaceAll(",", "")
     if (resultStr.indexOf("1111") >= 0 || resultStr.indexOf("2222") >= 0) {
@@ -103,7 +103,7 @@ const blockOpponent = (grid) => {
 
   // Diagonals
   const sheared = shearDiagonals(grid)
-  console.log("sheared: ", sheared)
+  //console.log("sheared: ", sheared)
   for (let i = 0; i < sheared.length; i++) {
     const resultStr = sheared[i].toString().replaceAll(",", "")
     if (resultStr.indexOf("1111") >= 0 || resultStr.indexOf("2222") >= 0) {
@@ -116,9 +116,9 @@ const blockOpponent = (grid) => {
 export const computerMove = (game_config, grid, playerDrop) => {
   let column = -1
   if (isGridFull(grid)) return
-  console.log(playerDrop, grid)
 
-  if (blockOpponent(grid)) console.log("Player ")
+  const blockResult = blockOpponent(grid)
+  console.log(playerDrop, grid, blockResult)
 
   // Random Drop
   while (column < 0) {
@@ -127,6 +127,7 @@ export const computerMove = (game_config, grid, playerDrop) => {
     column = test
   }
   const drop = dropDisc(game_config, grid, column, 2)
-  // console.log(drop, grid)
+  
+  console.log(drop, grid)
   return drop
 }
