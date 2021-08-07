@@ -79,47 +79,51 @@ const shearDiagonals = (grid) => {
 const blockOpponent = (grid, player) => {
   let result = {
     block: [],
-    win: [],
   }
 
-  const processResults = (resultStr, index) => {
-    if (
-      resultStr.indexOf("111") >= 0 ||
-      resultStr.indexOf("1101") >= 0 ||
-      resultStr.indexOf("1011") >= 0
-    ) {
-      if (player === 1) result.win.push(index)
-      else result.block.push(index)
-    }
-    if (
-      resultStr.indexOf("222") >= 0 ||
-      resultStr.indexOf("2202") >= 0 ||
-      resultStr.indexOf("2022") >= 0
-    ) {
-      if (player === 1) result.block.push(index)
-      else result.win.push(index)
-    }
-  }
+  const processResults = (resultStr) => [
+    resultStr.indexOf(`${player}${player}${player}`),
+    resultStr.indexOf(`${player}${player}0${player}`),
+    resultStr.indexOf(`${player}0${player}${player}`),
+  ]
 
   // Row
-  grid.forEach((row, idx) => {
-    const resultStr = row.toString().replaceAll(",", "")
-    processResults(resultStr, idx)
-  })
+  for (let i = 0; i < grid.length; i++) {
+    const resultStr = grid[i].toString().replaceAll(",", "")
+    const [index1, index2, index3] = processResults(resultStr)
+    if (index1 >= 0 || index2 >= 0 || index3 >= 0) {
+      if (index1) {
+        if (index1 >= 0 && grid[i][index1 - 1] === 0)
+          result.block.push(index1 - 1)
+        if (grid[i][index1 + 3] === 0) result.block.push(index1 + 3)
+      } else {
+        result.block.push(index2 >= 0 ? index2 + 2 : index3 + 1)
+      }
+    }
+  }
 
   // Columns
   const rotated = rotateColumns(grid)
   for (let i = 0; i < rotated.length; i++) {
     const resultStr = rotated[i].toString().replaceAll(",", "")
-    processResults(resultStr, i)
+    const [index1, index2, index3] = processResults(resultStr)
+    if (index1 >= 0 || index2 >= 0 || index3 >= 0) {
+      // if (index1) {
+      //   if (index1 >= 0 && grid[index][index1 - 1] === 0)
+      //     result.block.push(index1 - 1)
+      //   if (grid[index][index1 + 3] === 0) result.block.push(index1 + 3)
+      // } else {
+      //   result.block.push(index2 >= 0 ? index2 + 2 : index3 + 1)
+      // }
+    }
   }
 
   // Diagonals
-  const sheared = shearDiagonals(grid)
-  for (let i = 0; i < sheared.length; i++) {
-    const resultStr = sheared[i].toString().replaceAll(",", "")
-    processResults(resultStr, i)
-  }
+  // const sheared = shearDiagonals(grid)
+  // for (let i = 0; i < sheared.length; i++) {
+  //   const resultStr = sheared[i].toString().replaceAll(",", "")
+  //   processResults(resultStr, i)
+  // }
 
   return result
 }
@@ -128,17 +132,28 @@ export const computerMove = (game_config, grid, playerDrop) => {
   let column = -1
   if (isGridFull(grid)) return
 
-  const blockResult = blockOpponent(grid, 2) // Computer is player 2 atm
-  console.log(blockResult, playerDrop)
+  // Block player wins
+  const blockResult = blockOpponent(grid, 1) // Opponent is player 1 atm
+  if (blockResult.block.length > 0) {
+    console.log(blockResult)
+    column = blockResult.block[0]
+  }
+
+  if (column >= 0) {
+    const drop = dropDisc(game_config, grid, column, 2)
+    if (drop) return drop
+    column = -1
+  }
 
   // Random Drop
+  const isRowEmpty = (idx) => grid[idx].reduce(
+    (previousValue, _, index) => previousValue + grid[idx][index], 0
+  )
+  const isEarly = !isRowEmpty(grid.length - 3)
   while (column < 0) {
-    const test = Math.floor(Math.random() * 7)
-    if (grid[0][test] !== 0) continue
-    column = test
+    column = isEarly ? Math.floor(Math.random() * 5) + 1 : Math.floor(Math.random() * 7)
+    if (grid[0][column] !== 0) continue
+    const drop = dropDisc(game_config, grid, column, 2)
+    return drop
   }
-  const drop = dropDisc(game_config, grid, column, 2)
-
-  console.log(drop, grid)
-  return drop
 }
