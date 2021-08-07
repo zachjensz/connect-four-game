@@ -73,7 +73,7 @@ const shearDiagonals = (grid) => {
     if (rowUp.length >= 4) result.push(rowUp)
     if (rowDown.length >= 4) result.push(rowDown)
   }
-  console.log(result)
+  //console.log(result)
   return result
 }
 
