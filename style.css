@@ -40,13 +40,13 @@ body {
   border: 2px solid hsl(0, 100%, 40%);
   background-color: hsl(0, 100%, 40%);
   animation-name: fall-animation;
-  animation-duration: 500ms;
+  animation-duration: 300ms;
 }
 .tile[data-value='2'] {
   border: 2px solid darkgoldenrod;
   background-color: darkgoldenrod;
   animation-name: fall-animation;
-  animation-duration: 500ms;
+  animation-duration: 300ms;
 }
 .tile[data-glow] {
   border: 2px solid blue;
