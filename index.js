@@ -17,12 +17,17 @@ elementGame.onclick = (event) => {
   if (!event.target.classList.contains('tile')) return
   const discDrop = dropDisc(game_config, grid, event.target.dataset.x, 1)
   renderDisc(discDrop.location)
-  if (discDrop.seq.length > 0) {
-    discDrop.seq[0].push([discDrop.location[1], discDrop.location[2]])
-    renderWin(discDrop.seq[0])
-  }
+  renderHighlight(discDrop);
   const computerDrop = computerMove(game_config, grid)
   renderDisc(computerDrop.location)
+  renderHighlight(computerDrop, true);
+}
+
+function renderHighlight(drop, alert = false) {
+  if (drop.seq.length > 0) {
+    drop.seq[0].push([drop.location[1], drop.location[2]])
+    renderWin(drop.seq[0], alert)
+  }
 }
 
 function loadGrid(grid) {
@@ -46,10 +51,12 @@ function renderDisc([value, y, x]) {
     `.tile[data-x="${x}"][data-y="${y}"]`
   ).dataset.value = value
 }
-function renderWin(discs) {
+function renderWin(discs, alert) {
   discs.forEach((disc) => {
-    elementGame.querySelector(
+    const query = elementGame.querySelector(
       `.tile[data-x="${disc[1]}"][data-y="${disc[0]}"]`
-    ).dataset.glow = true
+    )
+    if (alert) query.dataset.alert = true
+    else query.dataset.glow = true
   })
 }

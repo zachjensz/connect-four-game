@@ -41,5 +41,7 @@ function cast([grid, value, y, x], dY, dX) {
 }
 
 export const computerMove = (game_config, grid) => {
-  dropDisc(game_config, grid, 1, 2)
+  const drop = dropDisc(game_config, grid, 1, 2)
+  
+  return drop;
 }

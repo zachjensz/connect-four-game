@@ -37,6 +37,9 @@ body {
 .tile[data-glow] {
   border: 2px solid white;
 }
+.tile[data-alert] {
+  border: 2px solid red;
+}
 .tile:hover {
   cursor: pointer;
 }
