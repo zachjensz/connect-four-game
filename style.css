@@ -27,18 +27,18 @@ body {
   height: 95%;
 }
 .tile[data-value='1'] {
-  border: 2px solid mediumblue;
-  background-color: mediumblue;
+  border: 2px solid red;
+  background-color: red;
 }
 .tile[data-value='2'] {
-  border: 2px solid orange;
-  background-color: orange;
+  border: 2px solid yellow;
+  background-color: yellow;
 }
 .tile[data-glow] {
-  border: 2px solid white;
+  border: 2px solid mediumblue;
 }
 .tile[data-alert] {
-  border: 2px solid red;
+  border: 2px solid darkgray;
 }
 .tile:hover {
   cursor: pointer;
