@@ -1,8 +1,8 @@
 export function createGrid(game_config) {
-  const board = Array(game_config.height)
+  const grid = Array(game_config.height)
     .fill(0)
     .map(() => Array(game_config.width).fill(0))
-  return board
+  return grid
 }
 
 export function dropDisc(game_config, grid, x, player = 1) {
@@ -114,7 +114,7 @@ export const computerMove = (game_config, grid, playerDrop) => {
   if (isGridFull(grid)) return
 
   const blockResult = blockOpponent(grid)
-  console.log(playerDrop, grid, blockResult)
+  console.log(playerDrop, `blockResult: ${blockResult}`)
 
   // Random Drop
   while (column < 0) {
