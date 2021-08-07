@@ -19,7 +19,7 @@ elementGame.onclick = (event) => {
   clickLock = true;
   setTimeout(() => {
     clickLock = false
-  }, 1500)
+  }, 1200)
 
   const discDrop = dropDisc(game_config, grid, event.target.dataset.x)
   if (discDrop) {
