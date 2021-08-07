@@ -48,7 +48,7 @@ const isGridFull = (grid) => {
 
 // Credit: https://stackoverflow.com/questions/15170942/how-to-rotate-a-matrix-in-an-array-in-javascript
 const rotateColumns = (grid) => {
-  return grid.map((val, index) => grid.map(row => row[index]).reverse())
+  return grid[0].map((val, index) => grid.map(row => row[index]).reverse())
 }
 
 const shearDiagonals = (grid) => {
