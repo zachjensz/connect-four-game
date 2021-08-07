@@ -48,25 +48,7 @@ const isGridFull = (grid) => {
 
 // Credit: https://stackoverflow.com/questions/15170942/how-to-rotate-a-matrix-in-an-array-in-javascript
 const rotateColumns = (grid) => {
-  let newGrid = []
-  let rowLength = Math.sqrt(grid.length)
-  newGrid.length = grid.length
-
-  for (var i = 0; i < grid.length; i++) {
-    //convert to x/y
-    let x = i % rowLength
-    let y = Math.floor(i / rowLength)
-
-    //find new x/y
-    let newX = rowLength - y - 1
-    let newY = x
-
-    //convert back to index
-    let newPosition = newY * rowLength + newX
-    newGrid[newPosition] = grid[i]
-  }
-
-  return newGrid;
+  return grid.map((val, index) => grid.map(row => row[index]).reverse())
 }
 
 const shearDiagonals = (grid) => {
@@ -100,7 +82,7 @@ const blockOpponent = (grid) => {
 
   // Row
   console.log("grid: ", grid)
-  board.forEach((row, idx) => {
+  grid.forEach((row, idx) => {
     const resultStr = row.toString().replaceAll(",", "")
     if (resultStr.indexOf("1111") >= 0 || resultStr.indexOf("2222") >= 0) {
       winner = resultStr.indexOf("1111") >= 0 ? 1 : 2
@@ -112,7 +94,7 @@ const blockOpponent = (grid) => {
   const rotated = rotateColumns(grid)
   console.log("rotated: ", rotated)
   for (let i = 0; i < rotated.length; i++) {
-    const resultStr = column.toString().replaceAll(",", "")
+    const resultStr = rotated[i].toString().replaceAll(",", "")
     if (resultStr.indexOf("1111") >= 0 || resultStr.indexOf("2222") >= 0) {
       winner = resultStr.indexOf("1111") >= 0 ? 1 : 2
     }
@@ -134,10 +116,9 @@ const blockOpponent = (grid) => {
 export const computerMove = (game_config, grid, playerDrop) => {
   let column = -1
   if (isGridFull(grid)) return
-  // console.log(playerDrop, grid)
+  console.log(playerDrop, grid)
 
-  if (blockOpponent(grid))
-    console.log("")
+  if (blockOpponent(grid)) console.log("Player ")
 
   // Random Drop
   while (column < 0) {
