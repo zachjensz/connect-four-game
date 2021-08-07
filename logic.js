@@ -73,7 +73,6 @@ const shearDiagonals = (grid) => {
     if (rowUp.length >= 4) result.push(rowUp)
     if (rowDown.length >= 4) result.push(rowDown)
   }
-  //console.log(result)
   return result
 }
 
@@ -81,7 +80,6 @@ const blockOpponent = (grid) => {
   let winner = 0
 
   // Row
-  //console.log("grid: ", grid)
   grid.forEach((row, idx) => {
     const resultStr = row.toString().replaceAll(",", "")
     if (resultStr.indexOf("1111") >= 0 || resultStr.indexOf("2222") >= 0) {
@@ -92,7 +90,6 @@ const blockOpponent = (grid) => {
 
   // Columns
   const rotated = rotateColumns(grid)
-  //console.log("rotated: ", rotated)
   for (let i = 0; i < rotated.length; i++) {
     const resultStr = rotated[i].toString().replaceAll(",", "")
     if (resultStr.indexOf("1111") >= 0 || resultStr.indexOf("2222") >= 0) {
@@ -103,7 +100,6 @@ const blockOpponent = (grid) => {
 
   // Diagonals
   const sheared = shearDiagonals(grid)
-  //console.log("sheared: ", sheared)
   for (let i = 0; i < sheared.length; i++) {
     const resultStr = sheared[i].toString().replaceAll(",", "")
     if (resultStr.indexOf("1111") >= 0 || resultStr.indexOf("2222") >= 0) {
