@@ -5,18 +5,18 @@ export function createGrid(game_config) {
   return board
 }
 
-export function dropDisc(game_config, grid, x) {
+export function dropDisc(game_config, grid, x, player) {
   const a = 0
   for (let i = 0; i < game_config.width; i++) {
     if (grid[i + 1]?.[+x] == 0) continue
-    grid[i][+x] = 1
+    grid[i][+x] = player
     a = i
   }
-  grid[grid.length - 1][+x] = 1
+  grid[grid.length - 1][+x] = player
   a = game_config.width - 1
   return {
     location: [1, a, +x],
-    seq: validSeq([grid, 1, a, +x], game_config.min_sequence)
+    seq: validSeq([grid, player, a, +x], game_config.min_sequence)
   }
 }
 

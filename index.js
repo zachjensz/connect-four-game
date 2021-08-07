@@ -15,7 +15,7 @@ loadGrid(grid)
 
 elementGame.onclick = (event) => {
   if (!event.target.classList.contains('tile')) return
-  const discDrop = dropDisc(game_config, grid, event.target.dataset.x)
+  const discDrop = dropDisc(game_config, grid, event.target.dataset.x, 1)
   renderDisc(discDrop.location)
   if (discDrop.seq.length > 0) {
     discDrop.seq[0].push([discDrop.location[1], discDrop.location[2]])
