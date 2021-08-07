@@ -21,14 +21,17 @@ body {
 }
 .tile {
   background-color: #111;
+  border: 2px solid #111;
   border-radius: 50%;
   width: 95%;
   height: 95%;
 }
 .tile[data-value='1'] {
+  border: 2px solid mediumblue;
   background-color: mediumblue;
 }
 .tile[data-value='2'] {
+  border: 2px solid orange;
   background-color: orange;
 }
 .tile[data-glow] {
