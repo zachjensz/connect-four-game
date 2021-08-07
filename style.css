@@ -26,13 +26,27 @@ body {
   width: 95%;
   height: 95%;
 }
+
+@keyframes fall-animation {
+  from {
+    transform: translateY(-200px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
 .tile[data-value='1'] {
   border: 2px solid red;
   background-color: red;
+  animation-name: fall-animation;
+  animation-duration: 500ms;
 }
 .tile[data-value='2'] {
   border: 2px solid yellow;
   background-color: yellow;
+  animation-name: fall-animation;
+  animation-duration: 500ms;
 }
 .tile[data-glow] {
   border: 2px solid mediumblue;
