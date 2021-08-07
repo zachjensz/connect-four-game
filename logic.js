@@ -41,3 +41,9 @@ function cast([grid, value, y, x], dY, dX) {
   }
   return discs
 }
+
+// const computerMove = (game_config, grid) => {
+//   dropDisc(game_config, grid, 1, 2)
+// }
+
+// computerMove()
