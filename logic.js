@@ -146,20 +146,19 @@ const findWinningMoves = (grid, player) => {
         const column = index2 + 2
         const columnHeight = getColumnHeight(grid, column)
         const row = Math.abs(grid.length - i) - 1;
-        console.log(column, columnHeight, i)
         if (row === columnHeight) result.block.push(column)
       }
       if (index3) {
         const column = index3 + 1
         const columnHeight = getColumnHeight(grid, column)
         const row = Math.abs(grid.length - i) - 1;
-        console.log(column, columnHeight, i)
         if (row === columnHeight) result.block.push(column)
       }    
     }
   }
 
   // Diagonals
+  // ToDo: Need column height checing skill
   const indicesGrid = getIndicesGrid(grid)
   const sheared = shearDiagonals(grid)
   const shearedIndices = shearDiagonals(indicesGrid)
@@ -180,7 +179,7 @@ const findWinningMoves = (grid, player) => {
       }
     }
   }
-  console.log(result)
+  //console.log(result)
   return result
 }
 
