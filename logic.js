@@ -40,6 +40,13 @@ function cast([grid, value, y, x], dY, dX) {
   return discs
 }
 
+export function columnHeight(grid, x) {
+  for (let i = grid.length - 1; i >= 0 ; i--) {
+    if (grid[i][+x] === 0) return grid.length - i - 1
+  }
+  return grid.length - 1;
+}
+
 const isGridFull = (grid) => {
   let full = true
   grid[0].forEach((disc) => (disc === 0 ? (full = false) : undefined))
@@ -78,7 +85,12 @@ const shearDiagonals = (grid) => {
 
 const blockOpponent = (grid, player) => {
   let result = {
+    // block is a list of columns that will block a player win
+    // If more than one, the player is about to win.
     block: [],
+    // restricted is a list of plays that would be a mistake to do as
+    // they would give the player a piece needed to complete a diagonal win
+    restricted: [],
   }
 
   const processResults = (resultStr) => [
@@ -115,11 +127,24 @@ const blockOpponent = (grid, player) => {
   }
 
   // Diagonals
-  // const sheared = shearDiagonals(grid)
-  // for (let i = 0; i < sheared.length; i++) {
-  //   const resultStr = sheared[i].toString().replaceAll(",", "")
-  //   processResults(resultStr, i)
-  // }
+  const sheared = shearDiagonals(grid)
+  for (let i = 0; i < sheared.length; i++) {
+    const resultStr = sheared[i].toString().replaceAll(",", "")
+    const [index1, index2, index3] = processResults(resultStr)
+    if (index1 >= 0 || index2 >= 0 || index3 >= 0) {
+      console.log(index1, index2, index3)
+    }
+  }
+
+  console.log(
+    columnHeight(grid, 0),
+    columnHeight(grid, 1),
+    columnHeight(grid, 2),
+    columnHeight(grid, 3),
+    columnHeight(grid, 4),
+    columnHeight(grid, 5),
+    columnHeight(grid, 6)
+  )
 
   return result
 }
@@ -142,6 +167,7 @@ export const computerMove = (game_config, grid, playerDrop) => {
   }
 
   // Random Drop
+  const isColumnFull = (idx) => columnHeight(idx) === grid.length
   const isRowEmpty = (idx) =>
     grid[idx].reduce(
       (previousValue, _, index) => previousValue + grid[idx][index],
@@ -152,8 +178,9 @@ export const computerMove = (game_config, grid, playerDrop) => {
     column = isEarly
       ? Math.floor(Math.random() * 5) + 1
       : Math.floor(Math.random() * 7)
-    if (grid[0][column] !== 0) continue
+    if (isColumnFull(column)) continue
     const drop = dropDisc(game_config, grid, column, 2)
-    return drop
+    if (drop) return drop
+    column = -1;
   }
 }
