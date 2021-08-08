@@ -136,16 +136,6 @@ const blockOpponent = (grid, player) => {
     }
   }
 
-  console.log(
-    columnHeight(grid, 0),
-    columnHeight(grid, 1),
-    columnHeight(grid, 2),
-    columnHeight(grid, 3),
-    columnHeight(grid, 4),
-    columnHeight(grid, 5),
-    columnHeight(grid, 6)
-  )
-
   return result
 }
 
