@@ -106,15 +106,11 @@ const blockOpponent = (grid, player) => {
   const rotated = rotateColumns(grid)
   for (let i = 0; i < rotated.length; i++) {
     const resultStr = rotated[i].toString().replaceAll(",", "")
-    const [index1, index2, index3] = processResults(resultStr)
-    if (index1 >= 0 || index2 >= 0 || index3 >= 0) {
-      // if (index1) {
-      //   if (index1 >= 0 && grid[index][index1 - 1] === 0)
-      //     result.block.push(index1 - 1)
-      //   if (grid[index][index1 + 3] === 0) result.block.push(index1 + 3)
-      // } else {
-      //   result.block.push(index2 >= 0 ? index2 + 2 : index3 + 1)
-      // }
+    const [index1] = processResults(resultStr)
+    if (index1 >= 0) {
+      // Is the piece above this sequence empty?
+      if (resultStr.indexOf(`${player}${player}${player}0`) >= 0)
+        result.block.push(i)
     }
   }
 
@@ -135,7 +131,7 @@ export const computerMove = (game_config, grid, playerDrop) => {
   // Block player wins
   const blockResult = blockOpponent(grid, 1) // Opponent is player 1 atm
   if (blockResult.block.length > 0) {
-    console.log(blockResult)
+    //console.log(blockResult)
     column = blockResult.block[0]
   }
 
@@ -146,12 +142,16 @@ export const computerMove = (game_config, grid, playerDrop) => {
   }
 
   // Random Drop
-  const isRowEmpty = (idx) => grid[idx].reduce(
-    (previousValue, _, index) => previousValue + grid[idx][index], 0
-  )
+  const isRowEmpty = (idx) =>
+    grid[idx].reduce(
+      (previousValue, _, index) => previousValue + grid[idx][index],
+      0
+    )
   const isEarly = !isRowEmpty(grid.length - 3)
   while (column < 0) {
-    column = isEarly ? Math.floor(Math.random() * 5) + 1 : Math.floor(Math.random() * 7)
+    column = isEarly
+      ? Math.floor(Math.random() * 5) + 1
+      : Math.floor(Math.random() * 7)
     if (grid[0][column] !== 0) continue
     const drop = dropDisc(game_config, grid, column, 2)
     return drop
