@@ -164,7 +164,7 @@ const findWinningMoves = (grid, player) => {
   const sheared = shearDiagonals(grid)
   // This is a shear for mapping back to the grid coordinates
   const shearedIndices = shearDiagonals(indicesGrid)
-  console.log(sheared, shearedIndices)
+  //console.log(sheared, shearedIndices)
   for (let i = 0; i < grid.length; i++) {
     const resultStr = sheared[i].toString().replaceAll(",", "")
     const [index1, index2, index3] = processResults(resultStr)
