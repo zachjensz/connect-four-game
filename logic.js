@@ -41,10 +41,10 @@ function cast([grid, value, y, x], dY, dX) {
 }
 
 export function columnHeight(grid, x) {
-  for (let i = grid.length - 1; i >= 0 ; i--) {
+  for (let i = grid.length - 1; i >= 0; i--) {
     if (grid[i][+x] === 0) return grid.length - i - 1
   }
-  return grid.length - 1;
+  return grid.length - 1
 }
 
 const isGridFull = (grid) => {
@@ -81,6 +81,18 @@ const shearDiagonals = (grid) => {
     if (rowDown.length >= 4) result.push(rowDown)
   }
   return result
+}
+
+const getIndicesGrid = (grid) => {
+  const indicesGrid = []
+  for (let i = 0; i < grid.length; i++) {
+    const row = []
+    for (let j = 0; j < grid[0].length; j++) {
+      row.push([i, j])
+    }
+    indicesGrid.push(row)
+  }
+  return indicesGrid
 }
 
 const blockOpponent = (grid, player) => {
@@ -127,15 +139,27 @@ const blockOpponent = (grid, player) => {
   }
 
   // Diagonals
+  const indicesGrid = getIndicesGrid(grid)
   const sheared = shearDiagonals(grid)
-  for (let i = 0; i < sheared.length; i++) {
+  const shearedIndices = shearDiagonals(indicesGrid)
+  for (let i = 0; i < grid.length; i++) {
     const resultStr = sheared[i].toString().replaceAll(",", "")
     const [index1, index2, index3] = processResults(resultStr)
     if (index1 >= 0 || index2 >= 0 || index3 >= 0) {
-      console.log(index1, index2, index3)
+      if (index1) {
+        if (index1 >= 0 && sheared[i][index1 - 1][1] === 0)
+          result.block.push(shearedIndices[i][index1 - 1])
+        if (sheared[i][index1 + 3] === 0) result.block.push(index1 + 3)
+      } else {
+        result.block.push(
+          index2 >= 0
+            ? shearedIndices[i][index2 + 2][1]
+            : shearedIndices[i][index3 + 1][1]
+        )
+      }
     }
   }
-
+  //console.log(result)
   return result
 }
 
@@ -171,6 +195,6 @@ export const computerMove = (game_config, grid, playerDrop) => {
     if (isColumnFull(column)) continue
     const drop = dropDisc(game_config, grid, column, 2)
     if (drop) return drop
-    column = -1;
+    column = -1
   }
 }
