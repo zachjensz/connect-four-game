@@ -160,10 +160,9 @@ const findWinningMoves = (grid, player) => {
 
   // Diagonals
   // ToDo: Need column height checking still
-  const indicesGrid = getIndicesGrid(grid)
   const sheared = shearDiagonals(grid)
   // This is a shear for mapping back to the grid coordinates
-  const shearedIndices = shearDiagonals(indicesGrid)
+  const shearedIndices = shearDiagonals(getIndicesGrid(grid))
   //console.log(sheared, shearedIndices)
   for (let i = 0; i < grid.length; i++) {
     const resultStr = sheared[i].toString().replaceAll(",", "")
