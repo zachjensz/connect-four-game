@@ -40,7 +40,7 @@ function cast([grid, value, y, x], dY, dX) {
   return discs
 }
 
-export function columnHeight(grid, x) {
+export function getColumnHeight(grid, x) {
   for (let i = grid.length - 1; i >= 0; i--) {
     if (grid[i][+x] === 0) return grid.length - i - 1
   }
@@ -95,7 +95,7 @@ const getIndicesGrid = (grid) => {
   return indicesGrid
 }
 
-const blockOpponent = (grid, player) => {
+const findWinningMoves = (grid, player) => {
   let result = {
     // block is a list of columns that will block a player win
     // If more than one, the player is about to win.
@@ -111,21 +111,6 @@ const blockOpponent = (grid, player) => {
     resultStr.indexOf(`${player}0${player}${player}`),
   ]
 
-  // Row
-  for (let i = 0; i < grid.length; i++) {
-    const resultStr = grid[i].toString().replaceAll(",", "")
-    const [index1, index2, index3] = processResults(resultStr)
-    if (index1 >= 0 || index2 >= 0 || index3 >= 0) {
-      if (index1) {
-        if (index1 >= 0 && grid[i][index1 - 1] === 0)
-          result.block.push(index1 - 1)
-        if (grid[i][index1 + 3] === 0) result.block.push(index1 + 3)
-      } else {
-        result.block.push(index2 >= 0 ? index2 + 2 : index3 + 1)
-      }
-    }
-  }
-
   // Columns
   const rotated = rotateColumns(grid)
   for (let i = 0; i < rotated.length; i++) {
@@ -135,6 +120,42 @@ const blockOpponent = (grid, player) => {
       // Is the piece above this sequence empty?
       if (resultStr.indexOf(`${player}${player}${player}0`) >= 0)
         result.block.push(i)
+    }
+  }
+
+  // Row
+  for (let i = 0; i < grid.length; i++) {
+    const resultStr = grid[i].toString().replaceAll(",", "")
+    const [index1, index2, index3] = processResults(resultStr)
+    if (index1 >= 0 || index2 >= 0 || index3 >= 0) {
+      if (index1 >= 0) {
+        if (grid[i][index1 - 1] === 0) {
+          const column = index1 - 1
+          const columnHeight = getColumnHeight(grid, column)
+          const row = Math.abs(grid.length - i) - 1;
+          if (row === columnHeight) result.block.push(column)
+        }
+        if (grid[i][index1 + 3] === 0) {
+          const column = index1 + 3
+          const columnHeight = getColumnHeight(grid, column)
+          const row = Math.abs(grid.length - i) - 1;
+          if (row === columnHeight) result.block.push(column)
+        }
+      }
+      if (index2) {
+        const column = index2 + 2
+        const columnHeight = getColumnHeight(grid, column)
+        const row = Math.abs(grid.length - i) - 1;
+        console.log(column, columnHeight, i)
+        if (row === columnHeight) result.block.push(column)
+      }
+      if (index3) {
+        const column = index3 + 1
+        const columnHeight = getColumnHeight(grid, column)
+        const row = Math.abs(grid.length - i) - 1;
+        console.log(column, columnHeight, i)
+        if (row === columnHeight) result.block.push(column)
+      }    
     }
   }
 
@@ -159,7 +180,7 @@ const blockOpponent = (grid, player) => {
       }
     }
   }
-  //console.log(result)
+  console.log(result)
   return result
 }
 
@@ -167,8 +188,21 @@ export const computerMove = (game_config, grid, playerDrop) => {
   let column = -1
   if (isGridFull(grid)) return
 
-  // Block player wins
-  const blockResult = blockOpponent(grid, 1) // Opponent is player 1 atm
+  // Go for a winning move first
+  const winResult = findWinningMoves(grid, 2) // Computer is player 2 atm
+  if (winResult.block.length > 0) {
+    //console.log(blockResult)
+    column = winResult.block[0]
+  }
+
+  if (column >= 0) {
+    const drop = dropDisc(game_config, grid, column, 2)
+    if (drop) return drop
+    column = -1
+  }
+
+  // Block player winning moves
+  const blockResult = findWinningMoves(grid, 1) // Opponent is player 1 atm
   if (blockResult.block.length > 0) {
     //console.log(blockResult)
     column = blockResult.block[0]
@@ -181,7 +215,7 @@ export const computerMove = (game_config, grid, playerDrop) => {
   }
 
   // Random Drop
-  const isColumnFull = (idx) => columnHeight(idx) === grid.length
+  const isColumnFull = (idx) => getColumnHeight(idx) === grid.length
   const isRowEmpty = (idx) =>
     grid[idx].reduce(
       (previousValue, _, index) => previousValue + grid[idx][index],
