@@ -98,6 +98,7 @@ const getIndicesGrid = (grid) => {
 
 const findWinningMoves = (grid, player) => {
   let result = {
+    player,
     // block is a list of columns that will block a player win
     // If more than one, the player is about to win.
     block: [],
@@ -133,51 +134,89 @@ const findWinningMoves = (grid, player) => {
         if (grid[i][index1 - 1] === 0) {
           const column = index1 - 1
           const columnHeight = getColumnHeight(grid, column)
-          const row = Math.abs(grid.length - i) - 1;
-          if (row === columnHeight) result.block.push(column)
+          const row = Math.abs(grid.length - i) - 1
+          if (row === columnHeight && result.block.indexOf(column) < 0)
+            result.block.push(column)
+          if (row === columnHeight - 1 && result.restricted.indexOf(column) < 0)
+            result.restricted.push(column)
         }
         if (grid[i][index1 + 3] === 0) {
           const column = index1 + 3
           const columnHeight = getColumnHeight(grid, column)
-          const row = Math.abs(grid.length - i) - 1;
-          if (row === columnHeight) result.block.push(column)
+          const row = Math.abs(grid.length - i) - 1
+          if (row === columnHeight && result.block.indexOf(column) < 0)
+            result.block.push(column)
+          if (row === columnHeight - 1 && result.restricted.indexOf(column) < 0)
+            result.restricted.push(column)
         }
       }
       if (index2) {
         const column = index2 + 2
         const columnHeight = getColumnHeight(grid, column)
-        const row = Math.abs(grid.length - i) - 1;
-        if (row === columnHeight) result.block.push(column)
+        const row = Math.abs(grid.length - i) - 1
+        if (row === columnHeight && result.block.indexOf(column) < 0)
+          result.block.push(column)
+        if (row === columnHeight - 1 && result.restricted.indexOf(column) < 0)
+            result.restricted.push(column)
       }
       if (index3) {
         const column = index3 + 1
         const columnHeight = getColumnHeight(grid, column)
-        const row = Math.abs(grid.length - i) - 1;
-        if (row === columnHeight) result.block.push(column)
-      }    
+        const row = Math.abs(grid.length - i) - 1
+        if (row === columnHeight && result.block.indexOf(column) < 0)
+          result.block.push(column)
+        if (row === columnHeight - 1 && result.restricted.indexOf(column) < 0)
+            result.restricted.push(column)
+      }
     }
   }
 
   // Diagonals
-  // ToDo: Need column height checking still
   const sheared = shearDiagonals(grid)
   // This is a shear for mapping back to the grid coordinates
   const shearedIndices = shearDiagonals(getIndicesGrid(grid))
-  //console.log(sheared, shearedIndices)
-  for (let i = 0; i < grid.length; i++) {
+  for (let i = 0; i < sheared.length; i++) {
     const resultStr = sheared[i].toString().replaceAll(",", "")
     const [index1, index2, index3] = processResults(resultStr)
     if (index1 >= 0 || index2 >= 0 || index3 >= 0) {
-      if (index1) {
-        if (index1 >= 0 && sheared[i][index1 - 1][1] === 0)
-          result.block.push(shearedIndices[i][index1 - 1])
-        if (sheared[i][index1 + 3] === 0) result.block.push(index1 + 3)
+      if (index1 >= 0) {
+        let row = shearedIndices[i]?.[index1 - 1]?.[0]
+        let column = shearedIndices[i]?.[index1 - 1]?.[1]
+        if (row !== undefined && column != undefined) {
+          const columnHeight = getColumnHeight(grid, column)
+          //console.log("Test1: ", row, column)
+          if (
+            grid[row][column] === 0 &&
+            columnHeight - 1 === row &&
+            result.block.indexOf(column) < 0
+          )
+            result.block.push(column)
+        }
+        row = shearedIndices[i]?.[index1 + 3]?.[0]
+        column = shearedIndices[i]?.[index1 + 3]?.[1]
+        if (row !== undefined && column !== undefined) {
+          const columnHeight = getColumnHeight(grid, column)
+          //console.log("Test2: ", row, column)
+          if (
+            grid[row][column] === 0 &&
+            columnHeight - 1 === row &&
+            result.block.indexOf(column) < 0
+          )
+            result.block.push(column)
+        }
       } else {
-        result.block.push(
-          index2 >= 0
-            ? shearedIndices[i][index2 + 2][1]
-            : shearedIndices[i][index3 + 1][1]
-        )
+        let index = index2 >= 0 ? index2 + 2 : index3 + 1
+        let row = shearedIndices[i]?.[index]?.[0]
+        let column = shearedIndices[i]?.[index]?.[1]
+        if (row !== undefined && column !== undefined) {
+          const columnHeight = getColumnHeight(grid, column)
+          if (
+            grid[row][column] === 0 &&
+            columnHeight - 1 === row &&
+            result.block.indexOf(column) < 0
+          )
+            result.block.push(column)
+        }
       }
     }
   }
