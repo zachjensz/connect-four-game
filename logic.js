@@ -13,6 +13,7 @@ export function dropDisc(game_config, grid, x, player = 1) {
       return {
         location: [player, i, +x],
         seq: validSeq([grid, player, i, +x], game_config.min_sequence),
+        newGrid: grid
       }
     }
   }
@@ -24,7 +25,7 @@ function validSeq(state, min_sequence) {
     { v: 1, h: 0 },
     { v: 1, h: 1 },
     { v: 0, h: 1 },
-    { v: 1, h: -1 },
+    { v: 1, h: -1 }
   ]
   directions.forEach((dir) => {
     const seq = [...cast(state, dir.v, dir.h), ...cast(state, -dir.v, -dir.h)]
@@ -104,19 +105,19 @@ const findWinningMoves = (grid, player) => {
     block: [],
     // restricted is a list of plays that would be a mistake to do as
     // they would give the player a piece needed to complete a diagonal win
-    restricted: [],
+    restricted: []
   }
 
   const processResults = (resultStr) => [
     resultStr.indexOf(`${player}${player}${player}`),
     resultStr.indexOf(`${player}${player}0${player}`),
-    resultStr.indexOf(`${player}0${player}${player}`),
+    resultStr.indexOf(`${player}0${player}${player}`)
   ]
 
   // Columns
   const rotated = rotateColumns(grid)
   for (let i = 0; i < rotated.length; i++) {
-    const resultStr = rotated[i].toString().replaceAll(",", "")
+    const resultStr = rotated[i].toString().replaceAll(',', '')
     const [index1] = processResults(resultStr)
     if (index1 >= 0) {
       // Is the piece above this sequence empty?
@@ -127,7 +128,7 @@ const findWinningMoves = (grid, player) => {
 
   // Row
   for (let i = 0; i < grid.length; i++) {
-    const resultStr = grid[i].toString().replaceAll(",", "")
+    const resultStr = grid[i].toString().replaceAll(',', '')
     const [index1, index2, index3] = processResults(resultStr)
     if (index1 >= 0 || index2 >= 0 || index3 >= 0) {
       if (index1 >= 0) {
@@ -157,7 +158,7 @@ const findWinningMoves = (grid, player) => {
         if (row === columnHeight && result.block.indexOf(column) < 0)
           result.block.push(column)
         if (row === columnHeight - 1 && result.restricted.indexOf(column) < 0)
-            result.restricted.push(column)
+          result.restricted.push(column)
       }
       if (index3) {
         const column = index3 + 1
@@ -166,7 +167,7 @@ const findWinningMoves = (grid, player) => {
         if (row === columnHeight && result.block.indexOf(column) < 0)
           result.block.push(column)
         if (row === columnHeight - 1 && result.restricted.indexOf(column) < 0)
-            result.restricted.push(column)
+          result.restricted.push(column)
       }
     }
   }
@@ -176,7 +177,7 @@ const findWinningMoves = (grid, player) => {
   // This is a shear for mapping back to the grid coordinates
   const shearedIndices = shearDiagonals(getIndicesGrid(grid))
   for (let i = 0; i < sheared.length; i++) {
-    const resultStr = sheared[i].toString().replaceAll(",", "")
+    const resultStr = sheared[i].toString().replaceAll(',', '')
     const [index1, index2, index3] = processResults(resultStr)
     if (index1 >= 0 || index2 >= 0 || index3 >= 0) {
       if (index1 >= 0) {
