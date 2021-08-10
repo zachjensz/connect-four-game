@@ -13,13 +13,13 @@ const game_config = {
 const game_state = {
   gridJSON: '',
   get grid() {
-    console.log('before get', this.gridJSON)
     return JSON.parse(this.gridJSON)
   },
   set grid(grid) {
-    console.log('before set', this.gridJSON)
     this.gridJSON = JSON.stringify(grid)
-  }
+  },
+  clickLock: false,
+  gameOver: false
 }
 
 game_state.grid = createGrid(game_config)
@@ -41,13 +41,16 @@ function loadGrid(grid) {
   elementGame.style.setProperty('--height', game_config.height)
 }
 
-let clickLock = false
-let gameOver = false
 elementGame.onclick = (event) => {
-  if (!event.target.classList.contains('tile') || clickLock || gameOver) return
-  clickLock = true
+  if (
+    !event.target.classList.contains('tile') ||
+    game_state.clickLock ||
+    game_state.gameOver
+  )
+    return
+  game_state.clickLock = true
   setTimeout(() => {
-    clickLock = false
+    game_state.clickLock = false
   }, 1000)
 
   const discDrop = dropDisc(
@@ -57,10 +60,10 @@ elementGame.onclick = (event) => {
   )
   if (discDrop) {
     game_state.grid = discDrop.newGrid
-    gameOver = discDrop.seq.length > 0
+    game_state.gameOver = discDrop.seq.length > 0
     renderDisc(discDrop.location)
     renderHighlight(discDrop)
-    if (!gameOver) {
+    if (!game_state.gameOver) {
       // Computer Move
       setTimeout(() => {
         const computerDrop = computerMove(
@@ -70,7 +73,7 @@ elementGame.onclick = (event) => {
         )
         if (computerDrop) {
           game_state.grid = computerDrop.newGrid
-          gameOver = computerDrop.seq.length > 0
+          game_state.gameOver = computerDrop.seq.length > 0
           renderDisc(computerDrop.location)
           renderHighlight(computerDrop, true)
         }
