@@ -2,9 +2,11 @@ html {
   background-color: #222;
   color: #eee;
   font-family: sans-serif;
+  margin: 0;
 }
 body {
   min-height: 100vh;
+  margin: 0;
   display: grid;
   place-content: center;
   text-align: center;
@@ -55,5 +57,35 @@ body {
   border: 2px solid hsl(111, 59%, 91%);
 }
 .tile:hover {
+  cursor: pointer;
+}
+
+.titlescreen {
+  background-color: #000d;
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  display: grid;
+  place-content: center;
+}
+
+.gamemode-select {
+  background-color: #000;
+  border-radius: 2rem;
+  width: min(100vw, 60ch);
+  height: min(100vh, 80ch);
+  display: grid;
+}
+.gamemode-select > button {
+  background-color: #111;
+  color: #eee;
+  font: inherit;
+  font-size: 2rem;
+  border: none;
+  margin: 0.2em;
+  transition: background-color 400ms ease-out;
+}
+.gamemode-select > button:hover {
+  background-color: #444;
   cursor: pointer;
 }
