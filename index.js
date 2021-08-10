@@ -25,7 +25,19 @@ const game_state = {
 game_state.grid = createGrid(game_config)
 loadGrid(game_state.grid)
 
+window['getGrid'] = () => JSON.stringify(game_state.grid)
+window[`setGrid`] = (newGrid) => {
+  game_state.grid = JSON.parse(newGrid)
+  loadGrid(game_state.grid)
+  for (let x = 0; x < game_state.grid[0].length; x++) {
+    for (let y = 0; y < game_state.grid.length; y++) {
+      renderDisc([game_state.grid[y][x], y, x])
+    }
+  }
+}
+
 function loadGrid(grid) {
+  elementGame.innerHTML = ""
   grid.forEach((row, yIndex) => {
     row.forEach((tile, xIndex) => {
       const elementTile = elementTileTemplate.content
