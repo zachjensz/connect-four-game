@@ -166,7 +166,7 @@ function renderWin(discs, alert) {
   })
 }
 
-// Called in index.js after the player move
+// Called after the player move
 const computerMove = (game_config, grid, playerDrop) => {
   if (game_config.difficulty === 1)
     return computerMoveDumb(game_config, grid, playerDrop)
