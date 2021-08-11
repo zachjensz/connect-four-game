@@ -2,6 +2,9 @@ import { computerMove, createGrid, dropDisc } from './logic.js'
 
 const elementGame = document.querySelector('#grid')
 const elementTileTemplate = document.querySelector('#tile-template')
+const elementTitlescreenTemplate = document.querySelector(
+  '#titlescreen-template'
+)
 
 const game_config = {
   width: 7,
@@ -11,16 +14,20 @@ const game_config = {
 }
 
 const game_state = {
+  titlescreen: false,
+  clickLock: false,
+  gameOver: false,
   gridJSON: '',
   get grid() {
     return JSON.parse(this.gridJSON)
   },
   set grid(grid) {
     this.gridJSON = JSON.stringify(grid)
-  },
-  clickLock: false,
-  gameOver: false
+  }
 }
+
+const elementTitlescreen = renderTitlescreen()
+elementTitlescreen.addEventListener('submit', titlescreenClick)
 
 game_state.grid = createGrid(game_config)
 loadGrid(game_state.grid)
@@ -36,8 +43,43 @@ window[`setGrid`] = (newGrid) => {
   }
 }
 
+function renderTitlescreen() {
+  const titlescreen = elementTitlescreenTemplate.content
+    .cloneNode(true)
+    .querySelector('.titlescreen')
+  document.body.appendChild(titlescreen)
+  game_state.titlescreen = true
+  return titlescreen
+}
+
+function titlescreenClick(event) {
+  event.preventDefault()
+  switch (event.submitter.id) {
+    case 'dumbot':
+      removeTitlescreen()
+      break
+    case 'smartbot':
+      alert('Gamemode currently in development')
+      break
+    case 'terminator':
+      alert('Gamemode currently in development')
+      break
+    case 'localMultiplayer':
+      alert('Gamemode currently in development')
+      break
+    case 'onlineMultiplayer':
+      alert('Gamemode currently in development')
+      break
+  }
+}
+
+function removeTitlescreen() {
+  document.querySelector('.titlescreen').remove()
+  game_state.titlescreen = false
+}
+
 function loadGrid(grid) {
-  elementGame.innerHTML = ""
+  elementGame.innerHTML = ''
   grid.forEach((row, yIndex) => {
     row.forEach((tile, xIndex) => {
       const elementTile = elementTileTemplate.content
@@ -54,6 +96,7 @@ function loadGrid(grid) {
 }
 
 elementGame.onclick = (event) => {
+  if (game_state.titlescreen) return
   if (
     !event.target.classList.contains('tile') ||
     game_state.clickLock ||
