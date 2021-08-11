@@ -1,5 +1,7 @@
 import { createGrid, dropDisc } from './common.js'
-import { computerMove as computerMoveBasic } from './logic-basic.js'
+import { computerMove as computerMoveDumb } from './logic-dumbot.js'
+import { computerMove as computerMoveSmart } from './logic-smartbot.js'
+import { computerMove as computerMoveTerminator } from './logic-terminator.js'
 
 const elementGame = document.querySelector('#grid')
 const elementTileTemplate = document.querySelector('#tile-template')
@@ -167,6 +169,10 @@ function renderWin(discs, alert) {
 // Called in index.js after the player move
 const computerMove = (game_config, grid, playerDrop) => {
   if (game_config.difficulty === 1)
-    return computerMoveBasic(game_config, grid, playerDrop)
+    return computerMoveDumb(game_config, grid, playerDrop)
+  if (game_config.difficulty === 2)
+    return computerMoveSmart(game_config, grid, playerDrop)
+  if (game_config.difficulty === 3)
+    return computerMoveTerminator(game_config, grid, playerDrop)
 }
 
