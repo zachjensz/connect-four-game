@@ -1,4 +1,5 @@
-import { computerMove, createGrid, dropDisc } from './logic.js'
+import { createGrid, dropDisc } from './common.js'
+import { computerMove as computerMoveBasic } from './logic-basic.js'
 
 const elementGame = document.querySelector('#grid')
 const elementTileTemplate = document.querySelector('#tile-template')
@@ -10,7 +11,8 @@ const game_config = {
   width: 7,
   height: 6,
   players: 2,
-  min_sequence: 4
+  min_sequence: 4,
+  difficulty: 1
 }
 
 const game_state = {
@@ -57,11 +59,14 @@ function titlescreenClick(event) {
   switch (event.submitter.id) {
     case 'dumbot':
       removeTitlescreen()
+      game_config.difficulty = 1;      
       break
     case 'smartbot':
       alert('Gamemode currently in development')
+      game_config.difficulty = 2;      
       break
     case 'terminator':
+      game_config.difficulty = 3;      
       alert('Gamemode currently in development')
       break
     case 'localMultiplayer':
@@ -158,3 +163,10 @@ function renderWin(discs, alert) {
     else query.dataset.glow = true
   })
 }
+
+// Called in index.js after the player move
+const computerMove = (game_config, grid, playerDrop) => {
+  if (game_config.difficulty === 1)
+    return computerMoveBasic(game_config, grid, playerDrop)
+}
+

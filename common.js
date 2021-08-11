@@ -6,7 +6,7 @@ export function createGrid(game_config) {
   return grid
 }
 
-// Drops a disc, but computer and players call this
+// Drops a disc
 export function dropDisc(game_config, grid, x, player = 1) {
   for (let i = 0; i < game_config.height; i++) {
     if (grid[i + 1]?.[+x] == 0) continue
@@ -55,13 +55,8 @@ export function getColumnHeight(grid, x) {
 }
 
 // Is the grid full
-const isGridFull = (grid) => {
+export const isGridFull = (grid) => {
   let full = true
   grid[0].forEach((disc) => (disc === 0 ? (full = false) : undefined))
   return full
-}
-
-// Called in index.js after the player move
-export const computerMove = (game_config, grid, playerDrop) => {
-
 }
