@@ -5,6 +5,11 @@ const elementTileTemplate = document.querySelector("#tile-template")
 const elementTitlescreenTemplate = document.querySelector(
   "#titlescreen-template"
 )
+
+const titlescreen = elementTitlescreenTemplate.content
+  .cloneNode(true)
+  .querySelector(".titlescreen")
+
 const elementGameOverTemplate = document.querySelector("#game-over-template")
 
 const game_config = {
@@ -29,7 +34,7 @@ const game_state = {
   },
 }
 
-let elementTitlescreen = renderTitlescreen()
+const elementTitlescreen = renderTitlescreen()
 elementTitlescreen.addEventListener("submit", titlescreenClick)
 
 game_state.grid = createGrid(game_config)
@@ -39,6 +44,11 @@ window["getGrid"] = () => JSON.stringify(game_state.grid)
 window[`setGrid`] = (newGrid) => {
   game_state.grid = JSON.parse(newGrid)
   loadGrid(game_state.grid)
+  renderEntireGrid()
+}
+
+function renderEntireGrid() {
+  console.log("Grid: ", grid)
   for (let x = 0; x < game_state.grid[0].length; x++) {
     for (let y = 0; y < game_state.grid.length; y++) {
       renderDisc([game_state.grid[y][x], y, x])
@@ -64,9 +74,6 @@ function removeGameOver() {
 }
 
 function renderTitlescreen() {
-  const titlescreen = elementTitlescreenTemplate.content
-    .cloneNode(true)
-    .querySelector(".titlescreen")
   document.body.appendChild(titlescreen)
   game_state.titlescreen = true
   return titlescreen
@@ -121,14 +128,16 @@ function loadGrid(grid) {
 elementGame.onclick = (event) => {
   if (game_state.titlescreen) return
   if (game_state.gameOver) {
-    game_state.gameOver = false
     removeGameOver()
-    elementTitlescreen = renderTitlescreen()
+    renderTitlescreen()
+    game_state.grid = createGrid(game_config)
+    loadGrid(game_state.grid)
+    renderEntireGrid()
+    return;
   }
   if (
     !event.target.classList.contains("tile") ||
-    game_state.clickLock ||
-    game_state.gameOver
+    game_state.clickLock
   )
     return
   game_state.clickLock = true
