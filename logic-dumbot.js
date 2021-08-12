@@ -185,7 +185,7 @@ const findWinningMoves = (grid, player) => {
     if (result.block.includes(col))
       result.block.splice(result.block.indexOf(col), 1)
   })
-  // console.log(result)
+  console.log(result)
   return result
 }
 
@@ -193,9 +193,8 @@ export const computerMove = (game_config, grid, playerDrop) => {
   let column = -1
   if (isGridFull(grid)) return
 
-  //const seqTest = validSeq([grid, player, i, +x], 3)
-  //console.log(seqTest)
-  //console.log
+  const winDrops = dropDisc(game_config, grid, column, 2)
+  console.log(winDrops)
 
   // Go for a winning move first
   const winResult = findWinningMoves(grid, 2) // Computer is player 2 atm

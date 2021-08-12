@@ -3,7 +3,7 @@ import { computerMove as computerMoveSmart } from './logic-smartbot.js'
 import { computerMove as computerMoveTerminator } from './logic-terminator.js'
 
 // Drops a disc
-export function dropDisc(game_config, grid, x, player = 1) {
+export function dropDisc(game_config, grid, x, player = 1, min_seq = 4) {
   for (let i = 0; i < game_config.height; i++) {
     if (grid[i + 1]?.[+x] == 0) continue
     if (grid[i]?.[+x] == 0) {
@@ -11,7 +11,7 @@ export function dropDisc(game_config, grid, x, player = 1) {
 
       return {
         location: [player, i, +x],
-        seq: validSeq([grid, player, i, +x], game_config.min_sequence),
+        seq: validSeq([grid, player, i, +x], min_seq),
         newGrid: grid,
       }
     }

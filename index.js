@@ -16,7 +16,6 @@ const game_config = {
   width: 7,
   height: 6,
   players: 2,
-  min_sequence: 4,
   difficulty: 1,
 }
 
