@@ -1,5 +1,4 @@
-import { createGrid, dropDisc, isGridFull } from "./common.js"
-import { computerMove } from "./logic.js"
+import { computerMove, createGrid, dropDisc, isGridFull } from "./logic.js"
 
 const elementGame = document.querySelector("#grid")
 const elementTileTemplate = document.querySelector("#tile-template")

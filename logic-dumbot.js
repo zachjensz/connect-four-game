@@ -194,6 +194,10 @@ export const computerMove = (game_config, grid, playerDrop) => {
   let column = -1
   if (isGridFull(grid)) return
 
+  //const seqTest = validSeq([grid, player, i, +x], 3)
+  //console.log(seqTest)
+  //console.log
+
   // Go for a winning move first
   const winResult = findWinningMoves(grid, 2) // Computer is player 2 atm
   if (winResult.block.length > 0) {
