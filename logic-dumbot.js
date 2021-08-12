@@ -1,4 +1,4 @@
-import { dropDisc, getColumnHeight, isGridFull } from './common.js'
+import { dropDisc, getColumnHeight, isGridFull } from './logic.js'
 
 // Credit: https://stackoverflow.com/questions/15170942/how-to-rotate-a-matrix-in-an-array-in-javascript
 const rotateColumns = (grid) => {
