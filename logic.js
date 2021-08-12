@@ -2,14 +2,6 @@ import { computerMove as computerMoveDumb } from './logic-dumbot.js'
 import { computerMove as computerMoveSmart } from './logic-smartbot.js'
 import { computerMove as computerMoveTerminator } from './logic-terminator.js'
 
-// Creates a empty grid
-export function createGrid(game_config) {
-  const grid = Array(game_config.height)
-    .fill(0)
-    .map(() => Array(game_config.width).fill(0))
-  return grid
-}
-
 // Drops a disc
 export function dropDisc(game_config, grid, x, player = 1) {
   for (let i = 0; i < game_config.height; i++) {

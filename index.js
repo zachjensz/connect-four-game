@@ -1,4 +1,4 @@
-import { computerMove, createGrid, dropDisc, isGridFull } from "./logic.js"
+import { computerMove, dropDisc, isGridFull } from "./logic.js"
 
 const elementGame = document.querySelector("#grid")
 const elementTileTemplate = document.querySelector("#tile-template")
@@ -47,8 +47,15 @@ window[`setGrid`] = (newGrid) => {
   renderEntireGrid()
 }
 
+// Creates a empty grid
+function createGrid(game_config) {
+  const grid = Array(game_config.height)
+    .fill(0)
+    .map(() => Array(game_config.width).fill(0))
+  return grid
+}
+
 function renderEntireGrid() {
-  console.log("Grid: ", grid)
   for (let x = 0; x < game_state.grid[0].length; x++) {
     for (let y = 0; y < game_state.grid.length; y++) {
       renderDisc([game_state.grid[y][x], y, x])

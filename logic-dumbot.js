@@ -148,7 +148,6 @@ const findWinningMoves = (grid, player) => {
         if (row !== undefined && column !== undefined) {
           const columnHeight = getColumnHeight(grid, column)
           if (grid[grid.length - row - 1][column] === 0) {
-            console.log("Test2: ", row, column, columnHeight, shearedIndices[i])
             if (columnHeight === row && result.block.indexOf(column) < 0) {
               result.block.push(column)
             } else if (
@@ -186,7 +185,7 @@ const findWinningMoves = (grid, player) => {
     if (result.block.includes(col))
       result.block.splice(result.block.indexOf(col), 1)
   })
-  console.log(result)
+  // console.log(result)
   return result
 }
 
