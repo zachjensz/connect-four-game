@@ -29,7 +29,7 @@ const game_state = {
   },
 }
 
-const elementTitlescreen = renderTitlescreen()
+let elementTitlescreen = renderTitlescreen()
 elementTitlescreen.addEventListener("submit", titlescreenClick)
 
 game_state.grid = createGrid(game_config)
@@ -56,6 +56,11 @@ function renderGameOver() {
     ? "Tie Game!? 😦"
     : `${game_state.winner === 1 ? "Player Wins!!! 🎉" : "Computer Wins!!! 😂"}`
   return gameOverScreen
+}
+
+function removeGameOver() {
+  document.querySelector(".game-over").remove()
+  game_state.gameOver = false
 }
 
 function renderTitlescreen() {
@@ -115,12 +120,15 @@ function loadGrid(grid) {
 
 elementGame.onclick = (event) => {
   if (game_state.titlescreen) return
+  if (game_state.gameOver) {
+      removeGameOver()
+      elementTitlescreen = renderTitlescreen()
+  }
   if (
     !event.target.classList.contains("tile") ||
     game_state.clickLock ||
     game_state.gameOver
-  )
-    return
+  ) return
   game_state.clickLock = true
   setTimeout(() => {
     game_state.clickLock = false
