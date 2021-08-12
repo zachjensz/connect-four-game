@@ -1,40 +1,42 @@
-import { createGrid, dropDisc } from './common.js'
-import { computerMove } from './logic.js'
+import { createGrid, dropDisc, isGridFull } from "./common.js"
+import { computerMove } from "./logic.js"
 
-const elementGame = document.querySelector('#grid')
-const elementTileTemplate = document.querySelector('#tile-template')
+const elementGame = document.querySelector("#grid")
+const elementTileTemplate = document.querySelector("#tile-template")
 const elementTitlescreenTemplate = document.querySelector(
-  '#titlescreen-template'
+  "#titlescreen-template"
 )
+const elementGameOverTemplate = document.querySelector("#game-over-template")
 
 const game_config = {
   width: 7,
   height: 6,
   players: 2,
   min_sequence: 4,
-  difficulty: 1
+  difficulty: 1,
 }
 
 const game_state = {
   titlescreen: false,
   clickLock: false,
   gameOver: false,
-  gridJSON: '',
+  winner: 0,
+  gridJSON: "",
   get grid() {
     return JSON.parse(this.gridJSON)
   },
   set grid(grid) {
     this.gridJSON = JSON.stringify(grid)
-  }
+  },
 }
 
 const elementTitlescreen = renderTitlescreen()
-elementTitlescreen.addEventListener('submit', titlescreenClick)
+elementTitlescreen.addEventListener("submit", titlescreenClick)
 
 game_state.grid = createGrid(game_config)
 loadGrid(game_state.grid)
 
-window['getGrid'] = () => JSON.stringify(game_state.grid)
+window["getGrid"] = () => JSON.stringify(game_state.grid)
 window[`setGrid`] = (newGrid) => {
   game_state.grid = JSON.parse(newGrid)
   loadGrid(game_state.grid)
@@ -45,10 +47,22 @@ window[`setGrid`] = (newGrid) => {
   }
 }
 
+function renderGameOver() {
+  const gameOverScreen = elementGameOverTemplate.content
+    .cloneNode(true)
+    .querySelector(".game-over")
+  document.body.appendChild(gameOverScreen)
+  let element = document.getElementById("game-over-result")
+  element.innerHTML = !game_state.winner
+    ? "Tie Game"
+    : `Winner is ${game_state.winner === 1 ? "player" : "computer"}`
+  return gameOverScreen
+}
+
 function renderTitlescreen() {
   const titlescreen = elementTitlescreenTemplate.content
     .cloneNode(true)
-    .querySelector('.titlescreen')
+    .querySelector(".titlescreen")
   document.body.appendChild(titlescreen)
   game_state.titlescreen = true
   return titlescreen
@@ -57,53 +71,53 @@ function renderTitlescreen() {
 function titlescreenClick(event) {
   event.preventDefault()
   switch (event.submitter.id) {
-    case 'dumbot':
+    case "dumbot":
       removeTitlescreen()
-      game_config.difficulty = 1;      
+      game_config.difficulty = 1
       break
-    case 'smartbot':
-      alert('Gamemode currently in development')
-      game_config.difficulty = 2;      
+    case "smartbot":
+      alert("Gamemode currently in development")
+      game_config.difficulty = 2
       break
-    case 'terminator':
-      game_config.difficulty = 3;      
-      alert('Gamemode currently in development')
+    case "terminator":
+      game_config.difficulty = 3
+      alert("Gamemode currently in development")
       break
-    case 'localMultiplayer':
-      alert('Gamemode currently in development')
+    case "localMultiplayer":
+      alert("Gamemode currently in development")
       break
-    case 'onlineMultiplayer':
-      alert('Gamemode currently in development')
+    case "onlineMultiplayer":
+      alert("Gamemode currently in development")
       break
   }
 }
 
 function removeTitlescreen() {
-  document.querySelector('.titlescreen').remove()
+  document.querySelector(".titlescreen").remove()
   game_state.titlescreen = false
 }
 
 function loadGrid(grid) {
-  elementGame.innerHTML = ''
+  elementGame.innerHTML = ""
   grid.forEach((row, yIndex) => {
     row.forEach((tile, xIndex) => {
       const elementTile = elementTileTemplate.content
         .cloneNode(true)
-        .querySelector('.tile')
+        .querySelector(".tile")
       elementTile.dataset.x = xIndex
       elementTile.dataset.y = yIndex
       elementTile.dataset.value = tile.value
       elementGame.appendChild(elementTile)
     })
   })
-  elementGame.style.setProperty('--width', game_config.width)
-  elementGame.style.setProperty('--height', game_config.height)
+  elementGame.style.setProperty("--width", game_config.width)
+  elementGame.style.setProperty("--height", game_config.height)
 }
 
 elementGame.onclick = (event) => {
   if (game_state.titlescreen) return
   if (
-    !event.target.classList.contains('tile') ||
+    !event.target.classList.contains("tile") ||
     game_state.clickLock ||
     game_state.gameOver
   )
@@ -123,22 +137,36 @@ elementGame.onclick = (event) => {
     game_state.gameOver = discDrop.seq.length > 0
     renderDisc(discDrop.location)
     renderHighlight(discDrop)
-    if (!game_state.gameOver) {
-      // Computer Move
-      setTimeout(() => {
-        const computerDrop = computerMove(
-          game_config,
-          game_state.grid,
-          discDrop
-        )
-        if (computerDrop) {
-          game_state.grid = computerDrop.newGrid
-          game_state.gameOver = computerDrop.seq.length > 0
-          renderDisc(computerDrop.location)
-          renderHighlight(computerDrop, true)
-        }
-      }, 400)
+    if (game_state.gameOver) {
+      game_state.winner = 1
+      renderGameOver()
+      return
     }
+    if (isGridFull(game_state.grid)) {
+      game_state.winner = 0
+      renderGameOver()
+      return
+    }
+    // Computer Move
+    setTimeout(() => {
+      const computerDrop = computerMove(game_config, game_state.grid, discDrop)
+      if (computerDrop) {
+        game_state.grid = computerDrop.newGrid
+        game_state.gameOver = computerDrop.seq.length > 0
+        renderDisc(computerDrop.location)
+        renderHighlight(computerDrop, true)
+        if (game_state.gameOver) {
+          game_state.winner = 2
+          renderGameOver()
+          return
+        }
+        if (isGridFull(game_state.grid)) {
+          game_state.winner = 0
+          renderGameOver()
+          return
+        }
+      }
+    }, 400)
   }
 }
 

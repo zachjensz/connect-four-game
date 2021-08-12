@@ -12,6 +12,7 @@ export function dropDisc(game_config, grid, x, player = 1) {
     if (grid[i + 1]?.[+x] == 0) continue
     if (grid[i]?.[+x] == 0) {
       grid[i][+x] = player
+
       return {
         location: [player, i, +x],
         seq: validSeq([grid, player, i, +x], game_config.min_sequence),

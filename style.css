@@ -89,3 +89,22 @@ body {
   background-color: #444;
   cursor: pointer;
 }
+
+.game-over {
+  background-color: #000d;
+  position: absolute;
+  width: 100vw;
+  height: 12vh;
+  display: grid;
+  place-content: center;
+  padding-top: 2vh;
+  padding-bottom: 2vh;
+}
+
+#game-over-text {
+  margin: 10px;
+}
+
+#game-over-result {
+  margin: 10px;
+}
