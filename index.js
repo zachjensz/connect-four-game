@@ -54,7 +54,7 @@ function renderGameOver() {
   let element = document.getElementById("game-over-result")
   element.innerHTML = !game_state.winner
     ? "Tie Game!? 😦"
-    : `${game_state.winner === 1 ? "Player" : "Computer"} Wins!!! ${game_state.winner === 1 ? '🎉' : '😂'}`
+    : `${game_state.winner === 1 ? "Player Wins!!! 🎉" : "Computer Wins!!! 😂"}`
   return gameOverScreen
 }
 
