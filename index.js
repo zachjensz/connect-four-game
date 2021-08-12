@@ -121,14 +121,16 @@ function loadGrid(grid) {
 elementGame.onclick = (event) => {
   if (game_state.titlescreen) return
   if (game_state.gameOver) {
-      removeGameOver()
-      elementTitlescreen = renderTitlescreen()
+    game_state.gameOver = false
+    removeGameOver()
+    elementTitlescreen = renderTitlescreen()
   }
   if (
     !event.target.classList.contains("tile") ||
     game_state.clickLock ||
     game_state.gameOver
-  ) return
+  )
+    return
   game_state.clickLock = true
   setTimeout(() => {
     game_state.clickLock = false
