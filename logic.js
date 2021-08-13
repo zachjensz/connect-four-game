@@ -11,8 +11,8 @@ export function evalAllDrops(game_config, srcGrid, player = 1) {
     const grid = cloneGrid(srcGrid)
     // Row
     for (let i = 0; i < game_config.height; i++) {
-      if (grid[i + 1]?.[x] == 0) continue
-      if (grid[i]?.[x] == 0) {
+      if (grid[i + 1]?.[x] === 0) continue
+      if (grid[i]?.[x] === 0) {
         grid[i][x] = player
         const result = {
           column: x,
@@ -30,8 +30,8 @@ export function evalAllDrops(game_config, srcGrid, player = 1) {
 export function dropDisc(game_config, grid, x, player = 1, min_seq = 4) {
   grid = cloneGrid(grid)
   for (let i = 0; i < game_config.height; i++) {
-    if (grid[i + 1]?.[+x] == 0) continue
-    if (grid[i]?.[+x] == 0) {
+    if (grid[i + 1]?.[+x] === 0) continue
+    if (grid[i]?.[+x] === 0) {
       grid[i][+x] = player
       return {
         location: [player, i, +x],
@@ -61,7 +61,7 @@ let cloneGrid = (grid) => grid.map((arr) => arr.slice())
 
 function cast([grid, value, y, x], dY, dX) {
   let discs = []
-  for (let i = 1; grid[y + dY * i]?.[x + dX * i] == value; i++) {
+  for (let i = 1; grid[y + dY * i]?.[x + dX * i] === value; i++) {
     discs.push([y + dY * i, x + dX * i])
   }
   return discs
