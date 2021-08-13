@@ -68,9 +68,24 @@ function renderGameOver() {
     .querySelector(".game-over")
   document.body.appendChild(gameOverScreen)
   let element = document.getElementById("game-over-result")
-  element.innerHTML = !game_state.winner
-    ? "Tie Game!? 😦"
-    : `${game_state.winner === 1 ? "Player Wins!!! 🎉" : "Computer Wins!!! 😂"}`
+  if (game_config.difficulty === 1)
+    element.innerHTML = !game_state.winner
+      ? "Tie Game!? 😦"
+      : `${
+          game_state.winner === 1 ? "Player Wins!!! 🎉" : "Computer Wins!!! 😂"
+        }`
+  else if (game_config.difficulty === 2)
+    element.innerHTML = !game_state.winner
+      ? "Tie Game!? 😦"
+      : `${
+          game_state.winner === 1 ? "Player Wins!!! 👍" : "Computer Wins!!! 😕"
+        }`
+  else if (game_config.difficulty === 3)
+    element.innerHTML = !game_state.winner
+      ? "Tie Game!? 😦"
+      : `${
+          game_state.winner === 1 ? "Player Wins!!! 😲" : "Computer Wins!!! 😒"
+        }`
   return gameOverScreen
 }
 
@@ -139,13 +154,9 @@ elementGame.onclick = (event) => {
     game_state.grid = createGrid(game_config)
     loadGrid(game_state.grid)
     renderEntireGrid()
-    return;
-  }
-  if (
-    !event.target.classList.contains("tile") ||
-    game_state.clickLock
-  )
     return
+  }
+  if (!event.target.classList.contains("tile") || game_state.clickLock) return
   game_state.clickLock = true
   setTimeout(() => {
     game_state.clickLock = false
