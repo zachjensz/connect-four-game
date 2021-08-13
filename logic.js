@@ -57,7 +57,7 @@ export function validSeq(state, min_sequence) {
   return winningSequences
 }
 
-let cloneGrid = (grid) => grid.map((arr) => arr.slice())
+const cloneGrid = (grid) => grid.map((arr) => arr.slice())
 
 function cast([grid, value, y, x], dY, dX) {
   let discs = []
