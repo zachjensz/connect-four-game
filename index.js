@@ -16,31 +16,25 @@ const GAME_WIDTH = 7
 const GAME_HEIGHT = 6
 let GAME_PLAYERS = 2
 let GAME_DIFFICULTY = 1
+let gameGrid = []
 
 const game_state = {
   titlescreen: false,
   clickLock: false,
   gameOver: false,
-  winner: 0,
-  gridJSON: '',
-  get grid() {
-    return JSON.parse(this.gridJSON)
-  },
-  set grid(grid) {
-    this.gridJSON = JSON.stringify(grid)
-  }
+  winner: 0
 }
 
 const elementTitlescreen = renderTitlescreen()
 elementTitlescreen.addEventListener('submit', titlescreenClick)
 
-game_state.grid = createGrid(GAME_WIDTH, GAME_HEIGHT)
-loadGrid(game_state.grid)
+gameGrid = createGrid(GAME_WIDTH, GAME_HEIGHT)
+loadGrid(gameGrid)
 
 function renderEntireGrid() {
-  for (let x = 0; x < game_state.grid[0].length; x++) {
-    for (let y = 0; y < game_state.grid.length; y++) {
-      renderDisc([game_state.grid[y][x], y, x])
+  for (let x = 0; x < gameGrid[0].length; x++) {
+    for (let y = 0; y < gameGrid.length; y++) {
+      renderDisc([gameGrid[y][x], y, x])
     }
   }
 }
@@ -134,13 +128,13 @@ elementGame.onclick = (event) => {
   if (game_state.gameOver) {
     removeGameOver()
     renderTitlescreen()
-    game_state.grid = createGrid({
+    gameGrid = createGrid({
       GAME_WIDTH,
       GAME_HEIGHT,
       GAME_PLAYERS,
       GAME_DIFFICULTY
     })
-    loadGrid(game_state.grid)
+    loadGrid(gameGrid)
     renderEntireGrid()
     return
   }
@@ -152,11 +146,11 @@ elementGame.onclick = (event) => {
 
   const discDrop = dropDisc(
     { GAME_WIDTH, GAME_HEIGHT, GAME_PLAYERS, GAME_DIFFICULTY },
-    game_state.grid,
+    gameGrid,
     event.target.dataset.x
   )
   if (discDrop) {
-    game_state.grid = discDrop.newGrid
+    gameGrid = discDrop.newGrid
     game_state.gameOver = discDrop.seq.length > 0
     renderDisc(discDrop.location)
     renderHighlight(discDrop)
@@ -165,7 +159,7 @@ elementGame.onclick = (event) => {
       renderGameOver()
       return
     }
-    if (isGridFull(game_state.grid)) {
+    if (isGridFull(gameGrid)) {
       game_state.winner = 0
       renderGameOver()
       return
@@ -174,11 +168,11 @@ elementGame.onclick = (event) => {
     setTimeout(() => {
       const computerDrop = computerMove(
         { GAME_WIDTH, GAME_HEIGHT, GAME_PLAYERS, GAME_DIFFICULTY },
-        game_state.grid,
+        gameGrid,
         discDrop
       )
       if (computerDrop) {
-        game_state.grid = computerDrop.newGrid
+        gameGrid = computerDrop.newGrid
         game_state.gameOver = computerDrop.seq.length > 0
         renderDisc(computerDrop.location)
         renderHighlight(computerDrop, true)
@@ -187,7 +181,7 @@ elementGame.onclick = (event) => {
           renderGameOver()
           return
         }
-        if (isGridFull(game_state.grid)) {
+        if (isGridFull(gameGrid)) {
           game_state.winner = 0
           renderGameOver()
           return
