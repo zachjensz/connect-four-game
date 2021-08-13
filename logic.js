@@ -2,6 +2,12 @@ import { computerMove as computerMoveDumb } from './logic-dumbot.js'
 import { computerMove as computerMoveSmart } from './logic-smartbot.js'
 import { computerMove as computerMoveTerminator } from './logic-terminator.js'
 
+export function createGrid(GAME_WIDTH, GAME_HEIGHT) {
+  return Array(GAME_HEIGHT)
+    .fill(0)
+    .map(() => Array(GAME_WIDTH).fill(0))
+}
+
 // Drop tests each column looking for any column that would create a connect four
 export function evalAllDrops(
   { GAME_WIDTH, GAME_HEIGHT, GAME_PLAYERS, GAME_DIFFICULTY },
