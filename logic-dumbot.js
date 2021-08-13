@@ -1,4 +1,4 @@
-import { dropDisc, getColumnHeight, isGridFull } from './logic.js'
+import { dropDisc, evalAllDrops, getColumnHeight, isGridFull } from './logic.js'
 
 // Credit: https://stackoverflow.com/questions/15170942/how-to-rotate-a-matrix-in-an-array-in-javascript
 const rotateColumns = (grid) => {
@@ -185,7 +185,6 @@ const findWinningMoves = (grid, player) => {
     if (result.block.includes(col))
       result.block.splice(result.block.indexOf(col), 1)
   })
-  console.log(result)
   return result
 }
 
@@ -193,14 +192,16 @@ export const computerMove = (game_config, grid, playerDrop) => {
   let column = -1
   if (isGridFull(grid)) return
 
-  const winDrops = dropDisc(game_config, grid, column, 2)
-  console.log(winDrops)
+  // Searches for computer wins
+  const evalWins = evalAllDrops(game_config, grid, 2)
+  if (evalWins.length > 0)
+    column = evalWins[0].column
 
-  // Go for a winning move first
+  // // Go for a winning move first
   const winResult = findWinningMoves(grid, 2) // Computer is player 2 atm
-  if (winResult.block.length > 0) {
-    column = winResult.block[0]
-  }
+  // if (winResult.block.length > 0) {
+  //   column = winResult.block[0]
+  // }
 
   if (column >= 0) {
     const drop = dropDisc(game_config, grid, column, 2)
@@ -208,9 +209,14 @@ export const computerMove = (game_config, grid, playerDrop) => {
     throw new Error("drop failed")
   }
 
+  // Searches for player blocks
+  const evalBlocks = evalAllDrops(game_config, grid, 1)
+  if (evalBlocks.length > 0)
+    column = evalBlocks[0].column
+
   // Block player winning moves
   const blockResult = findWinningMoves(grid, 1) // Opponent is player 1 atm
-  if (blockResult.block.length > 0) column = blockResult.block[0]
+  // if (blockResult.block.length > 0) column = blockResult.block[0]
 
   if (column >= 0) {
     const drop = dropDisc(game_config, grid, column, 2)
