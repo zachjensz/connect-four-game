@@ -1,193 +1,5 @@
 import { dropDisc, evalAllDrops, getColumnHeight, isGridFull } from './logic.js'
 
-// Credit: https://stackoverflow.com/questions/15170942/how-to-rotate-a-matrix-in-an-array-in-javascript
-const rotateColumns = (grid) => {
-  return grid[0].map((val, index) => grid.map((row) => row[index]).reverse())
-}
-
-// Does a matrix shear transformation to try the diagonals in to rows
-const shearDiagonals = (grid) => {
-  const iLength = grid.length,
-    jLength = grid[0].length
-  const result = []
-  for (let i = 0; i < iLength; i++) {
-    let rowUp = [],
-      rowDown = []
-    for (let j = 0, shearUp = i, shearDown = i; j < jLength; j++) {
-      if (shearDown >= 0) rowDown.push(grid[shearDown--][j])
-      if (shearUp < iLength) rowUp.push(grid[shearUp++][j])
-    }
-    if (rowUp.length >= 4) result.push(rowUp)
-    if (rowDown.length >= 4) result.push(rowDown)
-    rowUp = []
-    rowDown = []
-    for (let j = jLength - 1, shearUp = i, shearDown = i; j >= 0; j--) {
-      if (shearDown >= 0) rowDown.push(grid[shearDown--][j])
-      if (shearUp < iLength) rowUp.push(grid[shearUp++][j])
-    }
-    if (rowUp.length >= 4) result.push(rowUp)
-    if (rowDown.length >= 4) result.push(rowDown)
-  }
-  return result
-}
-
-const getIndicesGrid = (grid) => {
-  const indicesGrid = []
-  for (let i = grid.length - 1; i >= 0; i--) {
-    const row = []
-    for (let j = 0; j < grid[0].length; j++) {
-      row.push([i, j])
-    }
-    indicesGrid.push(row)
-  }
-
-  return indicesGrid
-}
-
-const findWinningMoves = (grid, player) => {
-  let result = {
-    player,
-    // block is a list of columns that will block a player win
-    // If more than one, the player is about to win.
-    block: [],
-    // restricted is a list of plays that would be a mistake to do as
-    // they would give the player a piece needed to complete a diagonal win
-    restricted: [],
-  }
-
-  const processResults = (resultStr) => [
-    resultStr.indexOf(`${player}${player}${player}`),
-    resultStr.indexOf(`${player}${player}0${player}`),
-    resultStr.indexOf(`${player}0${player}${player}`),
-  ]
-
-  // Columns
-  const rotated = rotateColumns(grid)
-  for (let i = 0; i < rotated.length; i++) {
-    const resultStr = rotated[i].toString().replaceAll(",", "")
-    const [index1] = processResults(resultStr)
-    if (index1 >= 0) {
-      // Is the piece above this sequence empty?
-      if (resultStr.indexOf(`${player}${player}${player}0`) >= 0)
-        result.block.push(i)
-    }
-  }
-
-  // Row
-  for (let i = 0; i < grid.length; i++) {
-    const resultStr = grid[i].toString().replaceAll(",", "")
-    const [index1, index2, index3] = processResults(resultStr)
-    if (index1 >= 0 || index2 >= 0 || index3 >= 0) {
-      if (index1 >= 0) {
-        if (grid[i][index1 - 1] === 0) {
-          const column = index1 - 1
-          const columnHeight = getColumnHeight(grid, column)
-          const row = Math.abs(grid.length - i) - 1
-          if (row === columnHeight && result.block.indexOf(column) < 0)
-            result.block.push(column)
-          if (row - 1 === columnHeight && result.restricted.indexOf(column) < 0)
-            result.restricted.push(column)
-        }
-        if (grid[i][index1 + 3] === 0) {
-          const column = index1 + 3
-          const columnHeight = getColumnHeight(grid, column)
-          const row = Math.abs(grid.length - i) - 1
-          if (row === columnHeight && result.block.indexOf(column) < 0)
-            result.block.push(column)
-          if (row - 1 === columnHeight && result.restricted.indexOf(column) < 0)
-            result.restricted.push(column)
-        }
-      }
-      if (index2) {
-        const column = index2 + 2
-        const columnHeight = getColumnHeight(grid, column)
-        const row = Math.abs(grid.length - i) - 1
-        if (row === columnHeight && result.block.indexOf(column) < 0)
-          result.block.push(column)
-        if (row - 1 === columnHeight && result.restricted.indexOf(column) < 0)
-          result.restricted.push(column)
-      }
-      if (index3) {
-        const column = index3 + 1
-        const columnHeight = getColumnHeight(grid, column)
-        const row = Math.abs(grid.length - i) - 1
-        if (row === columnHeight && result.block.indexOf(column) < 0)
-          result.block.push(column)
-        if (row - 1 === columnHeight && result.restricted.indexOf(column) < 0)
-          result.restricted.push(column)
-      }
-    }
-  }
-
-  // Diagonals
-  const sheared = shearDiagonals(grid)
-  // This is a shear for mapping back to the grid coordinates
-  const shearedIndices = shearDiagonals(getIndicesGrid(grid))
-  for (let i = 0; i < sheared.length; i++) {
-    const resultStr = sheared[i].toString().replaceAll(",", "")
-    const [index1, index2, index3] = processResults(resultStr)
-    if (index1 >= 0 || index2 >= 0 || index3 >= 0) {
-      if (index1 >= 0) {
-        let row = shearedIndices[i]?.[index1 - 1]?.[0]
-        let column = shearedIndices[i]?.[index1 - 1]?.[1]
-        if (row !== undefined && column != undefined) {
-          const columnHeight = getColumnHeight(grid, column)
-          if (grid[grid.length - row - 1][column] === 0) {
-            if (columnHeight === row && result.block.indexOf(column) < 0) {
-              result.block.push(column)
-            } else if (
-              columnHeight === row - 1 &&
-              result.restricted.indexOf(column) < 0
-            ) {
-              result.restricted.push(column)
-            }
-          }
-        }
-        row = shearedIndices[i]?.[index1 + 3]?.[0]
-        column = shearedIndices[i]?.[index1 + 3]?.[1]
-        if (row !== undefined && column !== undefined) {
-          const columnHeight = getColumnHeight(grid, column)
-          if (grid[grid.length - row - 1][column] === 0) {
-            if (columnHeight === row && result.block.indexOf(column) < 0) {
-              result.block.push(column)
-            } else if (
-              columnHeight === row - 1 &&
-              result.restricted.indexOf(column) < 0
-            ) {
-              result.restricted.push(column)
-            }
-          }
-        }
-      } else {
-        let index = index2 >= 0 ? index2 + 2 : index3 + 1
-        let row = shearedIndices[i]?.[index]?.[0]
-        let column = shearedIndices[i]?.[index]?.[1]
-        if (row !== undefined && column !== undefined) {
-          const columnHeight = getColumnHeight(grid, column)
-          if (grid[grid.length - row - 1][column] === 0) {
-            if (columnHeight === row && result.block.indexOf(column) < 0) {
-              result.block.push(column)
-            } else if (
-              columnHeight - 1 === row &&
-              result.restricted.indexOf(column) < 0
-            ) {
-              result.restricted.push(column)
-            }
-          }
-        }
-      }
-    }
-  }
-
-  // I'm sure a bug is causing this, but this code will remove
-  // result.restricted columns from results.block
-  result.restricted.forEach((col) => {
-    if (result.block.includes(col))
-      result.block.splice(result.block.indexOf(col), 1)
-  })
-  return result
-}
-
 export const computerMove = (game_config, grid, playerDrop) => {
   let column = -1
   if (isGridFull(grid)) return
@@ -196,12 +8,6 @@ export const computerMove = (game_config, grid, playerDrop) => {
   const evalWins = evalAllDrops(game_config, grid, 2)
   if (evalWins.length > 0)
     column = evalWins[0].column
-
-  // // Go for a winning move first
-  const winResult = findWinningMoves(grid, 2) // Computer is player 2 atm
-  // if (winResult.block.length > 0) {
-  //   column = winResult.block[0]
-  // }
 
   if (column >= 0) {
     const drop = dropDisc(game_config, grid, column, 2)
@@ -213,10 +19,6 @@ export const computerMove = (game_config, grid, playerDrop) => {
   const evalBlocks = evalAllDrops(game_config, grid, 1)
   if (evalBlocks.length > 0)
     column = evalBlocks[0].column
-
-  // Block player winning moves
-  const blockResult = findWinningMoves(grid, 1) // Opponent is player 1 atm
-  // if (blockResult.block.length > 0) column = blockResult.block[0]
 
   if (column >= 0) {
     const drop = dropDisc(game_config, grid, column, 2)
@@ -242,18 +44,22 @@ export const computerMove = (game_config, grid, playerDrop) => {
     const totalTried = columnsTried.reduce((prev, curr, arr) => prev + curr, 0)
 
     if (isColumnFull(column) && totalTried === game_config.width) break
-    if (
-      isColumnFull(column) ||
-      // Don't play blocked columns if avoidable.
-      (blockResult.restricted.indexOf(column) >= 0 &&
-        totalTried < game_config.width - blockResult.restricted.length)
-    ) {
+    if (isColumnFull(column)) {
       column = -1
       continue
     }
 
+    // Drop a test disc
     const drop = dropDisc(game_config, grid, column, 2)
-    if (drop) return drop
+    // Will this drop setup the player for a win?
+    if (drop) {
+      const dropEval = evalAllDrops(game_config, drop.newGrid, 1)
+      if (evalBlocks.length > 0) {
+        column = -1
+        continue
+      }
+      return drop
+    }
     throw new Error(
       `drop failed on column ${column}, ${getColumnHeight(grid, column)}, ${
         grid.length
