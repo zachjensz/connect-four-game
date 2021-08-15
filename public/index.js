@@ -2,9 +2,6 @@ import { createGrid, computerMove, dropDisc, isGridFull } from './logic.js'
 
 const elementGame = document.querySelector('#grid')
 const elementTileTemplate = document.querySelector('#tile-template')
-const elementTitlescreenTemplate = document.querySelector(
-  '#titlescreen-template'
-)
 
 const GAME_WIDTH = 7
 const GAME_HEIGHT = 6
@@ -13,67 +10,39 @@ let GAME_DIFFICULTY = 1
 let gameGrid = []
 let gameState = ''
 
-let elementTitlescreen = renderTitlescreen()
+renderTitlescreen()
 
 gameGrid = createGrid(GAME_WIDTH, GAME_HEIGHT)
 loadGrid(gameGrid)
 
 elementGame.onclick = (event) => {
+  const slot = event.target
   if (gameState === 'titlescreen') return
-  if (gameState === 'gameover') {
-    removeGameOver()
-    gameGrid = createGrid(GAME_WIDTH, GAME_HEIGHT)
-    loadGrid(gameGrid)
-    renderEntireGrid()
-    return
-  }
-  if (!event.target.classList.contains('tile') || gameState === 'opponent')
-    return
+  if (gameState === 'gameover') removeGameOver()
+  if (!slot.classList.contains('tile') || gameState === 'opponent') return
   gameState = 'opponent'
   setTimeout(() => {
     if (gameState === 'opponent') gameState = 'player'
   }, 1000)
+  drop(true, slot)
+}
 
-  const discDrop = dropDisc(
+function drop(isPlayer, slot) {
+  const type = isPlayer ? 'dropDisc' : 'computerMove'
+  const discDrop = type(
     { GAME_WIDTH, GAME_HEIGHT, GAME_PLAYERS, GAME_DIFFICULTY },
     gameGrid,
-    event.target.dataset.x
+    isPlayer ? slot.dataset.x : discDrop
   )
   if (discDrop) {
     gameGrid = discDrop.newGrid
     if (discDrop.seq.length > 0) gameState = 'gameover'
     renderDisc(discDrop.location)
-    renderHighlight(discDrop)
-    if (gameState === 'gameover') {
-      renderGameOver('player')
-      return
-    }
-    if (isGridFull(gameGrid)) {
-      renderGameOver('none')
-      return
-    }
-    // Computer Move
-    setTimeout(() => {
-      const computerDrop = computerMove(
-        { GAME_WIDTH, GAME_HEIGHT, GAME_PLAYERS, GAME_DIFFICULTY },
-        gameGrid,
-        discDrop
-      )
-      if (computerDrop) {
-        gameGrid = computerDrop.newGrid
-        if (computerDrop.seq.length > 0) gameState = 'gameover'
-        renderDisc(computerDrop.location)
-        renderHighlight(computerDrop, true)
-        if (gameState === 'gameover') {
-          renderGameOver('opponent')
-          return
-        }
-        if (isGridFull(gameGrid)) {
-          renderGameOver('none')
-          return
-        }
-      }
-    }, 400)
+    renderHighlight(discDrop, !isPlayer)
+    if (gameState === 'gameover')
+      return renderGameOver(isPlayer ? 'player' : 'opponent')
+    if (isGridFull(gameGrid)) return renderGameOver('none')
+    if (isPlayer) setTimeout(drop(false), 400)
   }
 }
 
@@ -83,33 +52,6 @@ function renderEntireGrid() {
       renderDisc([gameGrid[y][x], y, x])
     }
   }
-}
-
-function renderTitlescreen() {
-  const titlescreen = elementTitlescreenTemplate.content
-    .cloneNode(true)
-    .querySelector('.titlescreen')
-  titlescreen.addEventListener('submit', titlescreenClick)
-  gameState = 'titlescreen'
-  return document.body.appendChild(titlescreen)
-}
-
-function titlescreenClick(event) {
-  event.preventDefault()
-  switch (event.submitter.id) {
-    case 'dumbot':
-      removeTitlescreen()
-      GAME_DIFFICULTY = 1
-      break
-    default:
-      alert('Gamemode currently in development')
-      break
-  }
-}
-
-function removeTitlescreen() {
-  document.querySelector('.titlescreen').remove()
-  gameState = 'player'
 }
 
 function loadGrid(grid) {
@@ -158,6 +100,27 @@ TODO
 */
 
 // Render functions
+function renderTitlescreen() {
+  const element = clone('titlescreen-template').querySelector('.titlescreen')
+  element.addEventListener('submit', titlescreenClick)
+  gameState = 'titlescreen'
+  document.body.appendChild(element)
+}
+
+function titlescreenClick(event) {
+  event.preventDefault()
+  if (event.submitter.id == 'dumbot') {
+    removeTitlescreen()
+    GAME_DIFFICULTY = 1
+    return
+  }
+  alert('Gamemode currently in development')
+}
+
+function removeTitlescreen() {
+  document.querySelector('.titlescreen').remove()
+  gameState = 'player'
+}
 
 function renderGameOver(winner) {
   const element = clone('game-over-template')
@@ -175,6 +138,10 @@ function renderGameOver(winner) {
 function removeGameOver() {
   document.querySelector('.game-over').remove()
   gameState = 'player'
+  gameGrid = createGrid(GAME_WIDTH, GAME_HEIGHT)
+  loadGrid(gameGrid)
+  renderEntireGrid()
+  return
 }
 
 function clone(template) {
