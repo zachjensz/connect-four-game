@@ -18,9 +18,8 @@ loadGrid(gameGrid)
 
 elementGame.onclick = (event) => {
   const slot = event.target
-  if (gameState === 'titlescreen') return
   if (gameState === 'gameover') removeGameOver()
-  if (!slot.classList.contains('tile') || gameState === 'opponent') return
+  if (!slot.classList.contains('tile') || gameState != 'player') return
   gameState = 'opponent'
   setTimeout(() => {
     if (gameState === 'opponent') gameState = 'player'
