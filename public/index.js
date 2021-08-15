@@ -6,10 +6,6 @@ const elementTitlescreenTemplate = document.querySelector(
   '#titlescreen-template'
 )
 
-const titlescreen = elementTitlescreenTemplate.content
-  .cloneNode(true)
-  .querySelector('.titlescreen')
-
 const elementGameOverTemplate = document.querySelector('#game-over-template')
 
 const GAME_WIDTH = 7
@@ -17,19 +13,73 @@ const GAME_HEIGHT = 6
 let GAME_PLAYERS = 2
 let GAME_DIFFICULTY = 1
 let gameGrid = []
+let gameState = ''
 
-const game_state = {
-  titlescreen: false,
-  clickLock: false,
-  gameOver: false,
-  winner: 0
-}
-
-const elementTitlescreen = renderTitlescreen()
-elementTitlescreen.addEventListener('submit', titlescreenClick)
+let elementTitlescreen = renderTitlescreen()
+console.log(elementTitlescreen)
 
 gameGrid = createGrid(GAME_WIDTH, GAME_HEIGHT)
 loadGrid(gameGrid)
+
+elementGame.onclick = (event) => {
+  if (gameState === 'titlescreen') return
+  if (gameState === 'gameover') {
+    removeGameOver()
+    elementTitlescreen = renderTitlescreen()
+    gameGrid = createGrid(GAME_WIDTH, GAME_HEIGHT)
+    loadGrid(gameGrid)
+    renderEntireGrid()
+    return
+  }
+  if (!event.target.classList.contains('tile') || gameState === 'opponent')
+    return
+  gameState = 'opponent'
+  setTimeout(() => {
+    if (gameState === 'opponent') gameState = 'player'
+  }, 1000)
+
+  const discDrop = dropDisc(
+    { GAME_WIDTH, GAME_HEIGHT, GAME_PLAYERS, GAME_DIFFICULTY },
+    gameGrid,
+    event.target.dataset.x
+  )
+  if (discDrop) {
+    gameGrid = discDrop.newGrid
+    if (discDrop.seq.length > 0) gameState = 'gameover'
+    renderDisc(discDrop.location)
+    renderHighlight(discDrop)
+    if (gameState === 'gameover') {
+      renderGameOver('player')
+      return
+    }
+    if (isGridFull(gameGrid)) {
+      renderGameOver('none')
+      return
+    }
+    // Computer Move
+    setTimeout(() => {
+      const computerDrop = computerMove(
+        { GAME_WIDTH, GAME_HEIGHT, GAME_PLAYERS, GAME_DIFFICULTY },
+        gameGrid,
+        discDrop
+      )
+      if (computerDrop) {
+        gameGrid = computerDrop.newGrid
+        if (computerDrop.seq.length > 0) gameState = 'gameover'
+        renderDisc(computerDrop.location)
+        renderHighlight(computerDrop, true)
+        if (gameState === 'gameover') {
+          renderGameOver('opponent')
+          return
+        }
+        if (isGridFull(gameGrid)) {
+          renderGameOver('none')
+          return
+        }
+      }
+    }, 400)
+  }
+}
 
 function renderEntireGrid() {
   for (let x = 0; x < gameGrid[0].length; x++) {
@@ -39,63 +89,29 @@ function renderEntireGrid() {
   }
 }
 
-function renderGameOver() {
-  const gameOverScreen = elementGameOverTemplate.content
-    .cloneNode(true)
-    .querySelector('.game-over')
-  document.body.appendChild(gameOverScreen)
-  let element = document.getElementById('game-over-result')
-  if (GAME_DIFFICULTY === 1)
-    element.innerHTML = !game_state.winner
-      ? 'Tie Game!? 😦'
-      : `${
-          game_state.winner === 1 ? 'Player Wins!!! 🎉' : 'Computer Wins!!! 😂'
-        }`
-  else if (GAME_DIFFICULTY === 2)
-    element.innerHTML = !game_state.winner
-      ? 'Tie Game!? 😦'
-      : `${
-          game_state.winner === 1 ? 'Player Wins!!! 👍' : 'Computer Wins!!! 😕'
-        }`
-  else if (GAME_DIFFICULTY === 3)
-    element.innerHTML = !game_state.winner
-      ? 'Tie Game!? 😦'
-      : `${
-          game_state.winner === 1 ? 'Player Wins!!! 😲' : 'Computer Wins!!! 😒'
-        }`
-  return gameOverScreen
-}
-
 function removeGameOver() {
   document.querySelector('.game-over').remove()
-  game_state.gameOver = false
+  gameState = 'player'
 }
 
 function renderTitlescreen() {
-  document.body.appendChild(titlescreen)
-  game_state.titlescreen = true
-  return titlescreen
+  const titlescreen = elementTitlescreenTemplate.content
+    .cloneNode(true)
+    .querySelector('.titlescreen')
+  titlescreen.addEventListener('submit', titlescreenClick)
+  gameState = 'titlescreen'
+  return document.body.appendChild(titlescreen)
 }
 
 function titlescreenClick(event) {
+  console.log('test')
   event.preventDefault()
   switch (event.submitter.id) {
     case 'dumbot':
       removeTitlescreen()
       GAME_DIFFICULTY = 1
       break
-    case 'smartbot':
-      alert('Gamemode currently in development')
-      GAME_DIFFICULTY = 2
-      break
-    case 'terminator':
-      GAME_DIFFICULTY = 3
-      alert('Gamemode currently in development')
-      break
-    case 'localMultiplayer':
-      alert('Gamemode currently in development')
-      break
-    case 'onlineMultiplayer':
+    default:
       alert('Gamemode currently in development')
       break
   }
@@ -103,7 +119,7 @@ function titlescreenClick(event) {
 
 function removeTitlescreen() {
   document.querySelector('.titlescreen').remove()
-  game_state.titlescreen = false
+  gameState = 'player'
 }
 
 function loadGrid(grid) {
@@ -121,74 +137,6 @@ function loadGrid(grid) {
   })
   elementGame.style.setProperty('--width', GAME_WIDTH)
   elementGame.style.setProperty('--height', GAME_HEIGHT)
-}
-
-elementGame.onclick = (event) => {
-  if (game_state.titlescreen) return
-  if (game_state.gameOver) {
-    removeGameOver()
-    renderTitlescreen()
-    gameGrid = createGrid({
-      GAME_WIDTH,
-      GAME_HEIGHT,
-      GAME_PLAYERS,
-      GAME_DIFFICULTY
-    })
-    loadGrid(gameGrid)
-    renderEntireGrid()
-    return
-  }
-  if (!event.target.classList.contains('tile') || game_state.clickLock) return
-  game_state.clickLock = true
-  setTimeout(() => {
-    game_state.clickLock = false
-  }, 1000)
-
-  const discDrop = dropDisc(
-    { GAME_WIDTH, GAME_HEIGHT, GAME_PLAYERS, GAME_DIFFICULTY },
-    gameGrid,
-    event.target.dataset.x
-  )
-  if (discDrop) {
-    gameGrid = discDrop.newGrid
-    game_state.gameOver = discDrop.seq.length > 0
-    renderDisc(discDrop.location)
-    renderHighlight(discDrop)
-    if (game_state.gameOver) {
-      game_state.winner = 1
-      renderGameOver()
-      return
-    }
-    if (isGridFull(gameGrid)) {
-      game_state.winner = 0
-      renderGameOver()
-      return
-    }
-    // Computer Move
-    setTimeout(() => {
-      const computerDrop = computerMove(
-        { GAME_WIDTH, GAME_HEIGHT, GAME_PLAYERS, GAME_DIFFICULTY },
-        gameGrid,
-        discDrop
-      )
-      if (computerDrop) {
-        gameGrid = computerDrop.newGrid
-        game_state.gameOver = computerDrop.seq.length > 0
-        renderDisc(computerDrop.location)
-        renderHighlight(computerDrop, true)
-        if (game_state.gameOver) {
-          game_state.winner = 2
-          renderGameOver()
-          return
-        }
-        if (isGridFull(gameGrid)) {
-          game_state.winner = 0
-          renderGameOver()
-          return
-        }
-      }
-    }, 400)
-  }
 }
 
 function renderHighlight(drop, alert = false) {
@@ -211,4 +159,27 @@ function renderWin(discs, alert) {
     if (alert) query.dataset.alert = true
     else query.dataset.glow = true
   })
+}
+
+function renderGameOver(winner) {
+  const gameOverScreen = elementGameOverTemplate.content
+    .cloneNode(true)
+    .querySelector('.game-over')
+  document.body.appendChild(gameOverScreen)
+  let element = document.getElementById('game-over-result')
+  switch (winner) {
+    case 'player':
+      element.textContent = 'Player Wins! 🎉'
+      break
+    case 'opponent':
+      element.textContent = 'Computer Wins 😂'
+      break
+    case 'none':
+      element.textContent = 'Tie Game 😦'
+      break
+  }
+  /*
+  'Player Wins!!! 👍' : 'Computer Wins!!! 😕'
+  'Player Wins!!! 😲' : 'Computer Wins!!! 😒'
+  */
 }
