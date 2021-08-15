@@ -6,8 +6,6 @@ const elementTitlescreenTemplate = document.querySelector(
   '#titlescreen-template'
 )
 
-const elementGameOverTemplate = document.querySelector('#game-over-template')
-
 const GAME_WIDTH = 7
 const GAME_HEIGHT = 6
 let GAME_PLAYERS = 2
@@ -16,7 +14,6 @@ let gameGrid = []
 let gameState = ''
 
 let elementTitlescreen = renderTitlescreen()
-console.log(elementTitlescreen)
 
 gameGrid = createGrid(GAME_WIDTH, GAME_HEIGHT)
 loadGrid(gameGrid)
@@ -25,7 +22,6 @@ elementGame.onclick = (event) => {
   if (gameState === 'titlescreen') return
   if (gameState === 'gameover') {
     removeGameOver()
-    elementTitlescreen = renderTitlescreen()
     gameGrid = createGrid(GAME_WIDTH, GAME_HEIGHT)
     loadGrid(gameGrid)
     renderEntireGrid()
@@ -89,11 +85,6 @@ function renderEntireGrid() {
   }
 }
 
-function removeGameOver() {
-  document.querySelector('.game-over').remove()
-  gameState = 'player'
-}
-
 function renderTitlescreen() {
   const titlescreen = elementTitlescreenTemplate.content
     .cloneNode(true)
@@ -104,7 +95,6 @@ function renderTitlescreen() {
 }
 
 function titlescreenClick(event) {
-  console.log('test')
   event.preventDefault()
   switch (event.submitter.id) {
     case 'dumbot':
@@ -161,25 +151,32 @@ function renderWin(discs, alert) {
   })
 }
 
+/*
+TODO
+'Player Wins!!! 👍' : 'Computer Wins!!! 😕'
+'Player Wins!!! 😲' : 'Computer Wins!!! 😒'
+*/
+
+// Render functions
+
 function renderGameOver(winner) {
-  const gameOverScreen = elementGameOverTemplate.content
-    .cloneNode(true)
-    .querySelector('.game-over')
-  document.body.appendChild(gameOverScreen)
-  let element = document.getElementById('game-over-result')
-  switch (winner) {
-    case 'player':
-      element.textContent = 'Player Wins! 🎉'
-      break
-    case 'opponent':
-      element.textContent = 'Computer Wins 😂'
-      break
-    case 'none':
-      element.textContent = 'Tie Game 😦'
-      break
+  const element = clone('game-over-template')
+  element.querySelector('#game-over-result').textContent =
+    gameOverMessage(winner)
+  document.body.appendChild(element)
+
+  function gameOverMessage(winner) {
+    if (winner == 'player') return 'Player Wins! 🎉'
+    if (winner == 'opponent') return 'Computer Wins 😂'
+    return 'Tie Game 😦'
   }
-  /*
-  'Player Wins!!! 👍' : 'Computer Wins!!! 😕'
-  'Player Wins!!! 😲' : 'Computer Wins!!! 😒'
-  */
+}
+
+function removeGameOver() {
+  document.querySelector('.game-over').remove()
+  gameState = 'player'
+}
+
+function clone(template) {
+  return document.getElementById(template).content.cloneNode(true)
 }
