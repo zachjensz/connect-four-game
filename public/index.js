@@ -3,6 +3,7 @@ import { createGrid, computerMove, dropDisc, isGridFull } from './logic.js'
 const elementGame = document.querySelector('#grid')
 const elementTileTemplate = document.querySelector('#tile-template')
 
+const DELAY_COMPUTER = 700
 const GAME_WIDTH = 7
 const GAME_HEIGHT = 6
 let GAME_PLAYERS = 2
@@ -23,7 +24,7 @@ elementGame.onclick = (event) => {
   gameState = 'opponent'
   setTimeout(() => {
     if (gameState === 'opponent') gameState = 'player'
-  }, 1000)
+  }, DELAY_COMPUTER * 2)
   drop(true, slot)
 }
 
@@ -45,7 +46,7 @@ function drop(isPlayer, slot) {
     if (isPlayer)
       setTimeout(() => {
         drop(false, slot)
-      }, 500)
+      }, DELAY_COMPUTER)
   }
 }
 
