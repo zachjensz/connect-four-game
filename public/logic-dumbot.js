@@ -1,29 +1,27 @@
 import { dropDisc, evalAllDrops, getColumnHeight, isGridFull } from './logic.js'
 
-export const computerMove = (game_config, grid, playerDrop) => {
+export const computerMove = (game_config, grid) => {
   let column = -1
   if (isGridFull(grid)) return
 
   // Searches for computer wins
   const evalWins = evalAllDrops(game_config, grid, 2)
-  if (evalWins.length > 0)
-    column = evalWins[0].column
+  if (evalWins.length > 0) column = evalWins[0].column
 
   if (column >= 0) {
     const drop = dropDisc(game_config, grid, column, 2)
     if (drop) return drop
-    throw new Error("drop failed")
+    throw new Error('drop failed')
   }
 
   // Searches for player blocks
   const evalBlocks = evalAllDrops(game_config, grid, 1)
-  if (evalBlocks.length > 0)
-    column = evalBlocks[0].column
+  if (evalBlocks.length > 0) column = evalBlocks[0].column
 
   if (column >= 0) {
     const drop = dropDisc(game_config, grid, column, 2)
     if (drop) return drop
-    throw new Error("drop failed")
+    throw new Error('drop failed')
   }
 
   // Random Drop
@@ -67,5 +65,5 @@ export const computerMove = (game_config, grid, playerDrop) => {
     )
   }
 
-  throw new Error("drop failed")
+  throw new Error('drop failed')
 }

@@ -1,3 +1,1 @@
-export const computerMove = (game_config, grid, playerDrop) => {
-
-}
+export const computerMove = (game_config, grid) => {}

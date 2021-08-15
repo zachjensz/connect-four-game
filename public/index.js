@@ -28,11 +28,11 @@ elementGame.onclick = (event) => {
 }
 
 function drop(isPlayer, slot) {
-  const type = isPlayer ? 'dropDisc' : 'computerMove'
+  const type = isPlayer ? dropDisc : computerMove
   const discDrop = type(
     { GAME_WIDTH, GAME_HEIGHT, GAME_PLAYERS, GAME_DIFFICULTY },
     gameGrid,
-    isPlayer ? slot.dataset.x : discDrop
+    slot.dataset.x
   )
   if (discDrop) {
     gameGrid = discDrop.newGrid
@@ -42,7 +42,10 @@ function drop(isPlayer, slot) {
     if (gameState === 'gameover')
       return renderGameOver(isPlayer ? 'player' : 'opponent')
     if (isGridFull(gameGrid)) return renderGameOver('none')
-    if (isPlayer) setTimeout(drop(false), 400)
+    if (isPlayer)
+      setTimeout(() => {
+        drop(false, slot)
+      }, 500)
   }
 }
 

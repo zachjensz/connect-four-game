@@ -105,25 +105,21 @@ export function isGridFull(grid) {
 // Called after the player move
 export const computerMove = (
   { GAME_WIDTH, GAME_HEIGHT, GAME_PLAYERS, GAME_DIFFICULTY },
-  grid,
-  playerDrop
+  grid
 ) => {
   if (GAME_DIFFICULTY === 1)
     return computerMoveDumb(
       { GAME_WIDTH, GAME_HEIGHT, GAME_PLAYERS, GAME_DIFFICULTY },
-      grid,
-      playerDrop
+      grid
     )
   if (GAME_DIFFICULTY === 2)
     return computerMoveSmart(
       { GAME_WIDTH, GAME_HEIGHT, GAME_PLAYERS, GAME_DIFFICULTY },
-      grid,
-      playerDrop
+      grid
     )
   if (GAME_DIFFICULTY === 3)
     return computerMoveTerminator(
       { GAME_WIDTH, GAME_HEIGHT, GAME_PLAYERS, GAME_DIFFICULTY },
-      grid,
-      playerDrop
+      grid
     )
 }
