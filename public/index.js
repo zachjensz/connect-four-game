@@ -54,7 +54,7 @@ function drop(isPlayer, slot) {
     if (isGridFull(gameGrid)) return renderGameOver('none')
     if (isPlayer)
       setTimeout(() => {
-        drop(false, slot)
+        //drop(false, slot)
       }, DELAY_COMPUTER)
   }
 }
@@ -65,7 +65,11 @@ function titleClick(el) {
 }
 
 function loopSlots(slots, func, newValue) {
-  slots.forEach((row, yIndex) => {
+  if (!slots)
+    console.log("slots is undefined")
+  slots?.forEach((row, yIndex, arr) => {
+    if (!row)
+      console.log(row, yIndex, arr)
     row.forEach((slot, xIndex) => {
       func({ row, yIndex, slot, xIndex, newValue })
     })
