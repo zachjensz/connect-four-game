@@ -14,7 +14,7 @@ renderTitle()
 gameGrid = createGrid(GAME_WIDTH, GAME_HEIGHT)
 elementGame.style.setProperty('--width', GAME_WIDTH)
 elementGame.style.setProperty('--height', GAME_HEIGHT)
-loopSlots(gameGrid, renderSlotInitial)
+loopGrid(gameGrid, renderSlotInitial)
 
 document.onclick = (event) => {
   const el = event.target
@@ -40,12 +40,7 @@ function drop(isPlayer, slot) {
     gameGrid = discDrop.newGrid
     if (discDrop.seq.length > 0) {
       gameState = 'gameover'
-      console.log(discDrop.seq)
-      console.log(discDrop.seq.map(([row, slot]) => row[slot]))
-      loopSlots(
-        discDrop.seq.map(([row, slot]) => row[slot]),
-        renderSlotUpdate
-      )
+      loopSlots(discDrop.seq[0], renderSlotUpdate, isPlayer ? -1 : -2)
     } else {
       renderSlotUpdate(discDrop.location)
     }
@@ -64,11 +59,18 @@ function titleClick(el) {
   alert('Gamemode currently in development')
 }
 
-function loopSlots(slots, func, newValue) {
-  slots.forEach((row, yIndex) => {
+function loopGrid(grid, func, newValue) {
+  grid.forEach((row, yIndex) => {
     row.forEach((slot, xIndex) => {
       func({ row, yIndex, slot, xIndex, newValue })
     })
+  })
+}
+
+function loopSlots(slots, func, newValue) {
+  console.log(slots, func, newValue)
+  slots.forEach((slot) => {
+    func({ row: slot[0], slot: slot[1], newValue })
   })
 }
 
@@ -80,6 +82,7 @@ function renderSlotInitial({ yIndex, xIndex }) {
 }
 
 function renderSlotUpdate({ newValue, row, slot }) {
+  console.log(newValue, row, slot)
   elementGame.querySelector(
     `.slot[data-y="${row}"][data-x="${slot}"]`
   ).dataset.value = newValue
@@ -116,7 +119,7 @@ function removeGameOver() {
   elementGame.innerHTML = ''
   elementGame.style.setProperty('--width', GAME_WIDTH)
   elementGame.style.setProperty('--height', GAME_HEIGHT)
-  loopSlots(gameGrid, renderSlotInitial)
+  loopGrid(gameGrid, renderSlotInitial)
   return
 }
 
