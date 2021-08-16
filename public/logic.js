@@ -50,7 +50,7 @@ export function dropDisc(
     if (grid[i]?.[+x] === 0) {
       grid[i][+x] = player
       return {
-        location: [player, i, +x],
+        location: { newValue: player, row: i, slot: +x },
         seq: validSeq([grid, player, i, +x], min_seq),
         newGrid: grid
       }

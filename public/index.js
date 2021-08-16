@@ -1,7 +1,6 @@
 import { createGrid, computerMove, dropDisc, isGridFull } from './logic.js'
 
 const elementGame = document.querySelector('#grid')
-const elementTileTemplate = document.querySelector('#tile-template')
 
 const DELAY_COMPUTER = 700
 const GAME_WIDTH = 7
@@ -11,34 +10,45 @@ let GAME_DIFFICULTY = 1
 let gameGrid = []
 let gameState = ''
 
-renderTitlescreen()
-
+renderTitle()
 gameGrid = createGrid(GAME_WIDTH, GAME_HEIGHT)
-loadGrid(gameGrid)
+elementGame.style.setProperty('--width', GAME_WIDTH)
+elementGame.style.setProperty('--height', GAME_HEIGHT)
+loopSlots(gameGrid, renderSlotInitial)
 
-elementGame.onclick = (event) => {
-  const slot = event.target
+document.onclick = (event) => {
+  const el = event.target
+  if (document.querySelector('.title')?.contains(el)) return titleClick(el)
+  if (!document.querySelector('#grid')?.contains(el)) return
   if (gameState === 'gameover') removeGameOver()
-  if (!slot.classList.contains('tile') || gameState != 'player') return
+  if (!el.classList.contains('slot') || gameState != 'player') return
   gameState = 'opponent'
   setTimeout(() => {
     if (gameState === 'opponent') gameState = 'player'
   }, DELAY_COMPUTER * 2)
-  drop(true, slot)
+  drop(true, el)
 }
 
 function drop(isPlayer, slot) {
-  const type = isPlayer ? dropDisc : computerMove
-  const discDrop = type(
+  const dropAgent = isPlayer ? dropDisc : computerMove
+  const discDrop = dropAgent(
     { GAME_WIDTH, GAME_HEIGHT, GAME_PLAYERS, GAME_DIFFICULTY },
     gameGrid,
     slot.dataset.x
   )
   if (discDrop) {
     gameGrid = discDrop.newGrid
-    if (discDrop.seq.length > 0) gameState = 'gameover'
-    renderDisc(discDrop.location)
-    renderHighlight(discDrop, !isPlayer)
+    if (discDrop.seq.length > 0) {
+      gameState = 'gameover'
+      console.log(discDrop.seq)
+      console.log(discDrop.seq.map(([row, slot]) => row[slot]))
+      loopSlots(
+        discDrop.seq.map(([row, slot]) => row[slot]),
+        renderSlotUpdate
+      )
+    } else {
+      renderSlotUpdate(discDrop.location)
+    }
     if (gameState === 'gameover')
       return renderGameOver(isPlayer ? 'player' : 'opponent')
     if (isGridFull(gameGrid)) return renderGameOver('none')
@@ -49,79 +59,40 @@ function drop(isPlayer, slot) {
   }
 }
 
-function renderEntireGrid() {
-  for (let x = 0; x < gameGrid[0].length; x++) {
-    for (let y = 0; y < gameGrid.length; y++) {
-      renderDisc([gameGrid[y][x], y, x])
-    }
-  }
-}
-
-function loadGrid(grid) {
-  elementGame.innerHTML = ''
-  grid.forEach((row, yIndex) => {
-    row.forEach((tile, xIndex) => {
-      const elementTile = elementTileTemplate.content
-        .cloneNode(true)
-        .querySelector('.tile')
-      elementTile.dataset.x = xIndex
-      elementTile.dataset.y = yIndex
-      elementTile.dataset.value = tile.value
-      elementGame.appendChild(elementTile)
-    })
-  })
-  elementGame.style.setProperty('--width', GAME_WIDTH)
-  elementGame.style.setProperty('--height', GAME_HEIGHT)
-}
-
-function renderHighlight(drop, alert = false) {
-  if (drop.seq.length > 0) {
-    drop.seq[0].push([drop.location[1], drop.location[2]])
-    renderWin(drop.seq[0], alert)
-  }
-}
-
-function renderDisc([value, y, x]) {
-  elementGame.querySelector(
-    `.tile[data-x="${x}"][data-y="${y}"]`
-  ).dataset.value = value
-}
-function renderWin(discs, alert) {
-  discs.forEach((disc) => {
-    const query = elementGame.querySelector(
-      `.tile[data-x="${disc[1]}"][data-y="${disc[0]}"]`
-    )
-    if (alert) query.dataset.alert = true
-    else query.dataset.glow = true
-  })
-}
-
-/*
-TODO
-'Player Wins!!! 👍' : 'Computer Wins!!! 😕'
-'Player Wins!!! 😲' : 'Computer Wins!!! 😒'
-*/
-
-// Render functions
-function renderTitlescreen() {
-  const element = clone('titlescreen-template').querySelector('.titlescreen')
-  element.addEventListener('submit', titlescreenClick)
-  gameState = 'titlescreen'
-  document.body.appendChild(element)
-}
-
-function titlescreenClick(event) {
-  event.preventDefault()
-  if (event.submitter.id == 'dumbot') {
-    removeTitlescreen()
-    GAME_DIFFICULTY = 1
-    return
-  }
+function titleClick(el) {
+  if (el.id == 'dumbot') return removeTitle()
   alert('Gamemode currently in development')
 }
 
-function removeTitlescreen() {
-  document.querySelector('.titlescreen').remove()
+function loopSlots(slots, func, newValue) {
+  slots.forEach((row, yIndex) => {
+    row.forEach((slot, xIndex) => {
+      func({ row, yIndex, slot, xIndex, newValue })
+    })
+  })
+}
+
+function renderSlotInitial({ yIndex, xIndex }) {
+  const elementTile = clone('slot-template').querySelector('.slot')
+  elementTile.dataset.x = xIndex
+  elementTile.dataset.y = yIndex
+  elementGame.appendChild(elementTile)
+}
+
+function renderSlotUpdate({ newValue, row, slot }) {
+  elementGame.querySelector(
+    `.slot[data-y="${row}"][data-x="${slot}"]`
+  ).dataset.value = newValue
+}
+
+function renderTitle() {
+  const element = clone('title-template').querySelector('.title')
+  gameState = 'title'
+  document.body.appendChild(element)
+}
+
+function removeTitle() {
+  document.querySelector('.title').remove()
   gameState = 'player'
 }
 
@@ -132,8 +103,8 @@ function renderGameOver(winner) {
   document.body.appendChild(element)
 
   function gameOverMessage(winner) {
-    if (winner == 'player') return 'Player Wins! 🎉'
-    if (winner == 'opponent') return 'Computer Wins 😂'
+    if (winner == 'player') return 'Player Wins! 🎉' //👍😕
+    if (winner == 'opponent') return 'Computer Wins 😂' //😲😒
     return 'Tie Game 😦'
   }
 }
@@ -142,8 +113,10 @@ function removeGameOver() {
   document.querySelector('.game-over').remove()
   gameState = 'player'
   gameGrid = createGrid(GAME_WIDTH, GAME_HEIGHT)
-  loadGrid(gameGrid)
-  renderEntireGrid()
+  elementGame.innerHTML = ''
+  elementGame.style.setProperty('--width', GAME_WIDTH)
+  elementGame.style.setProperty('--height', GAME_HEIGHT)
+  loopSlots(gameGrid, renderSlotInitial)
   return
 }
 

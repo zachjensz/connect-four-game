@@ -12,24 +12,24 @@
   <body>
     <h1>Connect 4</h1>
     <main id="grid"></main>
-    <template id="tile-template">
-      <div class="tile"></div>
+    <template id="slot-template">
+      <div class="slot"></div>
     </template>
     <template id="game-over-template">
       <section class="game-over">
         <h2 id="game-over-result">Winner is ...</h2>
       </section>
     </template>
-    <template id="titlescreen-template">
-      <section class="titlescreen">
-        <form id="gamemode-select" class="gamemode-select">
+    <template id="title-template">
+      <section class="title">
+        <div class="gamemode-select">
           <button id="dumbot">Dumbot</button>
           <button id="smartbot">Smartbot</button>
           <button id="terminator">Terminator</button>
           <br />
           <button id="localMultiplayer">Local Multiplayer</button>
           <button id="onlineMultiplayer">Online Multiplayer</button>
-        </form>
+        </div>
       </section>
     </template>
   </body>

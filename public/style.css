@@ -21,7 +21,7 @@ body {
   display: grid;
   grid-template-columns: repeat(var(--width), 1fr);
 }
-.tile {
+.slot {
   background-color: #111;
   border: 2px solid #111;
   border-radius: 50%;
@@ -38,29 +38,29 @@ body {
   }
 }
 
-.tile[data-value='1'] {
+.slot[data-value*='1'] {
   border: 2px solid hsl(0, 100%, 40%);
   background-color: hsl(0, 100%, 40%);
   animation-name: fall-animation;
   animation-duration: 300ms;
 }
-.tile[data-value='2'] {
+.slot[data-value*='2'] {
   border: 2px solid darkgoldenrod;
   background-color: darkgoldenrod;
   animation-name: fall-animation;
   animation-duration: 300ms;
 }
-.tile[data-glow] {
+.slot[data-value='-1'] {
   border: 2px solid blue;
 }
-.tile[data-alert] {
+.slot[data-value='-2'] {
   border: 2px solid hsl(111, 59%, 91%);
 }
-.tile:hover {
+.slot:hover {
   cursor: pointer;
 }
 
-.titlescreen {
+.title {
   background-color: #000d;
   position: absolute;
   width: 100vw;
