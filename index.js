@@ -1,4 +1,5 @@
 import { createGrid, computerMove, dropDisc, isGridFull } from './logic.js'
+import {} from './networking.js'
 
 const elementGame = document.querySelector('#grid')
 
