@@ -2,7 +2,8 @@ import { createGrid, computerMove, dropDisc, isGridFull } from './logic.js'
 
 const elementGame = document.querySelector('#grid')
 
-const DELAY_COMPUTER = 700
+const DELAY_COMPUTER = 100
+const MIN_SEQUENCE = 4
 const GAME_WIDTH = 7
 const GAME_HEIGHT = 6
 let GAME_PLAYERS = 2
@@ -38,18 +39,16 @@ function drop(isPlayer, slot) {
   )
   if (discDrop) {
     gameGrid = discDrop.newGrid
-    if (discDrop.seq.length > 0) {
-      gameState = 'gameover'
-      loopSlots(discDrop.seq[0], renderSlotUpdate, isPlayer ? -1 : -2)
-    } else {
-      renderSlotUpdate(discDrop.location)
-    }
+    renderSlotArrayUpdate([discDrop.disc], isPlayer ? 1 : 2)
+    if (discDrop.seq.length > 0)
+      renderSlotArrayUpdate(discDrop.seq, isPlayer ? -1 : -2)
+    if (discDrop.seq.length >= MIN_SEQUENCE) gameState = 'gameover'
     if (gameState === 'gameover')
       return renderGameOver(isPlayer ? 'player' : 'opponent')
     if (isGridFull(gameGrid)) return renderGameOver('none')
     if (isPlayer)
       setTimeout(() => {
-        drop(false, slot)
+        //drop(false, slot)
       }, DELAY_COMPUTER)
   }
 }
@@ -62,15 +61,17 @@ function titleClick(el) {
 function loopGrid(grid, func, newValue) {
   grid.forEach((row, yIndex) => {
     row.forEach((slot, xIndex) => {
-      func({ row, yIndex, slot, xIndex, newValue })
+      if (typeof newValue === 'object') func(newValue)
+      else func({ row, yIndex, slot, xIndex, newValue })
     })
   })
 }
 
-function loopSlots(slots, func, newValue) {
-  console.log(slots, func, newValue)
+function renderSlotArrayUpdate(slots, newValue) {
   slots.forEach((slot) => {
-    func({ row: slot[0], slot: slot[1], newValue })
+    elementGame.querySelector(
+      `.slot[data-y="${slot[0]}"][data-x="${slot[1]}"]`
+    ).dataset.value = newValue
   })
 }
 
@@ -79,13 +80,6 @@ function renderSlotInitial({ yIndex, xIndex }) {
   elementTile.dataset.x = xIndex
   elementTile.dataset.y = yIndex
   elementGame.appendChild(elementTile)
-}
-
-function renderSlotUpdate({ newValue, row, slot }) {
-  console.log(newValue, row, slot)
-  elementGame.querySelector(
-    `.slot[data-y="${row}"][data-x="${slot}"]`
-  ).dataset.value = newValue
 }
 
 function renderTitle() {

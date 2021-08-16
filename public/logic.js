@@ -49,9 +49,10 @@ export function dropDisc(
     if (grid[i + 1]?.[+x] === 0) continue
     if (grid[i]?.[+x] === 0) {
       grid[i][+x] = player
+      const sequence = [...validSeq([grid, player, i, +x], min_seq), [i, +x]]
       return {
-        location: { newValue: player, row: i, slot: +x },
-        seq: validSeq([grid, player, i, +x], min_seq),
+        disc: [i, +x],
+        seq: sequence.length > min_seq - 1 ? sequence : [],
         newGrid: grid
       }
     }
@@ -68,7 +69,7 @@ export function validSeq(state, min_sequence) {
   ]
   directions.forEach((dir) => {
     const seq = [...cast(state, dir.v, dir.h), ...cast(state, -dir.v, -dir.h)]
-    if (seq.length > min_sequence - 2) winningSequences.push(seq)
+    if (seq.length > min_sequence - 2) winningSequences.push(...seq)
   })
   return winningSequences
 }
