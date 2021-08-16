@@ -2,7 +2,7 @@ import { createGrid, computerMove, dropDisc, isGridFull } from './logic.js'
 
 const elementGame = document.querySelector('#grid')
 
-const DELAY_COMPUTER = 100
+const DELAY_COMPUTER = 400
 const MIN_SEQUENCE = 4
 const GAME_WIDTH = 7
 const GAME_HEIGHT = 6
@@ -48,7 +48,7 @@ function drop(isPlayer, slot) {
     if (isGridFull(gameGrid)) return renderGameOver('none')
     if (isPlayer)
       setTimeout(() => {
-        //drop(false, slot)
+        drop(false, slot)
       }, DELAY_COMPUTER)
   }
 }
