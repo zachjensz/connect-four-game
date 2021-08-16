@@ -43,8 +43,9 @@ function drop(isPlayer, slot) {
       console.log(discDrop.seq)
       console.log(discDrop.seq.map(([row, slot]) => row[slot]))
       loopSlots(
-        discDrop.seq.map(([row, slot]) => row[slot]),
-        renderSlotUpdate
+        discDrop.newGrid,
+        renderSlotUpdate,
+        discDrop.location
       )
     } else {
       renderSlotUpdate(discDrop.location)
@@ -65,13 +66,14 @@ function titleClick(el) {
 }
 
 function loopSlots(slots, func, newValue) {
-  if (!slots)
-    console.log("slots is undefined")
-  slots?.forEach((row, yIndex, arr) => {
-    if (!row)
-      console.log(row, yIndex, arr)
+  slots.forEach((row, yIndex, arr) => {
+    // if (!row)
+    //   console.log(row, yIndex, arr)
     row.forEach((slot, xIndex) => {
-      func({ row, yIndex, slot, xIndex, newValue })
+      if (typeof newValue === 'object')
+        func(newValue)
+      else
+        func({ row, yIndex, slot, xIndex, newValue })
     })
   })
 }
@@ -84,6 +86,7 @@ function renderSlotInitial({ yIndex, xIndex }) {
 }
 
 function renderSlotUpdate({ newValue, row, slot }) {
+  console.log("renderSlotUpdate: ", newValue, row, slot)
   elementGame.querySelector(
     `.slot[data-y="${row}"][data-x="${slot}"]`
   ).dataset.value = newValue
