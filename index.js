@@ -15,7 +15,7 @@ renderTitle()
 gameGrid = createGrid(GAME_WIDTH, GAME_HEIGHT)
 elementGame.style.setProperty('--width', GAME_WIDTH)
 elementGame.style.setProperty('--height', GAME_HEIGHT)
-loopGrid(gameGrid, renderSlotInitial)
+renderGridInitial(gameGrid)
 
 document.onclick = (event) => {
   const el = event.target
@@ -58,11 +58,13 @@ function titleClick(el) {
   alert('Gamemode currently in development')
 }
 
-function loopGrid(grid, func, newValue) {
+function renderGridInitial(grid) {
   grid.forEach((row, yIndex) => {
     row.forEach((slot, xIndex) => {
-      if (typeof newValue === 'object') func(newValue)
-      else func({ row, yIndex, slot, xIndex, newValue })
+      const elementTile = clone('slot-template').querySelector('.slot')
+      elementTile.dataset.x = xIndex
+      elementTile.dataset.y = yIndex
+      elementGame.appendChild(elementTile)
     })
   })
 }
@@ -73,13 +75,6 @@ function renderSlotArrayUpdate(slots, newValue) {
       `.slot[data-y="${slot[0]}"][data-x="${slot[1]}"]`
     ).dataset.value = newValue
   })
-}
-
-function renderSlotInitial({ yIndex, xIndex }) {
-  const elementTile = clone('slot-template').querySelector('.slot')
-  elementTile.dataset.x = xIndex
-  elementTile.dataset.y = yIndex
-  elementGame.appendChild(elementTile)
 }
 
 function renderTitle() {
@@ -113,7 +108,7 @@ function removeGameOver() {
   elementGame.innerHTML = ''
   elementGame.style.setProperty('--width', GAME_WIDTH)
   elementGame.style.setProperty('--height', GAME_HEIGHT)
-  loopGrid(gameGrid, renderSlotInitial)
+  renderGridInitial(gameGrid)
   return
 }
 
