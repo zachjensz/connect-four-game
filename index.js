@@ -8,19 +8,26 @@ import {
   GAME_HEIGHT,
   GAME_WIDTH
 } from './logic.js'
-import { io } from 'socket.io-client'
+import {
+  connect,
+  disconnect,
+  findOpponent,
+  onOpponentFound,
+  onOpponentDrop,
+  sendPlayerDrop
+} from './networking.js'
 
 const elementGame = document.querySelector('#grid')
 const DELAY_COMPUTER = 400
 const MIN_SEQUENCE = 4
-let networking = true
+let isConnectedToServer = false
+let playerHasOpponent = false
 let gameState = ''
 
 let socket = undefined
 if (networking) {
   socket = io('http://localhost:5000')
 }
-
 renderTitle()
 resetGrid()
 elementGame.style.setProperty('--width', GAME_WIDTH)
@@ -28,22 +35,43 @@ elementGame.style.setProperty('--height', GAME_HEIGHT)
 renderGridInitial()
 
 document.querySelector('.title').onclick = (event) => {
-  if (event.target.id == 'dumbot') return removeTitle()
+  if (event.target.id === 'dumbot') {
+    if (isConnectedToServer) {
+      disconnect()
+      isConnectedToServer = false
+    }
+    return removeTitle()
+  }
+  if (event.target.id === 'onlineMultiplayer') {
+    if (!isConnectedToServer) {
+      connect()
+      //connect("http://192.168.0.22:5000")
+      isConnectedToServer = true
+      onOpponentFound(() => {})
+    }
+    return removeTitle()
+  }
 }
 document.querySelector('#grid').onclick = (event) => {
   if (gameState === 'gameover') removeGameOver()
   if (!event.target.classList.contains('slot') || gameState != 'player') return
+
+  if (isConnectedToServer && !playerHasOpponent) {
+    alert('waiting for an opponent...')
+    return
+  }
+
   gameState = 'opponent'
   drop(true, +event.target.dataset.x)
-  if (!networking) {
+  if (!isConnectedToServer) {
     setTimeout(() => {
       if (gameState === 'opponent') gameState = 'player'
     }, DELAY_COMPUTER * 2)
   }
 }
 
-if (networking) {
-  socket.on('drop', (opponentColumn) => {
+if (isConnectedToServer) {
+  listenForOpponentDrop((opponentColumn) => {
     console.log(`on ${opponentColumn}`)
     gameState = 'player'
     drop(false, opponentColumn)
@@ -55,14 +83,15 @@ function drop(isPlayer, column) {
   if (isPlayer) {
     discDrop = dropDisc(column)
   } else {
-    networking ? (discDrop = dropDisc(column, 2)) : (discDrop = computerMove())
+    isConnectedToServer
+      ? (discDrop = dropDisc(column, 2))
+      : (discDrop = computerMove())
   }
   console.log('isPlayer', isPlayer, 'discDrop', discDrop)
   if (discDrop) {
     if (isPlayer) {
-      if (networking) {
-        socket.emit('drop', column)
-        console.log(`emit ${column}`)
+      if (isConnectedToServer) {
+        sendPlayerDrop(column)
       } else {
         setTimeout(() => {
           drop(!isPlayer, column)

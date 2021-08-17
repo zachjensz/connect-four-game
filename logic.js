@@ -1,4 +1,4 @@
-import { computerMove as computerMoveDumb } from './logic-dumbot.js'
+import { computerMove as computerMoveDumb } from "./logic-dumbot.js"
 
 export const GAME_WIDTH = 7
 export const GAME_HEIGHT = 6
@@ -6,17 +6,15 @@ export const GAME_HEIGHT = 6
 let gameGrid = []
 
 export function resetGrid() {
-  gameGrid = createGrid(GAME_WIDTH, GAME_HEIGHT)
+  gameGrid = createGrid()
 }
 
 export const getGrid = () => gameGrid
 export const setGrid = (grid) => (gameGrid = grid)
-
-function createGrid(GAME_WIDTH, GAME_HEIGHT) {
-  return Array(GAME_HEIGHT)
+export const createGrid = () =>
+  Array(GAME_HEIGHT)
     .fill(0)
     .map(() => Array(GAME_WIDTH).fill(0))
-}
 
 // Drop tests each column looking for any column that would create a connect four
 export function evalAllDrops(player = 1, srcGrid = gameGrid) {
@@ -33,7 +31,7 @@ export function evalAllDrops(player = 1, srcGrid = gameGrid) {
         const result = {
           column: x,
           player: player,
-          seq: validSeq([grid, player, i, x], min_seq)
+          seq: validSeq([grid, player, i, x], min_seq),
         }
         if (result.seq.length > 0) results.push(result)
       }
@@ -51,12 +49,12 @@ export function dropDisc(x, player = 1, min_seq = 4) {
       gameGrid[i][+x] = player
       const sequence = [
         ...validSeq([gameGrid, player, i, +x], min_seq),
-        [i, +x]
+        [i, +x],
       ]
       return {
         disc: [i, +x],
         seq: sequence.length > min_seq - 1 ? sequence : [],
-        newGrid: gameGrid
+        newGrid: gameGrid,
       }
     }
   }
@@ -68,7 +66,7 @@ export function validSeq(state, min_sequence) {
     { v: 1, h: 0 },
     { v: 1, h: 1 },
     { v: 0, h: 1 },
-    { v: 1, h: -1 }
+    { v: 1, h: -1 },
   ]
   directions.forEach((dir) => {
     const seq = [...cast(state, dir.v, dir.h), ...cast(state, -dir.v, -dir.h)]
