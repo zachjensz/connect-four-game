@@ -1,16 +1,24 @@
-import { createGrid, computerMove, dropDisc, isGridFull } from './logic.js'
-import {} from './networking.js'
+import {
+  establishConnection,
+  createGrid,
+  computerMove,
+  dropDisc,
+  isGridFull
+} from './logic.js'
 
 const elementGame = document.querySelector('#grid')
-
 const DELAY_COMPUTER = 400
 const MIN_SEQUENCE = 4
 const GAME_WIDTH = 7
 const GAME_HEIGHT = 6
+let networking = true
 let GAME_PLAYERS = 2
 let GAME_DIFFICULTY = 1
 let gameGrid = []
 let gameState = ''
+
+let socket = ''
+if (networking) socket = establishConnection()
 
 renderTitle()
 gameGrid = createGrid(GAME_WIDTH, GAME_HEIGHT)
@@ -18,17 +26,17 @@ elementGame.style.setProperty('--width', GAME_WIDTH)
 elementGame.style.setProperty('--height', GAME_HEIGHT)
 renderGridInitial(gameGrid)
 
-document.onclick = (event) => {
-  const el = event.target
-  if (document.querySelector('.title')?.contains(el)) return titleClick(el)
-  if (!document.querySelector('#grid')?.contains(el)) return
+document.querySelector('.title').onclick = (event) => {
+  if (event.target.id == 'dumbot') return removeTitle()
+}
+document.querySelector('#grid').onclick = (event) => {
   if (gameState === 'gameover') removeGameOver()
-  if (!el.classList.contains('slot') || gameState != 'player') return
+  if (!event.target.classList.contains('slot') || gameState != 'player') return
   gameState = 'opponent'
   setTimeout(() => {
     if (gameState === 'opponent') gameState = 'player'
   }, DELAY_COMPUTER * 2)
-  drop(true, el)
+  drop(true, event.target)
 }
 
 function drop(isPlayer, slot) {
@@ -52,11 +60,6 @@ function drop(isPlayer, slot) {
         drop(false, slot)
       }, DELAY_COMPUTER)
   }
-}
-
-function titleClick(el) {
-  if (el.id == 'dumbot') return removeTitle()
-  alert('Gamemode currently in development')
 }
 
 function renderGridInitial(grid) {
