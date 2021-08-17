@@ -15,7 +15,7 @@ const DELAY_COMPUTER = 400
 const MIN_SEQUENCE = 4
 const GAME_WIDTH = 7
 const GAME_HEIGHT = 6
-let networking = true
+let networking = false
 
 let socket = ''
 if (networking) socket = establishConnection()
@@ -44,7 +44,6 @@ function drop(isPlayer, slot) {
   const dropAgent = isPlayer ? dropDisc : computerMove
   const discDrop = dropAgent(
     { GAME_WIDTH, currentPlayer },
-    gameGrid,
     slot.dataset.x
   )
   if (discDrop) {
@@ -114,7 +113,7 @@ function removeGameOver() {
   elementGame.innerHTML = ''
   elementGame.style.setProperty('--width', GAME_WIDTH)
   elementGame.style.setProperty('--height', GAME_HEIGHT)
-  renderGridInitial(gameGrid)
+  renderGridInitial()
   return
 }
 
