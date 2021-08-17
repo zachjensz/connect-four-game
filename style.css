@@ -1,6 +1,11 @@
+:root {
+  --board: #0c3eb9;
+  --background: #222;
+  --main: #eee;
+}
 html {
-  background-color: #222;
-  color: #eee;
+  background-color: var(--background);
+  color: var(--main);
   font-family: sans-serif;
   margin: 0;
 }
@@ -13,7 +18,7 @@ body {
 }
 #grid {
   --size: 90vmin;
-  background-color: #333;
+  background-color: var(--board);
   padding: 1vmin;
   border-radius: 2vmin;
   width: var(--size);
@@ -22,11 +27,11 @@ body {
   grid-template-columns: repeat(var(--width), 1fr);
 }
 .slot {
-  background-color: #111;
-  border: 2px solid #111;
+  background-color: var(--background);
+  border: 2px solid var(--background);
   border-radius: 50%;
-  width: 95%;
-  height: 95%;
+  width: 90%;
+  height: 90%;
 }
 
 @keyframes fall-animation {
