@@ -35,14 +35,24 @@ document.querySelector('#grid').onclick = (event) => {
   if (gameState === 'gameover') removeGameOver()
   if (!event.target.classList.contains('slot') || gameState != 'player') return
   gameState = 'opponent'
-  setTimeout(() => {
-    if (gameState === 'opponent') gameState = 'player'
-  }, DELAY_COMPUTER * 2)
-  drop(true, event.target)
+  drop(true, event.target.dataset.x)
+  if (!networking) {
+    setTimeout(() => {
+      if (gameState === 'opponent') gameState = 'player'
+    }, DELAY_COMPUTER * 2)
+  }
 }
 
-function drop(isPlayer, slot) {
-  const discDrop = isPlayer ? dropDisc(slot.dataset.x) : computerMove()
+if (networking) {
+  //All our network code in here
+  socket.on('drop', (opponentColumn) => {
+    gameState = 'player'
+    drop(false, opponentColumn)
+  })
+}
+
+function drop(isPlayer, column) {
+  const discDrop = isPlayer ? dropDisc(column) : computerMove()
   if (discDrop) {
     setGrid(discDrop.newGrid)
     renderSlotArrayUpdate([discDrop.disc], isPlayer ? 1 : 2)
@@ -52,10 +62,15 @@ function drop(isPlayer, slot) {
     if (gameState === 'gameover')
       return renderGameOver(isPlayer ? 'player' : 'opponent')
     if (isGridFull()) return renderGameOver('none')
-    if (isPlayer)
-      setTimeout(() => {
-        drop(!isPlayer, slot)
-      }, DELAY_COMPUTER)
+    if (isPlayer) {
+      if (networking) {
+        socket.emit('drop', discDrop.column)
+      } else {
+        setTimeout(() => {
+          drop(!isPlayer, column)
+        }, DELAY_COMPUTER)
+      }
+    }
   }
 }
 
