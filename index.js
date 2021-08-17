@@ -24,10 +24,6 @@ let isConnectedToServer = false
 let playerHasOpponent = false
 let gameState = ''
 
-let socket = undefined
-if (networking) {
-  socket = io('http://localhost:5000')
-}
 renderTitle()
 resetGrid()
 elementGame.style.setProperty('--width', GAME_WIDTH)
