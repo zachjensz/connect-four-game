@@ -42,13 +42,7 @@ export function evalAllDrops(
 }
 
 // Drops a disc
-export function dropDisc(
-  { GAME_WIDTH, GAME_HEIGHT, GAME_PLAYERS, GAME_DIFFICULTY },
-  grid,
-  x,
-  player = 1,
-  min_seq = 4
-) {
+export function dropDisc({ GAME_HEIGHT }, grid, x, player = 1, min_seq = 4) {
   grid = cloneGrid(grid)
   for (let i = 0; i < GAME_HEIGHT; i++) {
     if (grid[i + 1]?.[+x] === 0) continue

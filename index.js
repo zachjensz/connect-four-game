@@ -42,7 +42,7 @@ document.querySelector('#grid').onclick = (event) => {
 function drop(isPlayer, slot) {
   const dropAgent = isPlayer ? dropDisc : computerMove
   const discDrop = dropAgent(
-    { GAME_WIDTH, GAME_HEIGHT, GAME_PLAYERS, GAME_DIFFICULTY },
+    { GAME_WIDTH, currentPlayer },
     gameGrid,
     slot.dataset.x
   )
