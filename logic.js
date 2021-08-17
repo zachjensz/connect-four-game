@@ -1,13 +1,16 @@
-import { io } from 'socket.io-client'
+//import { io } from 'socket.io-client'
 import { computerMove as computerMoveDumb } from './logic-dumbot.js'
 import { computerMove as computerMoveSmart } from './logic-smartbot.js'
 import { computerMove as computerMoveTerminator } from './logic-terminator.js'
+
+export const GAME_WIDTH = 7
+export const GAME_HEIGHT = 6
 
 let gameGrid = []
 let gameState = ''
 
 export function establishConnection() {
-  return io('http://localhost:5000')
+  //return io('http://localhost:5000')
 }
 
 export function resetGrid() {

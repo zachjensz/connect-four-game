@@ -8,13 +8,13 @@ import {
   computerMove,
   dropDisc,
   isGridFull,
+  GAME_HEIGHT,
+  GAME_WIDTH
 } from './logic.js'
 
 const elementGame = document.querySelector('#grid')
 const DELAY_COMPUTER = 400
 const MIN_SEQUENCE = 4
-const GAME_WIDTH = 7
-const GAME_HEIGHT = 6
 let networking = false
 
 let socket = ''
