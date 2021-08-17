@@ -1,6 +1,11 @@
+import { io } from 'socket.io-client'
 import { computerMove as computerMoveDumb } from './logic-dumbot.js'
 import { computerMove as computerMoveSmart } from './logic-smartbot.js'
 import { computerMove as computerMoveTerminator } from './logic-terminator.js'
+
+export function establishConnection() {
+  return io('http://localhost:5000')
+}
 
 export function createGrid(GAME_WIDTH, GAME_HEIGHT) {
   return Array(GAME_HEIGHT)
