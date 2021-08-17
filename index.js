@@ -18,7 +18,7 @@ let gameState = ''
 
 let socket = undefined
 if (networking) {
-  socket = io('http://192.168.0.22:5000')
+  socket = io('http://localhost:5000')
 }
 
 renderTitle()
@@ -59,14 +59,6 @@ function drop(isPlayer, column) {
   }
   console.log('isPlayer', isPlayer, 'discDrop', discDrop)
   if (discDrop) {
-    setGrid(discDrop.newGrid)
-    renderSlotArrayUpdate([discDrop.disc], isPlayer ? 1 : 2)
-    if (discDrop.seq.length > 0)
-      renderSlotArrayUpdate(discDrop.seq, isPlayer ? -1 : -2)
-    if (discDrop.seq.length >= MIN_SEQUENCE) gameState = 'gameover'
-    if (gameState === 'gameover')
-      return renderGameOver(isPlayer ? 'player' : 'opponent')
-    if (isGridFull()) return renderGameOver('none')
     if (isPlayer) {
       if (networking) {
         socket.emit('drop', column)
@@ -77,6 +69,14 @@ function drop(isPlayer, column) {
         }, DELAY_COMPUTER)
       }
     }
+    setGrid(discDrop.newGrid)
+    renderSlotArrayUpdate([discDrop.disc], isPlayer ? 1 : 2)
+    if (discDrop.seq.length > 0)
+      renderSlotArrayUpdate(discDrop.seq, isPlayer ? -1 : -2)
+    if (discDrop.seq.length >= MIN_SEQUENCE) gameState = 'gameover'
+    if (gameState === 'gameover')
+      return renderGameOver(isPlayer ? 'player' : 'opponent')
+    if (isGridFull()) return renderGameOver('none')
   }
 }
 
@@ -119,7 +119,7 @@ function renderGameOver(winner) {
 
   function gameOverMessage(winner) {
     if (winner == 'player') return 'Player Wins! 🎉' //👍😕
-    if (winner == 'opponent') return 'Computer Wins 😂' //😲😒
+    if (winner == 'opponent') return 'Opponent Wins 😂' //😲😒
     return 'Tie Game 😦'
   }
 }
