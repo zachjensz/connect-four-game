@@ -40,11 +40,9 @@ document.querySelector('#grid').onclick = (event) => {
 }
 
 function drop(isPlayer, slot) {
-  const dropAgent = isPlayer ? dropDisc : computerMove
-  const discDrop = dropAgent(
-    { GAME_WIDTH, currentPlayer },
-    slot.dataset.x
-  )
+  const discDrop = isPlayer ?
+    dropDisc(slot.dataset.x) :
+    computerMove(slot.dataset.x)
   if (discDrop) {
     setGrid(discDrop.newGrid)
     renderSlotArrayUpdate([discDrop.disc], isPlayer ? 1 : 2)
@@ -56,7 +54,7 @@ function drop(isPlayer, slot) {
     if (isGridFull()) return renderGameOver('none')
     if (isPlayer)
       setTimeout(() => {
-        drop(false, slot)
+        drop(!isPlayer, slot)
       }, DELAY_COMPUTER)
   }
 }
