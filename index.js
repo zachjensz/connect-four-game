@@ -8,7 +8,11 @@ import {
   GAME_HEIGHT,
   GAME_WIDTH
 } from './logic.js'
-import { io } from 'socket.io-client'
+import {
+  listenForOpponentDrop,
+  sendPlayerDrop,
+  connectToServer
+} from './networking.js'
 
 const elementGame = document.querySelector('#grid')
 const DELAY_COMPUTER = 400
@@ -16,10 +20,8 @@ const MIN_SEQUENCE = 4
 let networking = true
 let gameState = ''
 
-let socket = undefined
-if (networking) {
-  socket = io('http://192.168.0.22:5000')
-}
+if (networking) connectToServer()
+//if (networking) connectToServer("http://192.168.0.22:5000")
 
 renderTitle()
 resetGrid()
@@ -43,7 +45,7 @@ document.querySelector('#grid').onclick = (event) => {
 }
 
 if (networking) {
-  socket.on('drop', (opponentColumn) => {
+  listenForOpponentDrop((opponentColumn) => {
     console.log(`on ${opponentColumn}`)
     gameState = 'player'
     drop(false, opponentColumn)
@@ -69,8 +71,7 @@ function drop(isPlayer, column) {
     if (isGridFull()) return renderGameOver('none')
     if (isPlayer) {
       if (networking) {
-        socket.emit('drop', column)
-        console.log(`emit ${column}`)
+        sendPlayerDrop(column)
       } else {
         setTimeout(() => {
           drop(!isPlayer, column)
