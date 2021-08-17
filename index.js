@@ -42,7 +42,7 @@ document.querySelector('#grid').onclick = (event) => {
 function drop(isPlayer, slot) {
   const discDrop = isPlayer ?
     dropDisc(slot.dataset.x) :
-    computerMove(slot.dataset.x)
+    computerMove()
   if (discDrop) {
     setGrid(discDrop.newGrid)
     renderSlotArrayUpdate([discDrop.disc], isPlayer ? 1 : 2)

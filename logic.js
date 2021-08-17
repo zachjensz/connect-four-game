@@ -27,14 +27,14 @@ function createGrid(GAME_WIDTH, GAME_HEIGHT) {
 
 // Drop tests each column looking for any column that would create a connect four
 export function evalAllDrops(
-  { GAME_WIDTH, GAME_HEIGHT, GAME_PLAYERS, GAME_DIFFICULTY },
-  player = 1
+  player = 1,
+  srcGrid = gameGrid
 ) {
   const results = [],
     min_seq = 4
   // Column
   for (let x = 0; x < GAME_WIDTH; x++) {
-    const grid = cloneGrid(gameGrid)
+    const grid = cloneGrid(srcGrid)
     // Row
     for (let i = 0; i < GAME_HEIGHT; i++) {
       if (grid[i + 1]?.[x] === 0) continue
@@ -114,22 +114,17 @@ export function isGridFull() {
 }
 
 // Called after the player move
-export const computerMove = (
-  { GAME_WIDTH, GAME_HEIGHT, GAME_PLAYERS, GAME_DIFFICULTY }
-) => {
-  if (GAME_DIFFICULTY === 1)
-    return computerMoveDumb(
-      { GAME_WIDTH, GAME_HEIGHT, GAME_PLAYERS, GAME_DIFFICULTY },
-      gameGrid
-    )
-  if (GAME_DIFFICULTY === 2)
-    return computerMoveSmart(
-      { GAME_WIDTH, GAME_HEIGHT, GAME_PLAYERS, GAME_DIFFICULTY },
-      gameGrid
-    )
-  if (GAME_DIFFICULTY === 3)
-    return computerMoveTerminator(
-      { GAME_WIDTH, GAME_HEIGHT, GAME_PLAYERS, GAME_DIFFICULTY },
-      gameGrid
-    )
+export const computerMove = () => {
+  //if (GAME_DIFFICULTY === 1)
+    return computerMoveDumb()
+  // if (GAME_DIFFICULTY === 2)
+  //   return computerMoveSmart(
+  //     { GAME_WIDTH, GAME_HEIGHT, GAME_PLAYERS, GAME_DIFFICULTY },
+  //     gameGrid
+  //   )
+  // if (GAME_DIFFICULTY === 3)
+  //   return computerMoveTerminator(
+  //     { GAME_WIDTH, GAME_HEIGHT, GAME_PLAYERS, GAME_DIFFICULTY },
+  //     gameGrid
+  //   )
 }
