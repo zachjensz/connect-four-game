@@ -3,8 +3,6 @@ import {
   resetGrid,
   getGrid,
   setGrid,
-  getGameState,
-  setGameState,
   computerMove,
   dropDisc,
   isGridFull,
@@ -16,6 +14,8 @@ const elementGame = document.querySelector('#grid')
 const DELAY_COMPUTER = 400
 const MIN_SEQUENCE = 4
 let networking = false
+let gameState = ''
+
 
 let socket = ''
 if (networking) socket = establishConnection()
@@ -30,12 +30,11 @@ document.querySelector('.title').onclick = (event) => {
   if (event.target.id == 'dumbot') return removeTitle()
 }
 document.querySelector('#grid').onclick = (event) => {
-  const gameState = getGameState()
   if (gameState === 'gameover') removeGameOver()
   if (!event.target.classList.contains('slot') || gameState != 'player') return
-  setGameState('opponent')
+  gameState = 'opponent'
   setTimeout(() => {
-    if (getGameState() === 'opponent') setGameState('player')
+    if (gameState === 'opponent') gameState = 'player'
   }, DELAY_COMPUTER * 2)
   drop(true, event.target)
 }
@@ -51,8 +50,8 @@ function drop(isPlayer, slot) {
     renderSlotArrayUpdate([discDrop.disc], isPlayer ? 1 : 2)
     if (discDrop.seq.length > 0)
       renderSlotArrayUpdate(discDrop.seq, isPlayer ? -1 : -2)
-    if (discDrop.seq.length >= MIN_SEQUENCE) setGameState('gameover')
-    if (getGameState() === 'gameover')
+    if (discDrop.seq.length >= MIN_SEQUENCE) gameState ='gameover'
+    if (gameState === 'gameover')
       return renderGameOver(isPlayer ? 'player' : 'opponent')
     if (isGridFull()) return renderGameOver('none')
     if (isPlayer)
@@ -84,13 +83,13 @@ function renderSlotArrayUpdate(slots, newValue) {
 
 function renderTitle() {
   const element = clone('title-template').querySelector('.title')
-  setGameState('title')
+  gameState = 'title'
   document.body.appendChild(element)
 }
 
 function removeTitle() {
   document.querySelector('.title').remove()
-  setGameState('player')
+  gameState = 'player'
 }
 
 function renderGameOver(winner) {
@@ -108,7 +107,7 @@ function renderGameOver(winner) {
 
 function removeGameOver() {
   document.querySelector('.game-over').remove()
-  setGameState('player')
+  gameState = 'player'
   resetGrid()
   elementGame.innerHTML = ''
   elementGame.style.setProperty('--width', GAME_WIDTH)

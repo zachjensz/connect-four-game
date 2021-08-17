@@ -7,7 +7,6 @@ export const GAME_WIDTH = 7
 export const GAME_HEIGHT = 6
 
 let gameGrid = []
-let gameState = ''
 
 export function establishConnection() {
   //return io('http://localhost:5000')
@@ -19,9 +18,6 @@ export function resetGrid() {
 
 export const getGrid = () => gameGrid
 export const setGrid = (grid) => gameGrid = grid
-
-export const getGameState = () => gameState
-export const setGameState = (state) => gameState
 
 function createGrid(GAME_WIDTH, GAME_HEIGHT) {
   return Array(GAME_HEIGHT)
