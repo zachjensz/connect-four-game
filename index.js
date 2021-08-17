@@ -9,19 +9,20 @@ import {
   GAME_WIDTH
 } from './logic.js'
 import {
-  listenForOpponentDrop,
+  connect,
+  disconnect,
+  findOpponent,
+  onOpponentFound,
+  onOpponentDrop,
   sendPlayerDrop,
-  connectToServer
 } from './networking.js'
 
 const elementGame = document.querySelector('#grid')
 const DELAY_COMPUTER = 400
 const MIN_SEQUENCE = 4
-let networking = true
+let isConnectedToServer = false
+let playerHasOpponent = false
 let gameState = ''
-
-if (networking) connectToServer()
-//if (networking) connectToServer("http://192.168.0.22:5000")
 
 renderTitle()
 resetGrid()
@@ -30,21 +31,44 @@ elementGame.style.setProperty('--height', GAME_HEIGHT)
 renderGridInitial()
 
 document.querySelector('.title').onclick = (event) => {
-  if (event.target.id == 'dumbot') return removeTitle()
+  if (event.target.id === 'dumbot') {
+    if (isConnectedToServer) {
+      disconnect()
+      isConnectedToServer = false
+    }
+    return removeTitle()
+  }
+  if (event.target.id === 'onlineMultiplayer') {
+    if (!isConnectedToServer) {
+      connect()
+      //connect("http://192.168.0.22:5000")
+      isConnectedToServer = true
+      onOpponentFound(() => {
+
+      })
+    }
+    return removeTitle()
+  }
 }
 document.querySelector('#grid').onclick = (event) => {
   if (gameState === 'gameover') removeGameOver()
   if (!event.target.classList.contains('slot') || gameState != 'player') return
+
+  if (isConnectedToServer && !playerHasOpponent) {
+    alert('waiting for an opponent...')
+    return
+  }
+
   gameState = 'opponent'
   drop(true, +event.target.dataset.x)
-  if (!networking) {
+  if (!isConnectedToServer) {
     setTimeout(() => {
       if (gameState === 'opponent') gameState = 'player'
     }, DELAY_COMPUTER * 2)
   }
 }
 
-if (networking) {
+if (isConnectedToServer) {
   listenForOpponentDrop((opponentColumn) => {
     console.log(`on ${opponentColumn}`)
     gameState = 'player'
@@ -57,7 +81,7 @@ function drop(isPlayer, column) {
   if (isPlayer) {
     discDrop = dropDisc(column)
   } else {
-    networking ? (discDrop = dropDisc(column, 2)) : (discDrop = computerMove())
+    isConnectedToServer ? (discDrop = dropDisc(column, 2)) : (discDrop = computerMove())
   }
   console.log('isPlayer', isPlayer, 'discDrop', discDrop)
   if (discDrop) {
@@ -70,7 +94,7 @@ function drop(isPlayer, column) {
       return renderGameOver(isPlayer ? 'player' : 'opponent')
     if (isGridFull()) return renderGameOver('none')
     if (isPlayer) {
-      if (networking) {
+      if (isConnectedToServer) {
         sendPlayerDrop(column)
       } else {
         setTimeout(() => {
