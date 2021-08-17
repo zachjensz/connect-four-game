@@ -1,30 +1,30 @@
 import {
   establishConnection,
-  createGrid,
+  resetGrid,
+  getGrid,
+  setGrid,
   computerMove,
   dropDisc,
-  isGridFull
+  isGridFull,
+  GAME_HEIGHT,
+  GAME_WIDTH
 } from './logic.js'
 
 const elementGame = document.querySelector('#grid')
 const DELAY_COMPUTER = 400
 const MIN_SEQUENCE = 4
-const GAME_WIDTH = 7
-const GAME_HEIGHT = 6
-let networking = true
-let GAME_PLAYERS = 2
-let GAME_DIFFICULTY = 1
-let gameGrid = []
+let networking = false
 let gameState = ''
+
 
 let socket = ''
 if (networking) socket = establishConnection()
 
 renderTitle()
-gameGrid = createGrid(GAME_WIDTH, GAME_HEIGHT)
+resetGrid()
 elementGame.style.setProperty('--width', GAME_WIDTH)
 elementGame.style.setProperty('--height', GAME_HEIGHT)
-renderGridInitial(gameGrid)
+renderGridInitial()
 
 document.querySelector('.title').onclick = (event) => {
   if (event.target.id == 'dumbot') return removeTitle()
@@ -40,29 +40,27 @@ document.querySelector('#grid').onclick = (event) => {
 }
 
 function drop(isPlayer, slot) {
-  const dropAgent = isPlayer ? dropDisc : computerMove
-  const discDrop = dropAgent(
-    { GAME_WIDTH, currentPlayer },
-    gameGrid,
-    slot.dataset.x
-  )
+  const discDrop = isPlayer ?
+    dropDisc(slot.dataset.x) :
+    computerMove(slot.dataset.x)
   if (discDrop) {
-    gameGrid = discDrop.newGrid
+    setGrid(discDrop.newGrid)
     renderSlotArrayUpdate([discDrop.disc], isPlayer ? 1 : 2)
     if (discDrop.seq.length > 0)
       renderSlotArrayUpdate(discDrop.seq, isPlayer ? -1 : -2)
-    if (discDrop.seq.length >= MIN_SEQUENCE) gameState = 'gameover'
+    if (discDrop.seq.length >= MIN_SEQUENCE) gameState ='gameover'
     if (gameState === 'gameover')
       return renderGameOver(isPlayer ? 'player' : 'opponent')
-    if (isGridFull(gameGrid)) return renderGameOver('none')
+    if (isGridFull()) return renderGameOver('none')
     if (isPlayer)
       setTimeout(() => {
-        drop(false, slot)
+        drop(!isPlayer, slot)
       }, DELAY_COMPUTER)
   }
 }
 
-function renderGridInitial(grid) {
+function renderGridInitial() {
+  const grid = getGrid()
   grid.forEach((row, yIndex) => {
     row.forEach((slot, xIndex) => {
       const elementTile = clone('slot-template').querySelector('.slot')
@@ -108,11 +106,11 @@ function renderGameOver(winner) {
 function removeGameOver() {
   document.querySelector('.game-over').remove()
   gameState = 'player'
-  gameGrid = createGrid(GAME_WIDTH, GAME_HEIGHT)
+  resetGrid()
   elementGame.innerHTML = ''
   elementGame.style.setProperty('--width', GAME_WIDTH)
   elementGame.style.setProperty('--height', GAME_HEIGHT)
-  renderGridInitial(gameGrid)
+  renderGridInitial()
   return
 }
 
