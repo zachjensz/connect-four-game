@@ -20,7 +20,6 @@ let socket = undefined
 if (networking) {
   socket = io('http://localhost:5000')
 }
-console.log(socket)
 
 renderTitle()
 resetGrid()
@@ -35,7 +34,7 @@ document.querySelector('#grid').onclick = (event) => {
   if (gameState === 'gameover') removeGameOver()
   if (!event.target.classList.contains('slot') || gameState != 'player') return
   gameState = 'opponent'
-  drop(true, event.target.dataset.x)
+  drop(true, +event.target.dataset.x)
   if (!networking) {
     setTimeout(() => {
       if (gameState === 'opponent') gameState = 'player'
@@ -44,15 +43,21 @@ document.querySelector('#grid').onclick = (event) => {
 }
 
 if (networking) {
-  //All our network code in here
   socket.on('drop', (opponentColumn) => {
+    console.log(`on ${opponentColumn}`)
     gameState = 'player'
     drop(false, opponentColumn)
   })
 }
 
 function drop(isPlayer, column) {
-  const discDrop = isPlayer ? dropDisc(column) : computerMove()
+  let discDrop = undefined
+  if (isPlayer) {
+    discDrop = dropDisc(column)
+  } else {
+    networking ? (discDrop = dropDisc(column, 2)) : (discDrop = computerMove())
+  }
+  console.log('isPlayer', isPlayer, 'discDrop', discDrop)
   if (discDrop) {
     setGrid(discDrop.newGrid)
     renderSlotArrayUpdate([discDrop.disc], isPlayer ? 1 : 2)
@@ -64,7 +69,8 @@ function drop(isPlayer, column) {
     if (isGridFull()) return renderGameOver('none')
     if (isPlayer) {
       if (networking) {
-        socket.emit('drop', discDrop.column)
+        socket.emit('drop', column)
+        console.log(`emit ${column}`)
       } else {
         setTimeout(() => {
           drop(!isPlayer, column)
