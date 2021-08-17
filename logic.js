@@ -1,23 +1,16 @@
-//import { io } from 'socket.io-client'
 import { computerMove as computerMoveDumb } from './logic-dumbot.js'
-import { computerMove as computerMoveSmart } from './logic-smartbot.js'
-import { computerMove as computerMoveTerminator } from './logic-terminator.js'
 
 export const GAME_WIDTH = 7
 export const GAME_HEIGHT = 6
 
 let gameGrid = []
 
-export function establishConnection() {
-  //return io('http://localhost:5000')
-}
-
 export function resetGrid() {
   gameGrid = createGrid(GAME_WIDTH, GAME_HEIGHT)
 }
 
 export const getGrid = () => gameGrid
-export const setGrid = (grid) => gameGrid = grid
+export const setGrid = (grid) => (gameGrid = grid)
 
 function createGrid(GAME_WIDTH, GAME_HEIGHT) {
   return Array(GAME_HEIGHT)
@@ -26,10 +19,7 @@ function createGrid(GAME_WIDTH, GAME_HEIGHT) {
 }
 
 // Drop tests each column looking for any column that would create a connect four
-export function evalAllDrops(
-  player = 1,
-  srcGrid = gameGrid
-) {
+export function evalAllDrops(player = 1, srcGrid = gameGrid) {
   const results = [],
     min_seq = 4
   // Column
@@ -59,7 +49,10 @@ export function dropDisc(x, player = 1, min_seq = 4) {
     if (gameGrid[i + 1]?.[+x] === 0) continue
     if (gameGrid[i]?.[+x] === 0) {
       gameGrid[i][+x] = player
-      const sequence = [...validSeq([gameGrid, player, i, +x], min_seq), [i, +x]]
+      const sequence = [
+        ...validSeq([gameGrid, player, i, +x], min_seq),
+        [i, +x]
+      ]
       return {
         disc: [i, +x],
         seq: sequence.length > min_seq - 1 ? sequence : [],
@@ -116,7 +109,7 @@ export function isGridFull() {
 // Called after the player move
 export const computerMove = () => {
   //if (GAME_DIFFICULTY === 1)
-    return computerMoveDumb()
+  return computerMoveDumb()
   // if (GAME_DIFFICULTY === 2)
   //   return computerMoveSmart(
   //     { GAME_WIDTH, GAME_HEIGHT, GAME_PLAYERS, GAME_DIFFICULTY },

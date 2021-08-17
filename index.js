@@ -1,5 +1,4 @@
 import {
-  establishConnection,
   resetGrid,
   getGrid,
   setGrid,
@@ -9,16 +8,19 @@ import {
   GAME_HEIGHT,
   GAME_WIDTH
 } from './logic.js'
+import { io } from 'socket.io-client'
 
 const elementGame = document.querySelector('#grid')
 const DELAY_COMPUTER = 400
 const MIN_SEQUENCE = 4
-let networking = false
+let networking = true
 let gameState = ''
 
-
-let socket = ''
-if (networking) socket = establishConnection()
+let socket = undefined
+if (networking) {
+  socket = io('http://localhost:5000')
+}
+console.log(socket)
 
 renderTitle()
 resetGrid()
@@ -40,15 +42,13 @@ document.querySelector('#grid').onclick = (event) => {
 }
 
 function drop(isPlayer, slot) {
-  const discDrop = isPlayer ?
-    dropDisc(slot.dataset.x) :
-    computerMove()
+  const discDrop = isPlayer ? dropDisc(slot.dataset.x) : computerMove()
   if (discDrop) {
     setGrid(discDrop.newGrid)
     renderSlotArrayUpdate([discDrop.disc], isPlayer ? 1 : 2)
     if (discDrop.seq.length > 0)
       renderSlotArrayUpdate(discDrop.seq, isPlayer ? -1 : -2)
-    if (discDrop.seq.length >= MIN_SEQUENCE) gameState ='gameover'
+    if (discDrop.seq.length >= MIN_SEQUENCE) gameState = 'gameover'
     if (gameState === 'gameover')
       return renderGameOver(isPlayer ? 'player' : 'opponent')
     if (isGridFull()) return renderGameOver('none')
