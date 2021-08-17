@@ -18,7 +18,7 @@ let gameState = ''
 
 let socket = undefined
 if (networking) {
-  socket = io('http://localhost:5000')
+  socket = io('http://192.168.0.22:5000')
 }
 
 renderTitle()
