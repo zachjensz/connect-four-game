@@ -9,6 +9,7 @@ export function connectToServer(serverUrl = "http://localhost:5000") {
 
 export function sendPlayerDrop(column) {
   if (!socket) throw new Error("not connected to server")
+  if (typeof column !== "number") throw new Error(`invalid column: ${column}`)
   socket.emit("drop", column)
   console.log(`emit ${column}`)
 }
