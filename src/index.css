@@ -77,7 +77,7 @@ body {
   background-color: #000b;
   position: absolute;
   width: 100vw;
-  height: 70vh;
+  height: 80vh;
   display: grid;
   place-content: center;
 }
@@ -86,7 +86,7 @@ body {
   background-color: #000;
   border-radius: 2rem;
   width: min(100vw, 60ch);
-  height: min(70vh, 80ch);
+  height: min(80vh, 80ch);
   display: grid;
 }
 .gamemode-select > button {
