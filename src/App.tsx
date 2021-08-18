@@ -1,19 +1,26 @@
 import "./App.css"
-import { ConnectFour } from "./pages"
+import { ConnectFour, Home } from "./pages"
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom"
+import { NavBar } from "./components"
 
 const Pages = () => (
-    <ConnectFour height={6} width={7} />
+  <Switch>
+    <Route path="/" exact>
+      <Home />
+    </Route>
+    <Route path="/play" exact>
+      <ConnectFour height={6} width={7} />
+    </Route>
+  </Switch>
 )
 
 function App() {
   return (
     <Router>
       <div className="App">
+        <NavBar />
         <div className="content">
-          <Switch>
-            <Pages />
-          </Switch>
+          <Pages />
         </div>
       </div>
     </Router>
