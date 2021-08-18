@@ -71,6 +71,9 @@ body {
 }
 
 .title {
+  position: fixed;
+  top: 10vh;
+  left: 0;
   background-color: #000b;
   position: absolute;
   width: 100vw;
