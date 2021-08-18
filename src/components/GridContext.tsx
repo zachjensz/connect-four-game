@@ -34,7 +34,7 @@ export const GridProvider = ({ children, height, width }: Props) => {
         dropDisc: (column: number, player: Player) => {
           const drop = dropDisc(grid, column, player)
           if (drop) setGrid(drop.newGrid)
-          throw new Error('invalid grid')
+          else console.log('invalid drop, column full?')
         }
       }}
     >
