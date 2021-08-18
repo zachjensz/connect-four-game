@@ -1,8 +1,9 @@
 import "./App.css"
+import { ConnectFour } from "./pages"
 
 function App() {
   return (
-    <div className={'App'}>Hello</div>
+    <ConnectFour height={6} width={7} />
   )
 }
 

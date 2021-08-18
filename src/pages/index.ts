@@ -1,3 +1,4 @@
 import './pages.css'
+import ConnectFour from './ConnectFour'
 
-export { }
+export { ConnectFour }

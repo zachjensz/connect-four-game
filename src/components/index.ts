@@ -1,3 +1,9 @@
 import "./components.css"
+import Board from './Board'
+import { GridContext, GridProvider } from "./GridContext"
 
-export {  }
+export { 
+    Board,
+    GridContext,
+    GridProvider
+ }
