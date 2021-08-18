@@ -1,0 +1,67 @@
+/* @import url('https://fonts.googleapis.com/css2?family=Syne+Mono&display=swap'); */
+
+.App {
+    /* font-family: 'Syne Mono', monospace; */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: center;
+    align-items: 'center';
+    border-radius: 5;
+    margin: 5;
+    background-color: 'black';
+    width: 100%;
+    height: 100%;
+}
+
+.App .Light {
+    color: #2c3e50;
+    background-color: 'black';
+    border: '2px solid white';
+}
+
+.App .Dark {
+    color: #2c3e50;
+    background-color: 'black';
+    border: '2px solid white';
+}
+
+.App-logo {
+    height: 40vmin;
+    pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .App-logo {
+        animation: App-logo-spin infinite 20s linear;
+    }
+}
+
+.App-header {
+    background-color: #282c34;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: white;
+}
+
+.App-link {
+    color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.content {
+    max-width: '100%';
+    margin: 0px auto;
+    padding: 20px;
+}
