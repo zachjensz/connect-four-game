@@ -9,7 +9,6 @@ interface Props {
 }
 
 export default function Slot({ x, y, value, onClick }: Props) {
-    const { grid } = useContext(GridContext)
     return (
         <div className='slot' onClick={() => onClick(x, y)}>
             {value ? '1' : '0'}
