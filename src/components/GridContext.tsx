@@ -42,6 +42,30 @@ const createGrid = (height: number, width: number) =>
     .fill(0)
     .map(() => Array(width).fill(0))
 
+// Drop tests each column looking for any column that would create a connect four
+function evalAllDrops(srcGrid: Grid, player: Player = 1) {
+  const results = [],
+    min_seq = 4
+  // Column
+  for (let x = 0; x < srcGrid.length; x++) {
+    const grid = cloneGrid(srcGrid)
+    // Row
+    for (let i = 0; i < srcGrid[0].length; i++) {
+      if (grid[i + 1]?.[x] === 0) continue
+      if (grid[i]?.[x] === 0) {
+        grid[i][x] = player
+        const result = {
+          column: x,
+          player: player,
+          seq: validSeq(grid, player, i, x, min_seq),
+        }
+        if (result.seq.length > 0) results.push(result)
+      }
+    }
+  }
+  return results
+}
+
 function dropDisc(srcGrid: Grid, x: number, player: Player = 1, min_seq = 4) {
   const gameGrid = cloneGrid(srcGrid)
   for (let i = 0; i < gameGrid.length; i++) {
@@ -103,18 +127,18 @@ function cast(
 export function lowestHeightColumns(grid: Grid) {}
 
 // Returns the height of a column
-function getColumnHeight(gameGrid: Grid, x: number) {
+function getColumnHeight(grid: Grid, x: number) {
   let height = 0
-  for (let i = gameGrid.length - 1; i >= 0; i--) {
-    if (gameGrid[i][x] === 0) return height
+  for (let i = grid.length - 1; i >= 0; i--) {
+    if (grid[i][x] === 0) return height
     height++
   }
-  return gameGrid.length
+  return grid.length
 }
 
 // Is the grid full
-function isGridFull(gameGrid: Grid) {
+function isGridFull(grid: Grid) {
   let full = true
-  gameGrid[0].forEach((disc) => (disc === 0 ? (full = false) : undefined))
+  grid[0].forEach((disc) => (disc === 0 ? (full = false) : undefined))
   return full
 }
