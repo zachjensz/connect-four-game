@@ -18,13 +18,14 @@ const BoardRow = ({ row, index: x, onClick }: RowProps) => {
 }
 
 export default function Board() {
-  const { grid, height, width } = useContext(GridContext)
+  const { grid, height, width, dropDisc } = useContext(GridContext)
   return (
     <div id='grid'>
       {grid.map((row, x) =>
         <div key={`x:${x}`}>
           <BoardRow row={row} index={x} onClick={(x, y) => {
             console.log("click: ", x, y)
+            dropDisc(x, 1)
           }} />
         </div>
       )}
