@@ -7,17 +7,13 @@ import reportWebVitals from './reportWebVitals';
 //@ts-expect-error
 import MetaTags from 'react-meta-tags';
 
-import "normalize.css/normalize.css"
-import "@blueprintjs/icons/lib/css/blueprint-icons.css"
-import "@blueprintjs/core/lib/css/blueprint.css"
-
 ReactDOM.render(
   <React.StrictMode>
-    <MetaTags>
+    {/* <MetaTags>
       <title>Hello People</title>
       <meta name="color-scheme" content="light dark" />
       <meta name="supported-color-scheme" content="light dark" />
-    </MetaTags>
+    </MetaTags> */}
     <App />
   </React.StrictMode>,
   document.getElementById('root')
