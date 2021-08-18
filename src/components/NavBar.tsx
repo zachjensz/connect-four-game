@@ -9,7 +9,7 @@ const Navbar = () => {
                 <Link to="/play">Play</Link>
             </div>
         </nav>
-    );
+    )
 }
 
-export default Navbar;
+export default Navbar
