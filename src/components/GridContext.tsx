@@ -24,11 +24,6 @@ export const GridContext = createContext<ContextType>({
 
 export const GridProvider = ({ children, height, width }: Props) => {
   const [grid, setGrid] = useState<number[][]>(createGrid(height, width))
-
-  const dropDiscExport = (column: number, player: Player) => {
-    const drop = dropDisc(grid, column, player)
-    if (drop) setGrid(drop.newGrid)
-  }
   
   return (
     <GridContext.Provider
@@ -36,7 +31,11 @@ export const GridProvider = ({ children, height, width }: Props) => {
         grid,
         width,
         height,
-        dropDisc: dropDiscExport
+        dropDisc: (column: number, player: Player) => {
+          const drop = dropDisc(grid, column, player)
+          if (drop) setGrid(drop.newGrid)
+          throw new Error('invalid grid')
+        }
       }}
     >
       {children}
