@@ -1,6 +1,4 @@
 :root {
-  --width: 7;
-  --height: 6;
   --board: #0c3eb9;
   --background: #222;
   --main: #eee;
@@ -20,6 +18,8 @@ body {
 }
 #grid {
   --size: 90vmin;
+  --width: 7;
+  --height: 6;
   background-color: var(--board);
   padding: 1vmin;
   border-radius: 2vmin;

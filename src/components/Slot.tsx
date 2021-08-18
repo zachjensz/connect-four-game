@@ -10,7 +10,7 @@ interface Props {
 export default function Slot({ x, y, value }: Props) {
     const { grid } = useContext(GridContext)
     return (
-        <div>
+        <div className='slot'>
             {value ? '1' : '0'}
         </div>
     )
