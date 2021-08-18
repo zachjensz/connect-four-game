@@ -1,5 +1,4 @@
 import { Link, LinkProps, useLocation } from "react-router-dom";
-import './components.css'
 
 const Navbar = ({ children, ...restProps }: LinkProps) => {
     const location = useLocation()

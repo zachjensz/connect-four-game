@@ -1,4 +1,4 @@
-import './pages.css'
+import './index.css'
 import ConnectFour from './ConnectFour'
 import Home from './Home'
 

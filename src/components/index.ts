@@ -1,4 +1,4 @@
-import "./components.css"
+import "./index.css"
 import Board from './Board'
 import { GridContext, GridProvider } from "./GridContext"
 import Link from './Link'
