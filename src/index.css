@@ -29,11 +29,12 @@ body {
   grid-template-columns: repeat(var(--width), 1fr);
 }
 .slot {
+  margin-bottom: 1vh;
   background-color: var(--background);
   border: 2px solid var(--background);
   border-radius: 50%;
-  width: 90%;
-  height: 90%;
+  width: 9.5vh;
+  height: 9.5vh;
 }
 
 @keyframes fall-animation {
