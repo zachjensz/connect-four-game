@@ -1,17 +1,22 @@
 import React, { useContext } from 'react'
 import { GridContext } from './GridContext'
+import './slot.css'
 
 interface Props {
-    x: number,
-    y: number,
-    value: number
-    onClick: (x: number, y: number) => any
+  x: number
+  y: number
+  value: number
+  onClick: (x: number, y: number) => any
 }
 
 export default function Slot({ x, y, value, onClick }: Props) {
-    return (
-        <div className='slot' onClick={() => onClick(x, y)}>
-            {value ? '1' : '0'}
-        </div>
-    )
+  return (
+    <div
+      className='slot'
+      data-x={x}
+      data-y={y}
+      data-value={value}
+      onClick={() => onClick(x, y)}
+    ></div>
+  )
 }

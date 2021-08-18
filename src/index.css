@@ -28,46 +28,6 @@ body {
   display: grid;
   grid-template-columns: repeat(var(--width), 1fr);
 }
-.slot {
-  background-color: var(--background);
-  border: 2px solid var(--background);
-  border-radius: 50%;
-  width: 95%;
-  height: 95%;
-}
-
-@keyframes fall-animation {
-  from {
-    transform: translateY(-200px);
-  }
-  to {
-    transform: translateY(0);
-  }
-}
-
-.slot[data-value*='1'] {
-  border: 2px solid hsl(0, 100%, 40%);
-  background-color: hsl(0, 100%, 40%);
-  animation-name: fall-animation;
-  animation-duration: 300ms;
-}
-.slot[data-value*='2'] {
-  border: 2px solid darkgoldenrod;
-  background-color: darkgoldenrod;
-  animation-name: fall-animation;
-  animation-duration: 300ms;
-}
-.slot[data-value='-1'] {
-  border: 8px solid hsl(0, 100%, 40%);
-  background-color: #0f0a;
-}
-.slot[data-value='-2'] {
-  border: 8px solid darkgoldenrod;
-  background-color: #0f0a;
-}
-.slot:hover {
-  cursor: pointer;
-}
 
 .title {
   position: fixed;
