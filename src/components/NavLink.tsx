@@ -1,6 +1,6 @@
 import { Link, LinkProps, useLocation } from "react-router-dom"
 
-const Navbar = ({ children, ...restProps }: LinkProps) => {
+const NavLink = ({ children, ...restProps }: LinkProps) => {
     const location = useLocation()
 
     return (
@@ -10,4 +10,4 @@ const Navbar = ({ children, ...restProps }: LinkProps) => {
     )
 }
 
-export default Navbar
+export default NavLink

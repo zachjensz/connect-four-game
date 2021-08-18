@@ -1,12 +1,12 @@
-import { Link } from '.'
+import { NavLink } from '.'
 
 const Navbar = () => {
     return (
         <nav className="navbar">
             <h1>ConnectFour</h1>
             <div className="links">
-                <Link to="/">Home</Link>
-                <Link to="/play">Play</Link>
+                <NavLink to="/">Home</NavLink>
+                <NavLink to="/play">Play</NavLink>
             </div>
         </nav>
     )
