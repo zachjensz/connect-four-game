@@ -29,7 +29,7 @@ body {
   grid-template-columns: repeat(var(--width), 1fr);
 }
 .slot {
-  margin-bottom: 1vh;
+  margin-bottom: 0.25vh;
   background-color: var(--background);
   border: 2px solid var(--background);
   border-radius: 50%;
