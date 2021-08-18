@@ -4,10 +4,10 @@ import Slot from "./Slot"
 
 interface RowProps {
   row: number[]
-  x: number
+  index: number
 }
 
-const BoardRow = ({ row, x }: RowProps) => {
+const BoardRow = ({ row, index: x }: RowProps) => {
   return (
     <div>
       {row.map((value, y) => (
@@ -20,10 +20,10 @@ const BoardRow = ({ row, x }: RowProps) => {
 export default function Board() {
   const { grid, height, width } = useContext(GridContext)
   return (
-    <div>
+    <div id='grid'>
       {grid.map((row, x) =>
         <div>
-          <BoardRow row={row} x={x} />
+          <BoardRow row={row} index={x} />
         </div>
       )}
     </div>
