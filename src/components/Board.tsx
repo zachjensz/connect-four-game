@@ -9,11 +9,12 @@ interface Props {
 }
 
 export default function Board({ initialPlayer, computerPlayer }: Props) {
-  const { grid, dropDisc } = useContext(GridContext)
+  const { grid, dropDisc, resetGrid } = useContext(GridContext)
   const net = useContext(NetworkContext)
   const [turn, setTurn] = useState(initialPlayer ?? 1)
 
   useEffect(() => {
+    resetGrid() 
     if (computerPlayer) return
     net.connect()
     return () => {
