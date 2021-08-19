@@ -1,5 +1,6 @@
 import React from "react"
 import { GridProvider, Board } from "../components"
+import NetworkProvider from "../components/NetworkContext"
 
 interface Props {
   width: number
@@ -8,8 +9,10 @@ interface Props {
 
 export default function ConnectFour({ width, height }: Props) {
   return (
-    <GridProvider width={width} height={height}>
-      <Board />
-    </GridProvider>
+    <NetworkProvider>
+      <GridProvider width={width} height={height}>
+        <Board computerPlayer={false} />
+      </GridProvider>
+    </NetworkProvider>
   )
 }

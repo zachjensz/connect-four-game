@@ -1,14 +1,17 @@
-import { useContext } from "react"
+import { useContext, useState } from "react"
 import { Slot, GridContext } from "."
 import { Player } from "../types"
 import GameOverBanner from "./GameOverBanner"
 
 interface Props {
   initialPlayer?: Player
+  computerPlayer: boolean
 }
 
-export default function Board({ initialPlayer }: Props) {
+export default function Board({ initialPlayer, computerPlayer }: Props) {
   const { grid, dropDisc } = useContext(GridContext)
+  const [turn, setTurn] = useState(initialPlayer ?? 1)
+
   return (
     <>
       <div id="grid">
@@ -20,7 +23,7 @@ export default function Board({ initialPlayer }: Props) {
               value={value}
               key={`${x},${y}`}
               onClick={(x, y) => {
-                dropDisc(x, true)
+                dropDisc(x, computerPlayer)
               }}
             />
           ))
@@ -30,3 +33,4 @@ export default function Board({ initialPlayer }: Props) {
     </>
   )
 }
+
