@@ -6,7 +6,8 @@ const Navbar = () => {
       <h1>ConnectFour</h1>
       <div className="links">
         <NavLink to="/">Home</NavLink>
-        <NavLink to="/play">Play</NavLink>
+        <NavLink to="/computer">Play Computer</NavLink>
+        <NavLink to="/play">Play Online</NavLink>
       </div>
     </nav>
   )

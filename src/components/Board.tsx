@@ -22,7 +22,7 @@ export default function Board({ initialPlayer, computerPlayer }: Props) {
   }, [])
 
   const onClick = (x: number, y: number) => {
-    if (turn !== 1) return
+    if (!computerPlayer && turn !== 1) return
     dropDisc(x, computerPlayer)
     if (!computerPlayer)
       setTurn(2)

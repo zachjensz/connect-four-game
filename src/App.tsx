@@ -8,8 +8,11 @@ const Pages = () => (
     <Route path="/" exact>
       <Home />
     </Route>
+    <Route path="/computer" exact>
+      <ConnectFour height={6} width={7} computerMoves={true} />
+    </Route>
     <Route path="/play" exact>
-      <ConnectFour height={6} width={7} />
+      <ConnectFour height={6} width={7} computerMoves={false} />
     </Route>
   </Switch>
 )
