@@ -57,6 +57,7 @@ export const GridProvider = ({ children, height, width }: Props) => {
         },
         resetGrid: () => {
           setGrid(createGrid(height, width))
+          setGameState(GameStates.PLAYING)
         }        
       }}
     >
