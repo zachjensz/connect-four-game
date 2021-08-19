@@ -20,7 +20,7 @@ type ContextType = {
 
 export const GridContext = createContext<ContextType>({
   grid: [],
-  gameState: GameStates.PLAYING,
+  gameState: GameStates.WAITING_FOR_OPPONENT,
   width: 0,
   height: 0,
   drop: () => undefined,
@@ -29,7 +29,7 @@ export const GridContext = createContext<ContextType>({
 
 export const GridProvider = ({ children, height, width }: Props) => {
   const [grid, setGrid] = useState<Grid>(createGrid(height, width))
-  const [gameState, setGameState] = useState<GameStates>(GameStates.PLAYING)
+  const [gameState, setGameState] = useState<GameStates>(GameStates.WAITING_FOR_OPPONENT)
   
   return (
     <GridContext.Provider
