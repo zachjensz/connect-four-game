@@ -1,6 +1,7 @@
-import { createContext, useEffect, useState } from "react"
+import { createContext, useEffect, useState } from 'react'
 import { Grid, Opponent, Player } from '../types'
 import { createGrid, dropDisc } from '../support/logic'
+import { computerMove } from '../support/logic-dumbot'
 
 interface Props {
   children: JSX.Element
@@ -13,18 +14,20 @@ type ContextType = {
   width: number
   height: number
   dropDisc: (column: number, player: Player) => any
+  computerMove: () => any
 }
 
 export const GridContext = createContext<ContextType>({
   grid: [],
   width: 0,
   height: 0,
-  dropDisc: () => undefined
+  dropDisc: () => undefined,
+  computerMove: () => undefined
 })
 
 export const GridProvider = ({ children, height, width }: Props) => {
   const [grid, setGrid] = useState<number[][]>(createGrid(height, width))
-  
+
   return (
     <GridContext.Provider
       value={{
@@ -35,6 +38,9 @@ export const GridProvider = ({ children, height, width }: Props) => {
           const drop = dropDisc(grid, column, player)
           if (drop) return setGrid(drop.newGrid)
           console.log('invalid drop, column full?')
+        },
+        computerMove: () => {
+          computerMove(grid)
         }
       }}
     >
@@ -42,4 +48,3 @@ export const GridProvider = ({ children, height, width }: Props) => {
     </GridContext.Provider>
   )
 }
-
