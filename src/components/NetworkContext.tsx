@@ -1,4 +1,4 @@
-import React, { createContext, useState } from "react"
+import React, { createContext, useEffect, useState } from "react"
 import { io, Socket } from "socket.io-client"
 import { DefaultEventsMap } from "socket.io-client/build/typed-events"
 
@@ -11,7 +11,7 @@ interface Props {
 }
 
 type ContextType = {
-  socket?: WebSocket
+  socket?: WebSocket | null
   connect: (serverUrl?: string) => void
   disconnect: () => void
   findOpponent: () => void
@@ -31,6 +31,10 @@ export const NetworkContext = createContext<ContextType>({
 
 export function NetworkProvider({ children }: Props) {  
   const [socket, setSocket] = useState<WebSocket | null>(null)
+
+  useEffect(() => {
+    console.log(`Server's socket connection:`, socket)
+  }, [socket])
 
   function connect(serverUrl = "http://localhost:5000") {
     setSocket(io(serverUrl))
@@ -72,6 +76,7 @@ export function NetworkProvider({ children }: Props) {
   return (
     <NetworkContext.Provider
       value={{
+        socket,
         connect,
         disconnect,
         findOpponent,
