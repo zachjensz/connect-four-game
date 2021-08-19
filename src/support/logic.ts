@@ -1,5 +1,11 @@
 import { Grid, Player } from '../types'
 
+export interface DiscDrop {
+  disc: number[],
+  seq: number[],
+  newGrid: Grid
+}
+
 export const createGrid = (height: number, width: number) =>
   Array(height)
     .fill(0)

@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState } from 'react'
 import { Grid, Opponent, Player } from '../types'
-import { createGrid, dropDisc } from '../support/logic'
+import { createGrid, DiscDrop, dropDisc } from '../support/logic'
 import { computerMove } from '../support/logic-dumbot'
 
 interface Props {
@@ -14,7 +14,7 @@ type ContextType = {
   width: number
   height: number
   dropDisc: (column: number, player: Player) => any
-  computerMove: () => any
+  computerMove: () => DiscDrop | undefined
 }
 
 export const GridContext = createContext<ContextType>({
@@ -40,7 +40,7 @@ export const GridProvider = ({ children, height, width }: Props) => {
           console.log('invalid drop, column full?')
         },
         computerMove: () => {
-          computerMove(grid)
+          return computerMove(grid)
         }
       }}
     >
