@@ -5,7 +5,7 @@ type ComputerMove = (grid: Grid) => any
 
 export const computerMove:ComputerMove = (grid: Grid) => {
   let column = -1
-  if (isGridFull(grid)) return
+  if (isGridFull(grid)) return null
 
   // Searches for computer wins
   const evalWins = evalAllDrops(grid, 2)
