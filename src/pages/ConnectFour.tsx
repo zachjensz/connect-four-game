@@ -1,6 +1,4 @@
-import React from "react"
-import { GridProvider, Board } from "../components"
-import NetworkProvider from "../components/NetworkContext"
+import { Board, GridProvider, NetworkProvider } from "../components"
 
 interface Props {
   width: number

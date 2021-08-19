@@ -1,5 +1,5 @@
-import { useContext, useState } from "react"
-import { Slot, GridContext } from "."
+import { useContext, useEffect, useState } from "react"
+import { Slot, GridContext, NetworkContext } from "."
 import { Player } from "../types"
 import GameOverBanner from "./GameOverBanner"
 
@@ -10,7 +10,23 @@ interface Props {
 
 export default function Board({ initialPlayer, computerPlayer }: Props) {
   const { grid, dropDisc } = useContext(GridContext)
+  const net = useContext(NetworkContext)
   const [turn, setTurn] = useState(initialPlayer ?? 1)
+
+  useEffect(() => {
+    if (computerPlayer) return
+    net.connect()
+    return () => {
+      net.disconnect()
+    }
+  }, [])
+
+  const onClick = (x: number, y: number) => {
+    if (turn !== 1) return
+    dropDisc(x, computerPlayer)
+    if (!computerPlayer)
+      setTurn(2)
+  }
 
   return (
     <>
@@ -22,15 +38,12 @@ export default function Board({ initialPlayer, computerPlayer }: Props) {
               y={y}
               value={value}
               key={`${x},${y}`}
-              onClick={(x, y) => {
-                dropDisc(x, computerPlayer)
-              }}
+              onClick={onClick}
             />
           ))
         )}
       </div>
-      <GameOverBanner isVisible={false}/>
+      <GameOverBanner isVisible={false} />
     </>
   )
 }
-

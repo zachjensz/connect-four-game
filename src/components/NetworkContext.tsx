@@ -12,7 +12,7 @@ interface Props {
 
 type ContextType = {
   socket?: WebSocket
-  connect: (serverUrl: string | undefined) => void
+  connect: (serverUrl?: string) => void
   disconnect: () => void
   findOpponent: () => void
   sendPlayerDrop: (column: number) => void
@@ -29,7 +29,7 @@ export const NetworkContext = createContext<ContextType>({
   onOpponentFound: () => undefined
 })
 
-export default function NetworkProvider({ children }: Props) {  
+export function NetworkProvider({ children }: Props) {  
   const [socket, setSocket] = useState<WebSocket | null>(null)
 
   function connect(serverUrl = "http://localhost:5000") {
