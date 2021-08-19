@@ -14,7 +14,7 @@ type ContextType = {
   gameState: GameStates
   width: number
   height: number
-  dropDisc: (column: number, doComputerMove: boolean) => any
+  drop: (column: number, doComputerMove: boolean) => any
   resetGrid: () => void
 }
 
@@ -23,7 +23,7 @@ export const GridContext = createContext<ContextType>({
   gameState: GameStates.PLAYING,
   width: 0,
   height: 0,
-  dropDisc: () => undefined,
+  drop: () => undefined,
   resetGrid: () => undefined
 })
 
@@ -38,7 +38,7 @@ export const GridProvider = ({ children, height, width }: Props) => {
         gameState,
         width,
         height,
-        dropDisc: (column: number, doComputerMove: boolean) => {
+        drop: (column: number, doComputerMove: boolean) => {
           const dropPlayer = dropDisc(grid, column, 1)
           if (!dropPlayer) return
           if (!doComputerMove) {
