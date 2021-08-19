@@ -15,7 +15,7 @@ type ContextType = {
   width: number
   height: number
   drop: (column: number, doComputerMove: boolean) => any
-  resetGrid: () => void
+  reset: () => void
 }
 
 export const GridContext = createContext<ContextType>({
@@ -24,7 +24,7 @@ export const GridContext = createContext<ContextType>({
   width: 0,
   height: 0,
   drop: () => undefined,
-  resetGrid: () => undefined
+  reset: () => undefined
 })
 
 export const GridProvider = ({ children, height, width }: Props) => {
@@ -55,7 +55,7 @@ export const GridProvider = ({ children, height, width }: Props) => {
           setGrid(dropPlayer.newGrid)
           return dropPlayer
         },
-        resetGrid: () => {
+        reset: () => {
           setGrid(createGrid(height, width))
           setGameState(GameStates.PLAYING)
         }        
