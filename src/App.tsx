@@ -9,10 +9,10 @@ const Pages = () => (
       <Home />
     </Route>
     <Route path="/computer" exact>
-      <ConnectFour height={6} width={7} computerMoves={true} />
+      <ConnectFour height={6} width={7} computerOpponent={true} />
     </Route>
     <Route path="/play" exact>
-      <ConnectFour height={6} width={7} computerMoves={false} />
+      <ConnectFour height={6} width={7} computerOpponent={false} />
     </Route>
   </Switch>
 )

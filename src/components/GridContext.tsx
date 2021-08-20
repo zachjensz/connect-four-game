@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from "react"
-import { GameStates, Grid, Opponent, Player } from "../types"
+import { GameResults, GameStates, Grid, Opponent, Player } from "../types"
 import { createGrid, DiscDrop, dropDisc } from "../support/logic"
 import { computerMove } from "../support/logic-dumbot"
 
@@ -7,11 +7,13 @@ interface Props {
   children: JSX.Element
   width: number
   height: number
+  computerOpponent: boolean
 }
 
 type ContextType = {
   grid: Grid
   gameState: GameStates
+  gameResults: GameResults
   width: number
   height: number
   drop: (column: number, doComputerMove: boolean) => any
@@ -21,21 +23,34 @@ type ContextType = {
 export const GridContext = createContext<ContextType>({
   grid: [],
   gameState: GameStates.WAITING_FOR_OPPONENT,
+  gameResults: GameResults.PLAYING,
   width: 0,
   height: 0,
   drop: () => undefined,
   reset: () => undefined
 })
 
-export const GridProvider = ({ children, height, width }: Props) => {
+export const GridProvider = ({ children, height, width, computerOpponent }: Props) => {
   const [grid, setGrid] = useState<Grid>(createGrid(height, width))
   const [gameState, setGameState] = useState<GameStates>(GameStates.WAITING_FOR_OPPONENT)
+  const [gameResults, setGameResults] = useState<GameResults>(GameResults.PLAYING)
   
+  useEffect(() => {
+    reset()
+  }, [computerOpponent])
+
+  const reset = () => {
+    setGrid(createGrid(height, width))
+    // TODO: The turn needs to be determined by the server for multiplayer
+    setGameState(GameStates.PLAYERS_TURN)
+  }
+
   return (
     <GridContext.Provider
       value={{
         grid,
         gameState,
+        gameResults,
         width,
         height,
         drop: (column: number, doComputerMove: boolean) => {
@@ -55,10 +70,7 @@ export const GridProvider = ({ children, height, width }: Props) => {
           setGrid(dropPlayer.newGrid)
           return dropPlayer
         },
-        reset: () => {
-          setGrid(createGrid(height, width))
-          setGameState(GameStates.PLAYING)
-        }        
+        reset        
       }}
     >
       {children}
