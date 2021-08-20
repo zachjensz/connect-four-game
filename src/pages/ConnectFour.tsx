@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react"
+import { useContext, useEffect, useState } from "react"
 import {
   Board,
   GridContext,
@@ -6,6 +6,7 @@ import {
   NetworkContext,
   NetworkProvider,
 } from "../components"
+import { GameStates, GameResults } from "../types"
 
 interface Props {
   width?: number
@@ -16,6 +17,12 @@ interface Props {
 function ConnectFourGame({ computerOpponent }: Props) {
   const net = useContext(NetworkContext)
   const { dropDisc } = useContext(GridContext)
+  const [gameState, setGameState] = useState<GameStates>(
+    GameStates.WAITING_FOR_OPPONENT
+  )
+  const [gameResults, setGameResults] = useState<GameResults>(
+    GameResults.PLAYING
+  )
 
   useEffect(() => {
     return () => {

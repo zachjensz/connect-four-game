@@ -12,8 +12,6 @@ interface Props {
 
 type ContextType = {
   grid: Grid
-  gameState: GameStates
-  gameResults: GameResults
   width: number
   height: number
   drop: (column: number, doComputerMove: boolean) => void
@@ -23,8 +21,6 @@ type ContextType = {
 
 export const GridContext = createContext<ContextType>({
   grid: [],
-  gameState: GameStates.WAITING_FOR_OPPONENT,
-  gameResults: GameResults.PLAYING,
   width: 0,
   height: 0,
   drop: () => undefined,
@@ -39,12 +35,6 @@ export const GridProvider = ({
   computerOpponent,
 }: Props) => {
   const [grid, setGrid] = useState<Grid>(createGrid(height, width))
-  const [gameState, setGameState] = useState<GameStates>(
-    GameStates.WAITING_FOR_OPPONENT
-  )
-  const [gameResults, setGameResults] = useState<GameResults>(
-    GameResults.PLAYING
-  )
 
   useEffect(() => {
     reset()
@@ -52,16 +42,12 @@ export const GridProvider = ({
 
   const reset = () => {
     setGrid(createGrid(height, width))
-    // TODO: The turn needs to be determined by the server for multiplayer
-    setGameState(GameStates.PLAYERS_TURN)
   }
 
   return (
     <GridContext.Provider
       value={{
         grid,
-        gameState,
-        gameResults,
         width,
         height,
         dropDisc: (column: number, player: Player) => {
