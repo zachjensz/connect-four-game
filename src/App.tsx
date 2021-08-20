@@ -4,10 +4,11 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom"
 import { NavBar } from "./components"
 
 const Pages = () => (
+
   <Switch>
     <Route path="/" exact>
       <Home />
-    </Route>
+    </Route>    
     <Route path="/computer" exact>
       <ConnectFour height={6} width={7} computerOpponent={true} />
     </Route>

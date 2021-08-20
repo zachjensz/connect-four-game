@@ -9,15 +9,13 @@ interface Props {
 }
 
 export default function Board({ initialPlayer, computerPlayer }: Props) {
-  const { grid, drop } = useContext(GridContext)  
-  const [turn, setTurn] = useState(initialPlayer ?? 0)
+  const { grid, drop } = useContext(GridContext)    
   const net = useContext(NetworkContext)
 
   const onClick = (x: number, y: number) => {
-    if (!computerPlayer && turn !== 1) return
+    if (!computerPlayer && net.turn !== 1) return
     drop(x, computerPlayer)
     if (!computerPlayer) {
-      setTurn(2)
       net.sendPlayerDrop(x)
     }
   }

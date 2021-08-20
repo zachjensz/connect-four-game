@@ -47,7 +47,7 @@ export function dropDisc(srcGrid: Grid, x: number, player: Player = 1, min_seq =
       return {
         disc: [i, +x],
         seq: sequence.length > min_seq - 1 ? sequence : [],
-        newGrid: gameGrid,
+        newGrid: gameGrid as Grid,
       }
     }
   }

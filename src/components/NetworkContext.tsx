@@ -1,8 +1,10 @@
 import React, { createContext, useEffect, useState } from "react"
 import { io, Socket } from "socket.io-client"
 import { DefaultEventsMap } from "socket.io-client/build/typed-events"
+import { Player } from "../types"
 
-type OnOpponentFoundCallback = (id: string) => void
+type OpponentFoundResults = { id: string; startingPlayer: boolean }
+type OnOpponentFoundCallback = (results: OpponentFoundResults) => void
 type OnDropCallback = (column: number) => void
 type WebSocket = Socket<DefaultEventsMap, DefaultEventsMap>
 
@@ -14,6 +16,7 @@ type ContextType = {
   socket?: WebSocket | null
   isConnected: boolean
   lookingForOpponent: boolean
+  turn: Player | null
   connect: (serverUrl?: string) => void
   disconnect: () => void
   findOpponent: () => void
@@ -25,6 +28,7 @@ type ContextType = {
 export const NetworkContext = createContext<ContextType>({
   isConnected: false,
   lookingForOpponent: false,
+  turn: null,
   connect: () => undefined,
   disconnect: () => undefined,
   findOpponent: () => undefined,
@@ -37,21 +41,21 @@ export function NetworkProvider({ children }: Props) {
   const [socket, setSocket] = useState<WebSocket | null>(null)
   const [isConnected, setIsConnected] = useState(false)
   const [lookingForOpponent, setLookingForOpponent] = useState(false)
+  const [turn, setTurn] = useState<Player | null>(null)
 
   useEffect(() => {
     return () => {
-      if (socket?.connected)
-        socket.disconnect()
+      if (socket?.connected) socket.disconnect()
     }
   }, [])
 
   function connect(serverUrl = "http://localhost:5000") {
     const sock = io(serverUrl)
-    sock.on('connect', () => {
+    sock.on("connect", () => {
       setIsConnected(true)
       setLookingForOpponent(false)
     })
-    sock.on('disconnect', () => {
+    sock.on("disconnect", () => {
       setIsConnected(false)
       setLookingForOpponent(false)
     })
@@ -73,19 +77,28 @@ export function NetworkProvider({ children }: Props) {
 
   function sendPlayerDrop(column: number) {
     if (!socket) throw new Error("not connected to server")
-    socket.emit("drop", column)
-    console.log(`emit ${column}`)
+    if (turn === 1) {
+      socket.emit("drop", column)
+      console.log(`emit ${column}`)
+      setTurn(2)
+    }
   }
 
   function onOpponentDrop(callback: OnDropCallback) {
     if (!socket) throw new Error("not connected to server")
-    socket.on("drop", callback)
+    socket.on("drop", (props) => {
+      setTurn(1)
+      callback(props)
+    })    
   }
 
   function onOpponentFound(callback: OnOpponentFoundCallback) {
     if (!socket) throw new Error("not connected to server")
-    setLookingForOpponent(false)
-    socket.on("opponent-found", callback)
+    socket.on("opponent-found", (props) => {
+      setTurn(props.startingPlayer ? 1 : 2)
+      setLookingForOpponent(false)
+      callback(props)
+    })
   }
 
   return (
@@ -94,6 +107,7 @@ export function NetworkProvider({ children }: Props) {
         socket,
         isConnected,
         lookingForOpponent,
+        turn,
         connect,
         disconnect,
         findOpponent,

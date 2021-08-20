@@ -1,19 +1,21 @@
 import { useContext, useEffect } from "react"
 import {
   Board,
+  GridContext,
   GridProvider,
   NetworkContext,
   NetworkProvider,
 } from "../components"
 
 interface Props {
-  width: number
-  height: number
+  width?: number
+  height?: number
   computerOpponent: boolean
 }
 
-function ConnectFourGame({ width, height, computerOpponent }: Props) {
+function ConnectFourGame({ computerOpponent }: Props) {
   const net = useContext(NetworkContext)
+  const { dropDisc } = useContext(GridContext)
 
   useEffect(() => {
     return () => {
@@ -25,10 +27,8 @@ function ConnectFourGame({ width, height, computerOpponent }: Props) {
   useEffect(() => {
     if (computerOpponent) {
       console.log("Using computer opponent")
-      if (net.isConnected)
-        net.disconnect()
-    }
-    else {
+      if (net.isConnected) net.disconnect()
+    } else {
       net.connect()
       console.log("Looking for human opponent")
     }
@@ -39,24 +39,23 @@ function ConnectFourGame({ width, height, computerOpponent }: Props) {
       console.log(`Connected to server as ${net.socket?.id}`)
       net.onOpponentDrop((column) => {
         console.log(`Opponent drop: ${column}`)
+        dropDisc(column, 2)        
       })
-      net.onOpponentFound((id) => {
-        console.log(`Opponent found:`, id)
+      net.onOpponentFound(({ id, startingPlayer }) => {
+        console.log(`Opponent found:`, id, startingPlayer)
       })
       net.findOpponent()
     }
     //console.log(`Connection state change ${net.isConnected}`)
   }, [net.isConnected])
 
+  useEffect(() => {
+    console.log("turn: ", net.turn)
+  }, [net.turn])
+
   return (
     <div>
-      <GridProvider
-        width={width}
-        height={height}
-        computerOpponent={computerOpponent}
-      >
-        <Board computerPlayer={computerOpponent} />
-      </GridProvider>
+      <Board computerPlayer={computerOpponent} />
       {net.lookingForOpponent ? <div>Waiting for opponent...</div> : undefined}
     </div>
   )
@@ -64,10 +63,12 @@ function ConnectFourGame({ width, height, computerOpponent }: Props) {
 
 export default ({ width, height, computerOpponent }: Props) => (
   <NetworkProvider>
-    <ConnectFourGame
-      width={width}
-      height={height}
+    <GridProvider
+      width={width ?? 7}
+      height={height ?? 6}
       computerOpponent={computerOpponent}
-    />
+    >
+      <ConnectFourGame computerOpponent={computerOpponent} />
+    </GridProvider>
   </NetworkProvider>
 )
