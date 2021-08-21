@@ -1,7 +1,4 @@
-import {
-  GridProvider,
-  NetworkProvider,
-} from "../components"
+import { GridProvider, NetworkProvider } from "../components"
 import { ConnectFourGame } from "../components"
 import { GameStates } from "../types"
 
@@ -17,7 +14,10 @@ export default ({ width, height }: Props) => (
       height={height ?? 6}
       computerOpponent={false}
     >
-      <ConnectFourGame computerOpponent={false} initialGameState={GameStates.WAITING_FOR_OPPONENT} />
+      <ConnectFourGame
+        computerOpponent={false}
+        initialGameState={GameStates.WAITING_FOR_OPPONENT}
+      />
     </GridProvider>
   </NetworkProvider>
 )
