@@ -2,19 +2,15 @@ import { useContext, useEffect, useState } from "react"
 import {
   Board,
   GridContext,
-  GridProvider,
   NetworkContext,
-  NetworkProvider,
 } from "../components"
 import { GameStates, GameResults, Player } from "../types"
 
 interface Props {
-  width?: number
-  height?: number
   computerOpponent: boolean
 }
 
-function ConnectFourGame({ computerOpponent }: Props) {
+export default function ConnectFourGame({ computerOpponent }: Props) {
   const net = useContext(NetworkContext)
   const { grid, dropDisc, computerMove } = useContext(GridContext)
   const [gameState, setGameState] = useState<GameStates>(
@@ -84,15 +80,3 @@ function ConnectFourGame({ computerOpponent }: Props) {
     </div>
   )
 }
-
-export default ({ width, height, computerOpponent }: Props) => (
-  <NetworkProvider>
-    <GridProvider
-      width={width ?? 7}
-      height={height ?? 6}
-      computerOpponent={computerOpponent}
-    >
-      <ConnectFourGame computerOpponent={computerOpponent} />
-    </GridProvider>
-  </NetworkProvider>
-)

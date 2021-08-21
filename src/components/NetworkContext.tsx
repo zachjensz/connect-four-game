@@ -1,7 +1,6 @@
 import React, { createContext, useEffect, useState } from "react"
 import { io, Socket } from "socket.io-client"
 import { DefaultEventsMap } from "socket.io-client/build/typed-events"
-import { Player } from "../types"
 
 type OpponentFoundResults = { id: string; startingPlayer: boolean }
 type OnOpponentFoundCallback = (results: OpponentFoundResults) => void

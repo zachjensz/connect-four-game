@@ -6,6 +6,7 @@ import NavBar from "./NavBar"
 import { NetworkContext, NetworkProvider } from "./NetworkContext"
 import Page from "./Page"
 import Slot from './Slot'
+import ConnectFourGame from './ConnectFourGame'
 
 export { 
     Board,
@@ -17,4 +18,5 @@ export {
     NetworkProvider,
     Page,
     Slot,
+    ConnectFourGame
  }

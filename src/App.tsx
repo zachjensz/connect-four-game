@@ -1,5 +1,5 @@
 import "./App.css"
-import { ConnectFour, Home } from "./pages"
+import { PlayerVersesComputer, PlayerVersesPlayer, Home } from "./pages"
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom"
 import { NavBar } from "./components"
 
@@ -10,10 +10,10 @@ const Pages = () => (
       <Home />
     </Route>    
     <Route path="/computer" exact>
-      <ConnectFour height={6} width={7} computerOpponent={true} />
+      <PlayerVersesComputer height={6} width={7} />
     </Route>
     <Route path="/play" exact>
-      <ConnectFour height={6} width={7} computerOpponent={false} />
+      <PlayerVersesPlayer height={6} width={7} />
     </Route>
   </Switch>
 )

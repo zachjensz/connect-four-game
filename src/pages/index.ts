@@ -1,5 +1,6 @@
 import './index.css'
-import ConnectFour from './ConnectFour'
+import PlayerVersesPlayer from './PlayerVersesPlayer'
+import PlayerVersesComputer from './PlayerVersesComputer'
 import Home from './Home'
 
-export { ConnectFour, Home }
+export { PlayerVersesPlayer, PlayerVersesComputer, Home }

@@ -15,7 +15,7 @@ type ContextType = {
   grid: Grid
   width: number
   height: number  
-  dropDisc: (column: number, player: Player) => DiscDrop | undefined
+  dropDisc: (column: number, player: Player) => void
   computerMove: () => void
   reset: () => void
 }
@@ -57,7 +57,6 @@ export const GridProvider = ({
           console.log("drop:", drop)
           if (drop)
             setGrid(drop.newGrid)
-          return drop
         },
         computerMove: () => {
           const move = computerMove(grid)
