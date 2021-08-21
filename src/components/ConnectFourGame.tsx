@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react"
 import { Board, GridContext, NetworkContext } from "../components"
-import { GameStates, GameResults, Player } from "../types"
+import { GameStates, GameResults } from "../types"
 
 interface Props {
   initialGameState: GameStates
