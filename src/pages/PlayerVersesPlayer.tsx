@@ -7,13 +7,9 @@ interface Props {
   height?: number
 }
 
-export default ({ width, height }: Props) => (
+export default ({ width = 7, height = 6 }: Props) => (
   <NetworkProvider>
-    <GridProvider
-      width={width ?? 7}
-      height={height ?? 6}
-      computerOpponent={false}
-    >
+    <GridProvider width={width} height={height} computerOpponent={false}>
       <ConnectFourGame
         computerOpponent={false}
         initialGameState={GameStates.WAITING_FOR_OPPONENT}
