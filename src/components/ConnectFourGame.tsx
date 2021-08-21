@@ -1,5 +1,6 @@
-import { useContext, useEffect, useState } from "react"
+import { useContext, useEffect, useRef, useState } from "react"
 import { Board, GridContext, NetworkContext } from "../components"
+import { useInterval } from "../hooks"
 import { GameStates, GameResults } from "../types"
 
 interface Props {
@@ -7,13 +8,24 @@ interface Props {
   computerOpponent: boolean
 }
 
-export default function ConnectFourGame({ computerOpponent, initialGameState }: Props) {
+export default function ConnectFourGame({
+  computerOpponent,
+  initialGameState,
+}: Props) {
   const net = useContext(NetworkContext)
-  const { grid, dropDisc } = useContext(GridContext)
+  const { dropDisc, computerMove } = useContext(GridContext)
   const [gameState, setGameState] = useState<GameStates>(initialGameState)
   const [gameResults, setGameResults] = useState<GameResults>(
     GameResults.PLAYING
   )
+  const [computerMoveStart, setComputerMoveStart] = useState(false)
+
+  useInterval(() => {
+    if (!computerMoveStart) return
+    computerMove()
+    setComputerMoveStart(false)
+    setGameState(GameStates.PLAYERS_TURN)
+  }, 500)
 
   useEffect(() => {
     return () => {
@@ -31,7 +43,7 @@ export default function ConnectFourGame({ computerOpponent, initialGameState }: 
   }, [computerOpponent])
 
   useEffect(() => {
-    if (net.isConnected) {
+    if (computerOpponent && net.isConnected) {
       console.log(`Connected to server as ${net.socket?.id}`)
       net.onOpponentDrop((column) => {
         console.log(`Opponent drop: ${column}`)
@@ -58,8 +70,10 @@ export default function ConnectFourGame({ computerOpponent, initialGameState }: 
     dropDisc(x, 1)
     if (!computerOpponent) {
       net.sendPlayerDrop(x)
-      setGameState(GameStates.OPPONENTS_TURN)
+    } else {
+      setComputerMoveStart(true)
     }
+    setGameState(GameStates.OPPONENTS_TURN)
   }
 
   return (
