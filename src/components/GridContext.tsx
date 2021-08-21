@@ -3,6 +3,7 @@ import { GameResults, GameStates, Grid, Opponent, Player } from "../types"
 import { createGrid, DiscDrop, dropDisc } from "../support/logic"
 import { computerMove } from "../support/logic-dumbot"
 
+
 interface Props {
   children: JSX.Element
   width: number
@@ -13,9 +14,9 @@ interface Props {
 type ContextType = {
   grid: Grid
   width: number
-  height: number
-  drop: (column: number, doComputerMove: boolean) => void
-  dropDisc: (column: number, player: Player) => void
+  height: number  
+  dropDisc: (column: number, player: Player) => DiscDrop | undefined
+  computerMove: () => void
   reset: () => void
 }
 
@@ -23,8 +24,8 @@ export const GridContext = createContext<ContextType>({
   grid: [],
   width: 0,
   height: 0,
-  drop: () => undefined,
   dropDisc: () => undefined,
+  computerMove: () => undefined,
   reset: () => undefined,
 })
 
@@ -37,6 +38,7 @@ export const GridProvider = ({
   const [grid, setGrid] = useState<Grid>(createGrid(height, width))
 
   useEffect(() => {
+    console.log("reset")
     reset()
   }, [computerOpponent])
 
@@ -52,26 +54,17 @@ export const GridProvider = ({
         height,
         dropDisc: (column: number, player: Player) => {
           const drop = dropDisc(grid, column, player)
+          console.log("drop:", drop)
           if (drop)
             setGrid(drop.newGrid)
           return drop
         },
-        drop: (column: number, doComputerMove: boolean) => {
-          const dropPlayer = dropDisc(grid, column, 1)
-          if (!dropPlayer) return
-          if (!doComputerMove) {
-            setGrid(dropPlayer.newGrid)
-            return dropPlayer
-          }
-          const move = computerMove(dropPlayer.newGrid)
-          if (!move) return dropPlayer
-          const dropComputer = dropDisc(dropPlayer.newGrid, move.disc[1], 2)
-          if (dropComputer) {
-            setGrid(dropComputer.newGrid)
-            return dropComputer
-          }
-          setGrid(dropPlayer.newGrid)
-          return dropPlayer
+        computerMove: () => {
+          const move = computerMove(grid)
+          if (!move) return 
+          const drop = dropDisc(grid, move.disc[1], 2)
+          if (drop)
+            setGrid(drop.newGrid)
         },
         reset,
       }}

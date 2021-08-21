@@ -4,21 +4,11 @@ import { Player } from "../types"
 import GameOverBanner from "./GameOverBanner"
 
 interface Props {
-  initialPlayer?: Player
-  computerPlayer: boolean
+  onClick: (x: number, y: number) => void
 }
 
-export default function Board({ initialPlayer, computerPlayer }: Props) {
-  const { grid, drop } = useContext(GridContext)    
-  const net = useContext(NetworkContext)
-
-  const onClick = (x: number, y: number) => {
-    if (!computerPlayer && net.turn !== 1) return
-    drop(x, computerPlayer)
-    if (!computerPlayer) {
-      net.sendPlayerDrop(x)
-    }
-  }
+export default function Board({ onClick }: Props) {
+  const { grid } = useContext(GridContext)    
 
   return (
     <>

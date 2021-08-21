@@ -15,8 +15,6 @@ interface Props {
 type ContextType = {
   socket?: WebSocket | null
   isConnected: boolean
-  lookingForOpponent: boolean
-  turn: Player | null
   connect: (serverUrl?: string) => void
   disconnect: () => void
   findOpponent: () => void
@@ -27,8 +25,6 @@ type ContextType = {
 
 export const NetworkContext = createContext<ContextType>({
   isConnected: false,
-  lookingForOpponent: false,
-  turn: null,
   connect: () => undefined,
   disconnect: () => undefined,
   findOpponent: () => undefined,
@@ -40,8 +36,6 @@ export const NetworkContext = createContext<ContextType>({
 export function NetworkProvider({ children }: Props) {
   const [socket, setSocket] = useState<WebSocket | null>(null)
   const [isConnected, setIsConnected] = useState(false)
-  const [lookingForOpponent, setLookingForOpponent] = useState(false)
-  const [turn, setTurn] = useState<Player | null>(null)
 
   useEffect(() => {
     return () => {
@@ -53,11 +47,9 @@ export function NetworkProvider({ children }: Props) {
     const sock = io(serverUrl)
     sock.on("connect", () => {
       setIsConnected(true)
-      setLookingForOpponent(false)
     })
     sock.on("disconnect", () => {
       setIsConnected(false)
-      setLookingForOpponent(false)
     })
     setSocket(sock)
   }
@@ -69,36 +61,23 @@ export function NetworkProvider({ children }: Props) {
 
   function findOpponent() {
     if (!socket) throw new Error("not connected to server")
-    if (lookingForOpponent) return
-    console.log("findOpponent request")
     socket.emit("find-opponent")
-    setLookingForOpponent(true)
   }
 
   function sendPlayerDrop(column: number) {
     if (!socket) throw new Error("not connected to server")
-    if (turn === 1) {
-      socket.emit("drop", column)
-      console.log(`emit ${column}`)
-      setTurn(2)
-    }
+    socket.emit("drop", column)
+    console.log(`emit ${column}`)
   }
 
   function onOpponentDrop(callback: OnDropCallback) {
     if (!socket) throw new Error("not connected to server")
-    socket.on("drop", (props) => {
-      setTurn(1)
-      callback(props)
-    })    
+    socket.on("drop", callback)
   }
 
   function onOpponentFound(callback: OnOpponentFoundCallback) {
     if (!socket) throw new Error("not connected to server")
-    socket.on("opponent-found", (props) => {
-      setTurn(props.startingPlayer ? 1 : 2)
-      setLookingForOpponent(false)
-      callback(props)
-    })
+    socket.on("opponent-found", callback)
   }
 
   return (
@@ -106,8 +85,6 @@ export function NetworkProvider({ children }: Props) {
       value={{
         socket,
         isConnected,
-        lookingForOpponent,
-        turn,
         connect,
         disconnect,
         findOpponent,
