@@ -60,8 +60,10 @@ export const GridProvider = ({
         },
         computerMove: () => {
           const move = computerMove(grid)
+          console.log('move:', move)
           if (!move) return 
           const drop = dropDisc(grid, move.disc[1], 2)
+          console.log('drop:', drop)
           if (drop)
             setGrid(drop.newGrid)
         },

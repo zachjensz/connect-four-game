@@ -20,12 +20,13 @@ export default function ConnectFourGame({
   )
   const [computerMoveStart, setComputerMoveStart] = useState(false)
 
+  // delay the computer's move
   useInterval(() => {
     if (!computerMoveStart) return
     computerMove()
     setComputerMoveStart(false)
     setGameState(GameStates.PLAYERS_TURN)
-  }, 500)
+  }, computerOpponent ? 500 : null)
 
   useEffect(() => {
     return () => {
@@ -36,14 +37,15 @@ export default function ConnectFourGame({
 
   useEffect(() => {
     if (computerOpponent) {
-      if (net.isConnected) net.disconnect()
+      net.disconnect()
     } else {
       net.connect()
     }
   }, [computerOpponent])
 
   useEffect(() => {
-    if (computerOpponent && net.isConnected) {
+    if (computerOpponent) return
+    if (net.isConnected) {
       console.log(`Connected to server as ${net.socket?.id}`)
       net.onOpponentDrop((column) => {
         console.log(`Opponent drop: ${column}`)
