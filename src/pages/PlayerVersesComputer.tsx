@@ -19,7 +19,7 @@ export default ({ width, height }: Props) => (
       height={height ?? 6}
       computerOpponent={true}
     >
-      <ConnectFourGame computerOpponent={true} />
+      <ConnectFourGame computerOpponent={true} initialGameState={GameStates.PLAYERS_TURN} />
     </GridProvider>
   </NetworkProvider>
 )

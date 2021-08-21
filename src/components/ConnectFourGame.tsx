@@ -1,21 +1,16 @@
 import { useContext, useEffect, useState } from "react"
-import {
-  Board,
-  GridContext,
-  NetworkContext,
-} from "../components"
+import { Board, GridContext, NetworkContext } from "../components"
 import { GameStates, GameResults, Player } from "../types"
 
 interface Props {
+  initialGameState: GameStates
   computerOpponent: boolean
 }
 
-export default function ConnectFourGame({ computerOpponent }: Props) {
+export default function ConnectFourGame({ computerOpponent, initialGameState }: Props) {
   const net = useContext(NetworkContext)
-  const { grid, dropDisc, computerMove } = useContext(GridContext)
-  const [gameState, setGameState] = useState<GameStates>(
-    GameStates.WAITING_FOR_OPPONENT
-  )
+  const { grid, dropDisc } = useContext(GridContext)
+  const [gameState, setGameState] = useState<GameStates>(initialGameState)
   const [gameResults, setGameResults] = useState<GameResults>(
     GameResults.PLAYING
   )
@@ -58,22 +53,18 @@ export default function ConnectFourGame({ computerOpponent }: Props) {
     console.log("gameState: ", gameState)
   }, [gameState])
 
-  useEffect(() => {
-    //if (gameState === GameStates.PLAYERS_TURN) computerMove()
-  }, [grid])
+  const onBoardClick = (x: number, y: number) => {
+    if (gameState !== GameStates.PLAYERS_TURN) return
+    dropDisc(x, 1)
+    if (!computerOpponent) {
+      net.sendPlayerDrop(x)
+      setGameState(GameStates.OPPONENTS_TURN)
+    }
+  }
 
   return (
     <div>
-      <Board
-        onClick={(x, y) => {
-          if (gameState !== GameStates.PLAYERS_TURN) return
-          dropDisc(x, 1)
-          if (!computerOpponent) {
-            net.sendPlayerDrop(x)
-            setGameState(GameStates.OPPONENTS_TURN)
-          }
-        }}
-      />
+      <Board onClick={onBoardClick} />
       {gameState === GameStates.WAITING_FOR_OPPONENT ? (
         <div>Waiting for opponent...</div>
       ) : undefined}
