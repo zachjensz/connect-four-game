@@ -1,7 +1,7 @@
 import { Grid, Opponent, Player } from '../types'
 import { dropDisc, evalAllDrops, getColumnHeight, isGridFull, DiscDrop } from './logic'
 
-type ComputerMove = (grid: Grid) => any
+type ComputerMove = (grid: Grid) => DiscDrop | null
 
 export const computerMove:ComputerMove = (grid: Grid) => {
   let column = -1
