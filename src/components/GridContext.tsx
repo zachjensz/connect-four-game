@@ -1,7 +1,7 @@
 import { createContext, useEffect, useState } from "react"
 import { GameResults, GameStates, Grid, Opponent, Player } from "../types"
-import { createGrid, DiscDrop, dropDisc } from "../support/logic"
-import { computerMove } from "../support/logic-dumbot"
+import { createGrid, DiscDrop, dropDisc as dropDiscOnGrid } from "../support/logic"
+import { computerMove as computerMoveOnGrid } from "../support/logic-dumbot"
 
 
 interface Props {
@@ -38,12 +38,42 @@ export const GridProvider = ({
   const [grid, setGrid] = useState<Grid>(createGrid(height, width))
 
   useEffect(() => {
-    console.log("reset")
+    console.log('grid provider init')
+  }, [])
+
+  useEffect(() => {
     reset()
   }, [computerOpponent])
 
+  useEffect(() => {
+    console.log('grid changed:', grid)
+  }, [grid])
+
   const reset = () => {
+    console.log("reset")
     setGrid(createGrid(height, width))
+  }
+
+  const dropDisc = (column: number, player: Player) => {
+    console.log("starting grid:", grid)
+    const drop = dropDiscOnGrid(grid, column, player)
+    console.log("drop:", drop)
+    if (drop) {
+      setGrid(drop.newGrid)
+      console.log('ending grid:', drop.newGrid)
+      return
+    }
+    console.log('no drop!')
+  }
+
+  const computerMove = () => {
+    const move = computerMoveOnGrid(grid)
+    console.log('move:', move)
+    if (!move) return 
+    const drop = dropDiscOnGrid(grid, move.disc[1], 2)
+    console.log('drop:', drop)
+    if (drop)
+      setGrid(drop.newGrid)
   }
 
   return (
@@ -52,21 +82,8 @@ export const GridProvider = ({
         grid,
         width,
         height,
-        dropDisc: (column: number, player: Player) => {
-          const drop = dropDisc(grid, column, player)
-          console.log("drop:", drop)
-          if (drop)
-            setGrid(drop.newGrid)
-        },
-        computerMove: () => {
-          const move = computerMove(grid)
-          console.log('move:', move)
-          if (!move) return 
-          const drop = dropDisc(grid, move.disc[1], 2)
-          console.log('drop:', drop)
-          if (drop)
-            setGrid(drop.newGrid)
-        },
+        dropDisc,
+        computerMove,
         reset,
       }}
     >
