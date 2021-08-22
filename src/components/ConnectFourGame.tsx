@@ -70,8 +70,6 @@ export default function ConnectFourGame({
 
   useEffect(() => {
     console.log('gameState: ', gameState)
-    if (computerOpponent && gameState === GameStates.WAITING_FOR_OPPONENT)
-      setGameState(initialGameState)
   }, [gameState])
 
   const onBoardClick = (x: number, y: number) => {

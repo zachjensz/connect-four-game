@@ -10,11 +10,11 @@ export default function Home() {
           Dumbot
         </Link>
         <Link id='smartbot' to=''>
-          Smartbot
+          Smartbot (Coming Soon!)
         </Link>
         <br />
         <Link id='localMultiplayer' to=''>
-          Local Multiplayer
+          Local Multiplayer (Coming Soon!)
         </Link>
         <Link id='onlineMultiplayer' to='play'>
           Online Multiplayer
