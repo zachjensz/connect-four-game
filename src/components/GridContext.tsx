@@ -45,7 +45,7 @@ export const GridProvider = ({ children, height, width }: Props) => {
 
   const showWin = (newGrid: Grid, seq: number[][]) => {
     seq.forEach(([row, column]) => {
-      newGrid[row][column] = -grid[row][column]
+      newGrid[row][column] = -newGrid[row][column]
     })
     setGrid(newGrid)
   }
