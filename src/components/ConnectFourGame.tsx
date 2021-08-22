@@ -7,18 +7,18 @@ import GameOverBanner from "./GameOverBanner"
 interface Props {
   initialGameState: GameStates
   computerOpponent: boolean
+  offline?: boolean
 }
 
 export default function ConnectFourGame({
   computerOpponent,
   initialGameState,
+  offline,
 }: Props) {
   const net = useContext(NetworkContext)
   const { grid, dropDisc, computerMove, reset } = useContext(GridContext)
   const [gameState, setGameState] = useState<GameStates>(initialGameState)
-  const [gameResult, setGameResult] = useState<GameResults>(
-    GameResults.PLAYING
-  )
+  const [gameResult, setGameResult] = useState<GameResults>(GameResults.PLAYING)
   const [computerMoveStart, setComputerMoveStart] = useState(false)
 
   // delay the computer's move
@@ -43,7 +43,7 @@ export default function ConnectFourGame({
   }, [])
 
   useEffect(() => {
-    if (computerOpponent) {
+    if (computerOpponent || offline) {
       net.disconnect()
     } else {
       net.connect()
@@ -51,7 +51,7 @@ export default function ConnectFourGame({
   }, [computerOpponent])
 
   useEffect(() => {
-    if (computerOpponent) return
+    if (computerOpponent || offline) return
     if (net.isConnected) {
       console.log(`Connected to server as ${net.socket?.id}`)
       net.onOpponentDrop((column) => {
@@ -88,20 +88,20 @@ export default function ConnectFourGame({
       setGameResult(GameResults.PLAYING)
       return
     }
-    if (gameState !== GameStates.PLAYERS_TURN)
-      return
-    const playerWon = dropDisc(x, 1)
+    if (gameState !== GameStates.PLAYERS_TURN && !offline) return
+    const playerWon = dropDisc(x, gameState === GameStates.PLAYERS_TURN ? 1 : 2)
     if (playerWon) {
       setGameState(GameStates.GAME_OVER)
       setGameResult(GameResults.WINNER_PLAYER)
       return
     }
-    if (!computerOpponent) {
-      net.sendPlayerDrop(x)
-    } else {
-      setComputerMoveStart(true)
-    }
-    setGameState(GameStates.OPPONENTS_TURN)
+    if (computerOpponent) setComputerMoveStart(true)
+    else if (!offline) net.sendPlayerDrop(x)
+    setGameState(
+      gameState === GameStates.PLAYERS_TURN
+        ? GameStates.OPPONENTS_TURN
+        : GameStates.PLAYERS_TURN
+    )
   }
 
   return (

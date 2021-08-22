@@ -1,4 +1,4 @@
-import { ConnectFourGame, GridProvider, NetworkProvider } from "../components"
+import { ConnectFourGame, GridProvider } from "../components"
 import { GameStates } from "../types"
 
 interface Props {

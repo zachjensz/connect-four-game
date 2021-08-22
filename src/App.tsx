@@ -1,13 +1,21 @@
 import "./App.css"
-import { PlayerVersesComputer, PlayerVersesPlayer, Home } from "./pages"
+import {
+  Home,
+  MultiplayerLocal,
+  MultiplayerOnline,
+  PlayerVersesDumbot,
+  PlayerVersesSmartbot,
+} from "./pages"
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom"
 import { NavBar } from "./components"
 
 const Pages = () => (
   <Switch>
     <Route path="/" component={Home} exact />
-    <Route path="/computer" component={PlayerVersesComputer} exact />
-    <Route path="/play" component={PlayerVersesPlayer} exact />
+    <Route path="/dumbot" component={PlayerVersesDumbot} exact />
+    <Route path="/smartbot" component={PlayerVersesSmartbot} exact />
+    <Route path="/multiplayer" component={MultiplayerOnline} exact />
+    <Route path="/multiplayer-local" component={MultiplayerLocal} exact />
   </Switch>
 )
 
