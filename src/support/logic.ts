@@ -6,12 +6,18 @@ export interface DiscDrop {
   newGrid: Grid
 }
 
-export const createGrid = (height: number, width: number) =>
-  Array(height)
-    .fill(0)
+export const createGrid = (height: number, width: number) => {
+  console.log('createGrid()')
+  return Array(height)
+    .fill(0)    
     .map(() => Array(width).fill(0))
+}
 
-export const cloneGrid = (grid: Grid) => grid.map((arr) => arr.slice())
+export const cloneGrid = (grid: Grid, hideLog = false) => {
+  if (!hideLog)
+    console.log('cloneGrid()')
+  return grid.map((arr) => arr.slice())
+}
 
 // Drop tests each column looking for any column that would create a connect four
 export function evalAllDrops(srcGrid: Grid, player: Player = 1) {
@@ -19,7 +25,7 @@ export function evalAllDrops(srcGrid: Grid, player: Player = 1) {
     min_seq = 4
   // Column
   for (let x = 0; x < srcGrid.length; x++) {
-    const grid = cloneGrid(srcGrid)
+    const grid = cloneGrid(srcGrid, true)
     // Row
     for (let i = 0; i < srcGrid[0].length; i++) {
       if (grid[i + 1]?.[x] === 0) continue

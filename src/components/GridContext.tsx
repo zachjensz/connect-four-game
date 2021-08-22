@@ -31,10 +31,11 @@ export const GridContext = createContext<ContextType>({
 })
 
 export const GridProvider = ({ children, height, width }: Props) => {
-  const [grid, setGrid] = useState<Grid>(createGrid(height, width))
+  const [grid, setGrid] = useState<Grid>([])
 
   useEffect(() => {
     console.log("grid provider init")
+    setGrid(createGrid(height, width))
   }, [])
 
   useEffect(() => {
@@ -56,7 +57,6 @@ export const GridProvider = ({ children, height, width }: Props) => {
   const dropDisc = (column: number, player: Player) => {
     console.log("starting grid:", grid)
     const drop = dropDiscOnGrid(grid, column, player)
-    console.log("drop:", drop)
     if (drop) {
       if (drop.seq.length > 0) {
         showWin(drop.newGrid, drop.seq)

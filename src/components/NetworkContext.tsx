@@ -65,8 +65,7 @@ export function NetworkProvider({ children }: Props) {
 
   function sendPlayerDrop(column: number) {
     if (!socket) throw new Error("not connected to server")
-    socket.emit("drop", column)
-    console.log(`emit ${column}`)
+    socket.emit("drop", column)    
   }
 
   function onOpponentDrop(callback: OnDropCallback) {
