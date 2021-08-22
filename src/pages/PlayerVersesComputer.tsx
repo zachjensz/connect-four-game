@@ -7,7 +7,7 @@ interface Props {
 }
 
 export default ({ width = 7, height = 6 }: Props) => (
-  <GridProvider width={width} height={height} computerOpponent={true}>
+  <GridProvider width={width} height={height}>
     <ConnectFourGame
       computerOpponent={true}
       initialGameState={GameStates.PLAYERS_TURN}

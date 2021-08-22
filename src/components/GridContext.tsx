@@ -8,7 +8,6 @@ interface Props {
   children: JSX.Element
   width: number
   height: number
-  computerOpponent: boolean
 }
 
 type ContextType = {
@@ -33,17 +32,12 @@ export const GridProvider = ({
   children,
   height,
   width,
-  computerOpponent,
 }: Props) => {
   const [grid, setGrid] = useState<Grid>(createGrid(height, width))
 
   useEffect(() => {
     console.log('grid provider init')
   }, [])
-
-  useEffect(() => {
-    reset()
-  }, [computerOpponent])
 
   useEffect(() => {
     console.log('grid changed:', grid)
@@ -68,10 +62,8 @@ export const GridProvider = ({
 
   const computerMove = () => {
     const move = computerMoveOnGrid(grid)
-    console.log('move:', move)
     if (!move) return 
     const drop = dropDiscOnGrid(grid, move.disc[1], 2)
-    console.log('drop:', drop)
     if (drop)
       setGrid(drop.newGrid)
   }
