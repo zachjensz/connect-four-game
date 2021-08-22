@@ -65,7 +65,7 @@ export const GridProvider = ({
     const drop = dropDiscOnGrid(grid, move.disc[1], 2)
     if (drop)
       setGrid(drop.newGrid)
-    return !(drop && drop.seq.length > 0)
+    return !!(drop && drop.seq.length > 0)
   }
 
   return (
