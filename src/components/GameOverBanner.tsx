@@ -1,4 +1,4 @@
-import { GameResults, Player } from "../types"
+import { GameResults } from "../types"
 
 interface Props {
   gameResult: GameResults

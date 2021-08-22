@@ -1,7 +1,5 @@
-import { useContext } from "react"
-import { Slot, GridContext } from "."
+import { Slot } from "."
 import { Grid } from "../types"
-import GameOverBanner from "./GameOverBanner"
 
 interface Props {
   onClick: (x: number, y: number) => void
