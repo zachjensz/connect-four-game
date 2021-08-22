@@ -25,8 +25,6 @@ export default function ConnectFourGame({
     () => {
       if (!computerMoveStart) return
       const didComputerWin = computerMove()
-      if (didComputerWin)
-        console.log('computer won')
       setComputerMoveStart(false)
       setGameState(didComputerWin ? GameStates.PLAYERS_TURN : GameStates.GAME_OVER)
     },
