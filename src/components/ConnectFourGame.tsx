@@ -24,6 +24,7 @@ export default function ConnectFourGame({
   useInterval(
     () => {
       if (!computerMoveStart) return
+      console.log('computer move')
       const computerWon = computerMove()
       setComputerMoveStart(false)
       setGameState(computerWon ? GameStates.GAME_OVER : GameStates.PLAYERS_TURN)
@@ -52,8 +53,8 @@ export default function ConnectFourGame({
       console.log(`Connected to server as ${net.socket?.id}`)
       net.onOpponentDrop((column) => {
         console.log(`Opponent drop: ${column}`)
-        dropDisc(column, 2)
-        setGameState(GameStates.PLAYERS_TURN)
+        const playerWon = dropDisc(column, 2)
+        setGameState(playerWon ? GameStates.GAME_OVER : GameStates.PLAYERS_TURN)
       })
       net.onOpponentFound(({ id, startingPlayer }) => {
         console.log(`Opponent found:`, id, startingPlayer)
@@ -76,8 +77,9 @@ export default function ConnectFourGame({
       gameState !== GameStates.PLAYERS_TURN
     )
       return
-    const playerWin = dropDisc(x, 1)
-    if (playerWin) {
+    const playerWon = dropDisc(x, 1)
+    console.log(playerWon)
+    if (playerWon) {
       setGameState(GameStates.GAME_OVER)
       return
     }

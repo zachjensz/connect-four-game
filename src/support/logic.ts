@@ -2,7 +2,7 @@ import { Grid, Player } from '../types'
 
 export interface DiscDrop {
   disc: number[]
-  seq: number[]
+  seq: number[][]
   newGrid: Grid
 }
 
@@ -51,7 +51,7 @@ export function dropDisc(
       const sequence = [...validSeq(gameGrid, player, i, +x, min_seq), [i, +x]]
       return {
         disc: [i, +x],
-        seq: sequence /*.length > min_seq - 1 ? sequence : []*/,
+        seq: sequence.length > min_seq - 1 ? sequence : [],
         newGrid: gameGrid as Grid
       } as DiscDrop
     }
