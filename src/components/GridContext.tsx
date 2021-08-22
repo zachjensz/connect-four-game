@@ -14,8 +14,8 @@ type ContextType = {
   grid: Grid
   width: number
   height: number  
-  dropDisc: (column: number, player: Player) => void
-  computerMove: () => void
+  dropDisc: (column: number, player: Player) => boolean
+  computerMove: () => boolean
   reset: () => void
 }
 
@@ -23,8 +23,8 @@ export const GridContext = createContext<ContextType>({
   grid: [],
   width: 0,
   height: 0,
-  dropDisc: () => undefined,
-  computerMove: () => undefined,
+  dropDisc: () => false,
+  computerMove: () => false,
   reset: () => undefined,
 })
 
@@ -55,17 +55,17 @@ export const GridProvider = ({
     if (drop) {
       setGrid(drop.newGrid)
       console.log('ending grid:', drop.newGrid)
-      return
     }
-    console.log('no drop!')
+    return !!(drop && drop.seq.length > 0)
   }
 
   const computerMove = () => {
     const move = computerMoveOnGrid(grid)
-    if (!move) return 
+    if (!move) return false
     const drop = dropDiscOnGrid(grid, move.disc[1], 2)
     if (drop)
       setGrid(drop.newGrid)
+    return !(drop && drop.seq.length > 0)
   }
 
   return (

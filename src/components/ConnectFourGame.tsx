@@ -21,12 +21,28 @@ export default function ConnectFourGame({
   const [computerMoveStart, setComputerMoveStart] = useState(false)
 
   // delay the computer's move
-  useInterval(() => {
-    if (!computerMoveStart) return
-    computerMove()
-    setComputerMoveStart(false)
-    setGameState(GameStates.PLAYERS_TURN)
-  }, computerOpponent ? 500 : null)
+  useInterval(
+    () => {
+      if (!computerMoveStart) return
+      const didComputerWin = computerMove()
+      if (didComputerWin)
+        console.log('computer won')
+      setComputerMoveStart(false)
+      setGameState(didComputerWin ? GameStates.PLAYERS_TURN : GameStates.GAME_OVER)
+    },
+    computerOpponent ? 500 : null
+  )
+
+  // delay the computer's move
+  useInterval(
+    () => {
+      if (!computerMoveStart) return
+      const computerWon = computerMove()
+      setComputerMoveStart(false)
+      setGameState(computerWon ? GameStates.GAME_OVER : GameStates.PLAYERS_TURN)
+    },
+    computerOpponent ? 500 : null
+  )
 
   useEffect(() => {
     return () => {
@@ -68,8 +84,16 @@ export default function ConnectFourGame({
   }, [gameState])
 
   const onBoardClick = (x: number, y: number) => {
-    if (gameState !== GameStates.PLAYERS_TURN) return
-    dropDisc(x, 1)
+    if (
+      gameState === GameStates.GAME_OVER ||
+      gameState !== GameStates.PLAYERS_TURN
+    )
+      return
+    const playerWin = dropDisc(x, 1)
+    if (playerWin) {
+      setGameState(GameStates.GAME_OVER)
+      return
+    }
     if (!computerOpponent) {
       net.sendPlayerDrop(x)
     } else {
