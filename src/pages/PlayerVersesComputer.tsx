@@ -1,5 +1,5 @@
 import { ConnectFourGame, GridProvider, NetworkProvider } from "../components"
-import { GameStates, GameResults, Player } from "../types"
+import { GameStates } from "../types"
 
 interface Props {
   width?: number
