@@ -17,8 +17,8 @@ type ContextType = {
   grid: Grid
   width: number
   height: number
-  dropDisc: (column: number, player: Player) => number[]
-  computerMove: () => number[]
+  dropDisc: (column: number, player: Player) => number[] | undefined
+  computerMove: () => number[] | undefined
   reset: () => void
 }
 
@@ -60,7 +60,7 @@ export const GridProvider = ({ children, height, width }: Props) => {
 
   const computerMove = () => {
     const move = computerMoveOnGrid(grid)
-    if (!move) return false
+    if (!move) return
     const drop = dropDiscOnGrid(grid, move.disc[1], 2)
     if (drop) setGrid(drop.newGrid)
     return drop && drop.seq
