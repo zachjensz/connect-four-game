@@ -1,31 +1,21 @@
-import { useContext, useEffect, useState } from "react"
-import { Slot, GridContext, NetworkContext } from "."
-import { Player } from "../types"
+import { useContext } from "react"
+import { Slot, GridContext } from "."
+import { Grid } from "../types"
 import GameOverBanner from "./GameOverBanner"
 
 interface Props {
   onClick: (x: number, y: number) => void
+  grid: Grid
 }
 
-export default function Board({ onClick }: Props) {
-  const { grid } = useContext(GridContext)    
-
+export default function Board({ grid, onClick }: Props) {
   return (
-    <>
-      <div id="grid">
-        {grid.map((row, y) =>
-          row.map((value, x) => (
-            <Slot
-              x={x}
-              y={y}
-              value={value}
-              key={`${x},${y}`}
-              onClick={onClick}
-            />
-          ))
-        )}
-      </div>
-      <GameOverBanner isVisible={false} />
-    </>
+    <div id="grid">
+      {grid.map((row, y) =>
+        row.map((value, x) => (
+          <Slot x={x} y={y} value={value} key={`${x},${y}`} onClick={onClick} />
+        ))
+      )}
+    </div>
   )
 }

@@ -1,7 +1,8 @@
-import { useContext, useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { Board, GridContext, NetworkContext } from '../components'
 import { useInterval } from '../hooks'
 import { GameStates, GameResults } from '../types'
+import GameOverBanner from './GameOverBanner'
 
 interface Props {
   initialGameState: GameStates
@@ -13,7 +14,7 @@ export default function ConnectFourGame({
   initialGameState
 }: Props) {
   const net = useContext(NetworkContext)
-  const { dropDisc, computerMove } = useContext(GridContext)
+  const { grid, dropDisc, computerMove } = useContext(GridContext)
   const [gameState, setGameState] = useState<GameStates>(initialGameState)
   const [gameResults, setGameResults] = useState<GameResults>(
     GameResults.PLAYING
@@ -93,10 +94,11 @@ export default function ConnectFourGame({
 
   return (
     <div>
-      <Board onClick={onBoardClick} />
+      <Board onClick={onBoardClick} grid={grid} />
       {gameState === GameStates.WAITING_FOR_OPPONENT ? (
         <div>Waiting for opponent...</div>
       ) : undefined}
+      <GameOverBanner isVisible={false} />
     </div>
   )
 }

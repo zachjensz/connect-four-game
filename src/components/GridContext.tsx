@@ -1,9 +1,7 @@
 import { createContext, useEffect, useState } from "react"
-import { GameResults, GameStates, Grid, Opponent, Player } from "../types"
+import { Grid, Player } from "../types"
 import {
-  cloneGrid,
   createGrid,
-  DiscDrop,
   dropDisc as dropDiscOnGrid,
 } from "../support/logic"
 import { computerMove as computerMoveOnGrid } from "../support/logic-dumbot"
@@ -60,10 +58,14 @@ export const GridProvider = ({ children, height, width }: Props) => {
     const drop = dropDiscOnGrid(grid, column, player)
     console.log("drop:", drop)
     if (drop) {
+      if (drop.seq.length > 0) {
+        showWin(drop.newGrid, drop.seq)
+        return true
+      }
       setGrid(drop.newGrid)
       console.log("ending grid:", drop.newGrid)
     }
-    return !!(drop && drop?.seq.length > 0)
+    return false
   }
 
   const computerMove = () => {

@@ -1,5 +1,3 @@
-import React, { useContext } from 'react'
-import { GridContext } from './GridContext'
 import './slot.css'
 
 interface Props {
