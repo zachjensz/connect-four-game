@@ -1,8 +1,8 @@
 import { Grid, Player } from '../types'
 
 export interface DiscDrop {
-  disc: number[],
-  seq: number[],
+  disc: number[]
+  seq: number[]
   newGrid: Grid
 }
 
@@ -28,7 +28,7 @@ export function evalAllDrops(srcGrid: Grid, player: Player = 1) {
         const result = {
           column: x,
           player: player,
-          seq: validSeq(grid, player, i, x, min_seq),
+          seq: validSeq(grid, player, i, x, min_seq)
         }
         if (result.seq.length > 0) results.push(result)
       }
@@ -37,7 +37,12 @@ export function evalAllDrops(srcGrid: Grid, player: Player = 1) {
   return results
 }
 
-export function dropDisc(srcGrid: Grid, x: number, player: Player = 1, min_seq = 4) {
+export function dropDisc(
+  srcGrid: Grid,
+  x: number,
+  player: Player = 1,
+  min_seq = 4
+) {
   const gameGrid = cloneGrid(srcGrid)
   for (let i = 0; i < gameGrid.length; i++) {
     if (gameGrid[i + 1]?.[+x] === 0) continue
@@ -46,8 +51,8 @@ export function dropDisc(srcGrid: Grid, x: number, player: Player = 1, min_seq =
       const sequence = [...validSeq(gameGrid, player, i, +x, min_seq), [i, +x]]
       return {
         disc: [i, +x],
-        seq: sequence.length > min_seq - 1 ? sequence : [],
-        newGrid: gameGrid as Grid,
+        seq: sequence /*.length > min_seq - 1 ? sequence : []*/,
+        newGrid: gameGrid as Grid
       } as DiscDrop
     }
   }
@@ -65,12 +70,12 @@ function validSeq(
     { v: 1, h: 0 },
     { v: 1, h: 1 },
     { v: 0, h: 1 },
-    { v: 1, h: -1 },
+    { v: 1, h: -1 }
   ]
   directions.forEach((dir) => {
     const seq: number[][] = [
       ...cast(grid, player, i, x, dir.v, dir.h),
-      ...cast(grid, player, i, x, -dir.v, -dir.h),
+      ...cast(grid, player, i, x, -dir.v, -dir.h)
     ]
     // @ts-ignore
     if (seq.length > min_sequence - 2) winningSequences.push(...seq)

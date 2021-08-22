@@ -1,7 +1,7 @@
-import { useContext, useEffect, useRef, useState } from "react"
-import { Board, GridContext, NetworkContext } from "../components"
-import { useInterval } from "../hooks"
-import { GameStates, GameResults } from "../types"
+import { useContext, useEffect, useRef, useState } from 'react'
+import { Board, GridContext, NetworkContext } from '../components'
+import { useInterval } from '../hooks'
+import { GameStates, GameResults } from '../types'
 
 interface Props {
   initialGameState: GameStates
@@ -10,7 +10,7 @@ interface Props {
 
 export default function ConnectFourGame({
   computerOpponent,
-  initialGameState,
+  initialGameState
 }: Props) {
   const net = useContext(NetworkContext)
   const { dropDisc, computerMove } = useContext(GridContext)
@@ -67,7 +67,7 @@ export default function ConnectFourGame({
   }, [net.isConnected])
 
   useEffect(() => {
-    console.log("gameState: ", gameState)
+    console.log('gameState: ', gameState)
   }, [gameState])
 
   const onBoardClick = (x: number, y: number) => {
