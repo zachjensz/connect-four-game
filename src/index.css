@@ -66,6 +66,8 @@ body {
 .game-over {
   background-color: #000d;
   position: absolute;
+  top: 0;
+  left: 0;
   width: 100vw;
   height: 12vh;
   display: grid;

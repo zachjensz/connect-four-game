@@ -1,20 +1,21 @@
-import { Player } from "../types"
+import { GameResults, Player } from "../types"
 
 interface Props {
-  isVisible: boolean
-  winner?: Player
+  gameResult: GameResults
 }
 
-export default function GameOverBanner({ isVisible, winner }: Props) {
+export default function GameOverBanner({ gameResult }: Props) {  
   return (
     <>
-      {isVisible ? (
+      {gameResult !== GameResults.PLAYING ? (
         <section className="game-over">
           <h2 id="game-over-result">{`${
-            winner === 1
+            gameResult === GameResults.WINNER_PLAYER
               ? "You Win!"
-              : winner === 2
+              : gameResult === GameResults.WINNER_COMPUTER
               ? "Computer Wins!"
+              : gameResult === GameResults.WINNER_OPPONENT
+              ? "Opponent Wins!"
               : "Tie Game"
           }`}</h2>
         </section>

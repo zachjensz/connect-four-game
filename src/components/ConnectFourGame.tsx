@@ -1,8 +1,8 @@
-import { useContext, useEffect, useState } from 'react'
-import { Board, GridContext, NetworkContext } from '../components'
-import { useInterval } from '../hooks'
-import { GameStates, GameResults } from '../types'
-import GameOverBanner from './GameOverBanner'
+import { useContext, useEffect, useState } from "react"
+import { Board, GridContext, NetworkContext } from "../components"
+import { useInterval } from "../hooks"
+import { GameStates, GameResults } from "../types"
+import GameOverBanner from "./GameOverBanner"
 
 interface Props {
   initialGameState: GameStates
@@ -11,12 +11,12 @@ interface Props {
 
 export default function ConnectFourGame({
   computerOpponent,
-  initialGameState
+  initialGameState,
 }: Props) {
   const net = useContext(NetworkContext)
-  const { grid, dropDisc, computerMove } = useContext(GridContext)
+  const { grid, dropDisc, computerMove, reset } = useContext(GridContext)
   const [gameState, setGameState] = useState<GameStates>(initialGameState)
-  const [gameResults, setGameResults] = useState<GameResults>(
+  const [gameResult, setGameResult] = useState<GameResults>(
     GameResults.PLAYING
   )
   const [computerMoveStart, setComputerMoveStart] = useState(false)
@@ -25,15 +25,17 @@ export default function ConnectFourGame({
   useInterval(
     () => {
       if (!computerMoveStart) return
-      console.log('computer move')
+      console.log("computer move")
       const computerWon = computerMove()
       setComputerMoveStart(false)
       setGameState(computerWon ? GameStates.GAME_OVER : GameStates.PLAYERS_TURN)
+      if (computerWon) setGameResult(GameResults.WINNER_COMPUTER)
     },
     computerOpponent ? 500 : null
   )
 
   useEffect(() => {
+    reset()
     return () => {
       // disconnect when component unloads
       net.disconnect()
@@ -54,8 +56,11 @@ export default function ConnectFourGame({
       console.log(`Connected to server as ${net.socket?.id}`)
       net.onOpponentDrop((column) => {
         console.log(`Opponent drop: ${column}`)
-        const playerWon = dropDisc(column, 2)
-        setGameState(playerWon ? GameStates.GAME_OVER : GameStates.PLAYERS_TURN)
+        const opponentWon = dropDisc(column, 2)
+        setGameState(
+          opponentWon ? GameStates.GAME_OVER : GameStates.PLAYERS_TURN
+        )
+        if (opponentWon) setGameResult(GameResults.WINNER_OPPONENT)
       })
       net.onOpponentFound(({ id, startingPlayer }) => {
         console.log(`Opponent found:`, id, startingPlayer)
@@ -69,19 +74,26 @@ export default function ConnectFourGame({
   }, [net.isConnected])
 
   useEffect(() => {
-    console.log('gameState: ', gameState)
+    console.log("gameState changed: ", gameState)
   }, [gameState])
 
+  useEffect(() => {
+    console.log("gameResults changed: ", gameResult)
+  }, [gameResult])
+
   const onBoardClick = (x: number, y: number) => {
-    if (
-      gameState === GameStates.GAME_OVER ||
-      gameState !== GameStates.PLAYERS_TURN
-    )
+    if (gameState === GameStates.GAME_OVER) {
+      reset()
+      setGameState(GameStates.PLAYERS_TURN)
+      setGameResult(GameResults.PLAYING)
+      return
+    }
+    if (gameState !== GameStates.PLAYERS_TURN)
       return
     const playerWon = dropDisc(x, 1)
-    console.log(playerWon)
     if (playerWon) {
       setGameState(GameStates.GAME_OVER)
+      setGameResult(GameResults.WINNER_PLAYER)
       return
     }
     if (!computerOpponent) {
@@ -98,7 +110,7 @@ export default function ConnectFourGame({
       {gameState === GameStates.WAITING_FOR_OPPONENT ? (
         <div>Waiting for opponent...</div>
       ) : undefined}
-      <GameOverBanner isVisible={false} />
+      <GameOverBanner gameResult={gameResult} />
     </div>
   )
 }
