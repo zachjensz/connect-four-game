@@ -6,14 +6,14 @@ export default function Home() {
   return (
     <section className='title'>
       <div className='gamemode-select'>
-        <Link id='dumbot' to='play'>
+        <Link id='dumbot' to='computer'>
           Dumbot
         </Link>
-        <Link id='smartbot' to='play'>
+        <Link id='smartbot' to=''>
           Smartbot
         </Link>
         <br />
-        <Link id='localMultiplayer' to='play'>
+        <Link id='localMultiplayer' to=''>
           Local Multiplayer
         </Link>
         <Link id='onlineMultiplayer' to='play'>
