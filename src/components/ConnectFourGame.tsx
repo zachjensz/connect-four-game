@@ -24,17 +24,6 @@ export default function ConnectFourGame({
   useInterval(
     () => {
       if (!computerMoveStart) return
-      const didComputerWin = computerMove()
-      setComputerMoveStart(false)
-      setGameState(didComputerWin ? GameStates.PLAYERS_TURN : GameStates.GAME_OVER)
-    },
-    computerOpponent ? 500 : null
-  )
-
-  // delay the computer's move
-  useInterval(
-    () => {
-      if (!computerMoveStart) return
       const computerWon = computerMove()
       setComputerMoveStart(false)
       setGameState(computerWon ? GameStates.GAME_OVER : GameStates.PLAYERS_TURN)
