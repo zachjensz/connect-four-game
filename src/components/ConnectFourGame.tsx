@@ -75,11 +75,9 @@ export default function ConnectFourGame({
   }, [])
 
   useEffect(() => {
-    if (computerOpponent || !socket) return
-    if (socket && isConnected) {
-      // Find Opponent
-      socket.emit("find-opponent")
-    }
+    if (computerOpponent || !socket || !isConnected) return
+    // Find Opponent
+    socket.emit("find-opponent")
   }, [isConnected])
 
   useEffect(() => {
