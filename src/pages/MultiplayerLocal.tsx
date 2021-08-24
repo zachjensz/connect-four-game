@@ -10,7 +10,6 @@ export default ({ width = 7, height = 6 }: Props) => (
   <GridProvider width={width} height={height}>
     <ConnectFourGame
       computerOpponent={false}
-      offline={true}
       initialGameState={GameStates.PLAYERS_TURN}
     />
   </GridProvider>

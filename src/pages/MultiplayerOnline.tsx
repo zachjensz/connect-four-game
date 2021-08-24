@@ -1,5 +1,5 @@
-import { GridProvider, NetworkProvider } from "../components"
-import { ConnectFourGame } from "../components"
+import { ConnectFourGame, GridProvider } from "../components"
+import { useServerConnection } from "../hooks"
 import { GameStates } from "../types"
 
 interface Props {
@@ -7,13 +7,16 @@ interface Props {
   height?: number
 }
 
-export default ({ width = 7, height = 6 }: Props) => (
-  <GridProvider width={width} height={height}>
-    <NetworkProvider serverUrl="http://localhost:5000">
+export default ({ width = 7, height = 6 }: Props) => {
+  const serverConnection = useServerConnection('http://localhost:5000/')
+
+  return (
+    <GridProvider width={width} height={height}>
       <ConnectFourGame
         computerOpponent={false}
+        serverConnection={serverConnection}
         initialGameState={GameStates.WAITING_FOR_OPPONENT}
       />
-    </NetworkProvider>
-  </GridProvider>
-)
+    </GridProvider>
+  )
+}

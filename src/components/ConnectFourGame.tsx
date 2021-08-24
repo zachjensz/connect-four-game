@@ -1,21 +1,30 @@
 import { useCallback, useContext, useEffect, useState } from "react"
-import { Board, GridContext, NetworkContext } from "../components"
+import { Board, GridContext } from "../components"
 import { useInterval } from "../hooks"
+import { ServerConnection, useServerConnection } from "../hooks/useServerConnection"
 import { GameStates, GameResults } from "../types"
 import GameOverBanner from "./GameOverBanner"
 
 interface Props {
   initialGameState: GameStates
   computerOpponent: boolean
-  offline?: boolean
+  serverConnection?: ServerConnection
 }
 
 export default function ConnectFourGame({
   computerOpponent,
   initialGameState,
-  offline,
+  serverConnection: serverSocket,
 }: Props) {
-  const net = useContext(NetworkContext)
+  const {
+    socket,
+    isConnected,
+    close: closeSocket,
+  } = serverSocket ?? {
+    socket: undefined,
+    isConnected: false,
+    close: undefined,
+  }
   const { grid, dropDisc, computerMove, reset } = useContext(GridContext)
   const [gameState, setGameState] = useState<GameStates>(initialGameState)
   const [gameResult, setGameResult] = useState<GameResults>(GameResults.PLAYING)
@@ -43,31 +52,31 @@ export default function ConnectFourGame({
       if (opponentWon) setGameResult(GameResults.WINNER_OPPONENT)
     }
 
-    net.socket?.on("drop", onOpponentDrop)
-    net.socket?.on("opponent-found", onOpponentFound)
+    socket?.on("drop", onOpponentDrop)
+    socket?.on("opponent-found", onOpponentFound)
 
     return () => {
-      net.socket?.off("drop", onOpponentDrop)
-      net.socket?.off("opponent-found", onOpponentFound)
+      socket?.off("drop", onOpponentDrop)
+      socket?.off("opponent-found", onOpponentFound)
     }
-  }, [net.socket])
+  }, [socket])
 
   useEffect(() => {
     reset()
     return () => {
       // disconnect when component unloads
-      net.close()
+      closeSocket?.()
     }
   }, [])
 
   useEffect(() => {
-    if (computerOpponent || offline) return
-    if (net.socket && net.isConnected) {
-      console.log(`Connected to server as ${net.socket?.id}`)
+    if (computerOpponent || !socket) return
+    if (socket && isConnected) {
+      console.log(`Connected to server as ${socket?.id}`)
       // Find Opponent
-      net.socket.emit("find-opponent")
+      socket.emit("find-opponent")
     }
-  }, [net.isConnected])
+  }, [isConnected])
 
   useEffect(() => {
     console.log("gameState changed: ", gameState)
@@ -97,16 +106,16 @@ export default function ConnectFourGame({
       setGameResult(GameResults.PLAYING)
       return
     }
-    if (gameState !== GameStates.PLAYERS_TURN && !offline) return
+    if (gameState !== GameStates.PLAYERS_TURN && socket) return
     const playerWon = dropDisc(x, gameState === GameStates.PLAYERS_TURN ? 1 : 2)
     if (playerWon) {
       setGameState(GameStates.GAME_OVER)
       setGameResult(GameResults.WINNER_PLAYER)
       return
     }
-  
+
     if (computerOpponent) setComputerMoveStart(true)
-    else if (!offline) net.socket?.emit("drop", x)
+    else if (socket) socket.emit("drop", x)
     setGameState(
       gameState === GameStates.PLAYERS_TURN
         ? GameStates.OPPONENTS_TURN

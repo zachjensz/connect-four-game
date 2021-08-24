@@ -1,3 +1,5 @@
 import useInterval from './useInterval'
+import { useServerConnection, ServerConnection } from './useServerConnection'
 
-export { useInterval }
+export { useInterval, useServerConnection }
+export type { ServerConnection }
