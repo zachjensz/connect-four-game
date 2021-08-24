@@ -1,6 +1,10 @@
 import { createContext, useEffect, useState } from "react"
 import { Grid, Player } from "../types"
-import { createGrid, dropDisc as dropDiscOnGrid } from "../support/logic"
+import {
+  createGrid,
+  dropDisc as dropDiscOnGrid,
+  getColumnHeight,
+} from "../support/logic"
 import { computerMove as computerMoveOnGrid } from "../support/logic-dumbot"
 
 interface Props {
@@ -15,6 +19,7 @@ type ContextType = {
   height: number
   dropDisc: (column: number, player: Player) => boolean
   computerMove: () => boolean
+  isColumnFull: (column: number) => boolean
   reset: () => void
 }
 
@@ -24,6 +29,7 @@ export const GridContext = createContext<ContextType>({
   height: 6,
   dropDisc: () => false,
   computerMove: () => false,
+  isColumnFull: () => true,
   reset: () => undefined,
 })
 
@@ -33,7 +39,7 @@ function useGrid(height: number, width: number) {
   return {
     grid,
     clear: () => setGrid(createGrid(height, width)),
-    replace: (newGrid: Grid) => setGrid(newGrid)
+    replace: (newGrid: Grid) => setGrid(newGrid),
   }
 }
 
@@ -76,6 +82,9 @@ export const GridProvider = ({ children, height, width }: Props) => {
     return false
   }
 
+  const isColumnFull = (column: number) =>
+    getColumnHeight(gridController.grid, column) === height
+
   return (
     <GridContext.Provider
       value={{
@@ -84,6 +93,7 @@ export const GridProvider = ({ children, height, width }: Props) => {
         height,
         dropDisc,
         computerMove,
+        isColumnFull,
         reset: gridController.clear,
       }}
     >

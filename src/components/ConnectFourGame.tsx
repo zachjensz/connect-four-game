@@ -1,7 +1,8 @@
-import { useCallback, useContext, useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { Board, GridContext } from "../components"
 import { useInterval } from "../hooks"
-import { ServerConnection, useServerConnection } from "../hooks/useServerConnection"
+import { ServerConnection } from "../hooks/useServerConnection"
+import { getColumnHeight } from "../support/logic"
 import { GameStates, GameResults } from "../types"
 import GameOverBanner from "./GameOverBanner"
 
@@ -25,7 +26,7 @@ export default function ConnectFourGame({
     isConnected: false,
     close: () => undefined,
   }
-  const { grid, dropDisc, computerMove, reset } = useContext(GridContext)
+  const { grid, dropDisc, computerMove, reset, isColumnFull } = useContext(GridContext)
   const [gameState, setGameState] = useState<GameStates>(initialGameState)
   const [gameResult, setGameResult] = useState<GameResults>(GameResults.PLAYING)
   const [computerMoveStart, setComputerMoveStart] = useState(false)
@@ -79,7 +80,7 @@ export default function ConnectFourGame({
   useEffect(() => {
     if (computerOpponent || !socket) return
     if (socket && isConnected) {
-      console.log(`Connected to server as ${socket?.id}`)
+      console.log(`Connected to server as ${socket.id}`)
       // Find Opponent
       socket.emit("find-opponent")
     }
@@ -112,21 +113,22 @@ export default function ConnectFourGame({
       setGameResult(GameResults.PLAYING)
       return
     }
+    
+    if (isColumnFull(x)) return
     if (gameState !== GameStates.PLAYERS_TURN && socket) return
+    if (socket) socket.emit("drop", x)
     const playerWon = dropDisc(x, gameState === GameStates.PLAYERS_TURN ? 1 : 2)
     if (playerWon) {
       setGameState(GameStates.GAME_OVER)
       setGameResult(GameResults.WINNER_PLAYER)
       return
     }
-
-    if (computerOpponent) setComputerMoveStart(true)
-    else if (socket) socket.emit("drop", x)
     setGameState(
       gameState === GameStates.PLAYERS_TURN
         ? GameStates.OPPONENTS_TURN
         : GameStates.PLAYERS_TURN
     )
+    if (computerOpponent) setComputerMoveStart(true)
   }
 
   return (
