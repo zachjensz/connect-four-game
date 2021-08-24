@@ -15,10 +15,7 @@ export function ConnectFourGame({
   initialGameState,
   serverConnection,
 }: Props) {
-  const {
-    socket,
-    isConnected,
-  } = serverConnection ?? {
+  const { socket, isConnected } = serverConnection ?? {
     socket: undefined,
     isConnected: false,
   }
@@ -28,6 +25,7 @@ export function ConnectFourGame({
   const [gameResult, setGameResult] = useState<GameResults>(GameResults.PLAYING)
   const [computerMoveStart, setComputerMoveStart] = useState(false)
   const [opponentDrop, setOpponentDrop] = useState<number | null>(null)
+  const localMultiplayer = !serverConnection && !computerOpponent
 
   useEffect(() => {
     if (!socket) return
@@ -74,7 +72,7 @@ export function ConnectFourGame({
   useEffect(() => {
     if (computerOpponent || !socket || !isConnected) return
     // Find Opponent
-    socket.emit("find-opponent")    
+    socket.emit("find-opponent")
   }, [isConnected, socket, computerOpponent])
 
   // delay the computer's move
@@ -102,8 +100,12 @@ export function ConnectFourGame({
     if (socket) socket.emit("drop", x)
     const playerWon = dropDisc(x, gameState === GameStates.PLAYERS_TURN ? 1 : 2)
     if (playerWon) {
+      setGameResult(
+        gameState === GameStates.PLAYERS_TURN
+          ? GameResults.WINNER_PLAYER
+          : GameResults.WINNER_OPPONENT
+      )
       setGameState(GameStates.GAME_OVER)
-      setGameResult(GameResults.WINNER_PLAYER)
       return
     }
     setGameState(
@@ -120,7 +122,10 @@ export function ConnectFourGame({
       {gameState === GameStates.WAITING_FOR_OPPONENT ? (
         <div>Waiting for opponent...</div>
       ) : undefined}
-      <GameOverBanner gameResult={gameResult} />
+      <GameOverBanner
+        gameResult={gameResult}
+        localMultiplayer={localMultiplayer}
+      />
     </div>
   )
 }
