@@ -29,6 +29,7 @@ export default function ConnectFourGame({
   const [gameState, setGameState] = useState<GameStates>(initialGameState)
   const [gameResult, setGameResult] = useState<GameResults>(GameResults.PLAYING)
   const [computerMoveStart, setComputerMoveStart] = useState(false)
+  const [opponentDrop, setOpponentDrop] = useState<number | null>(null)
 
   useEffect(() => {
     if (!socket) return
@@ -47,11 +48,7 @@ export default function ConnectFourGame({
     }
 
     const onOpponentDrop = (column: number) => {
-      console.log(`Opponent drop: ${column}`)
-      console.log(grid)
-      const opponentWon = dropDisc(column, 2)
-      setGameState(opponentWon ? GameStates.GAME_OVER : GameStates.PLAYERS_TURN)
-      if (opponentWon) setGameResult(GameResults.WINNER_OPPONENT)
+      setOpponentDrop(column)
     }
 
     socket.on("drop", onOpponentDrop)
@@ -62,6 +59,16 @@ export default function ConnectFourGame({
       socket.off("opponent-found", onOpponentFound)
     }
   }, [socket])
+
+  useEffect(() => {
+    if (opponentDrop === null) return
+    console.log(`Opponent drop: ${opponentDrop}`)
+    console.log(grid)
+    const opponentWon = dropDisc(opponentDrop, 2)
+    setGameState(opponentWon ? GameStates.GAME_OVER : GameStates.PLAYERS_TURN)
+    if (opponentWon) setGameResult(GameResults.WINNER_OPPONENT)
+    setOpponentDrop(null)
+  }, [opponentDrop])
 
   useEffect(() => {
     reset()
