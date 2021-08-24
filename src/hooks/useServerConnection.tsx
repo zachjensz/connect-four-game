@@ -12,8 +12,13 @@ export type ServerConnection = {
 }
 
 export function useServerConnection(serverUrl: string) {
-  const [socket] = useState<WebSocket>(io(serverUrl))
+  const [socket, setSocket] = useState<WebSocket>()
   const [isConnected, setIsConnected] = useState(false)
+
+  useEffect(() => {
+    setSocket(io(serverUrl))
+    // eslint-disable-next-line
+  }, [])
 
   useEffect(() => {
     if (!socket) return
