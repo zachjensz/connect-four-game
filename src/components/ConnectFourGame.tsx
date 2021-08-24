@@ -80,14 +80,6 @@ export default function ConnectFourGame({
     socket.emit("find-opponent")
   }, [isConnected])
 
-  useEffect(() => {
-    console.log("gameState changed: ", gameState)
-  }, [gameState])
-
-  useEffect(() => {
-    console.log("gameResults changed: ", gameResult)
-  }, [gameResult])
-
   // delay the computer's move
   useInterval(
     () => {
