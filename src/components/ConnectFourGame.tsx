@@ -1,10 +1,8 @@
 import { useContext, useEffect, useState } from "react"
 import { Board, GridContext } from "../components"
-import { useInterval } from "../hooks"
-import { ServerConnection } from "../hooks/useServerConnection"
-import { getColumnHeight } from "../support/logic"
+import { useInterval, ServerConnection } from "../hooks"
 import { GameStates, GameResults } from "../types"
-import GameOverBanner from "./GameOverBanner"
+import { GameOverBanner } from "."
 
 interface Props {
   initialGameState: GameStates
@@ -12,7 +10,7 @@ interface Props {
   serverConnection?: ServerConnection
 }
 
-export default function ConnectFourGame({
+export function ConnectFourGame({
   computerOpponent,
   initialGameState,
   serverConnection,
@@ -66,17 +64,18 @@ export default function ConnectFourGame({
     setGameState(opponentWon ? GameStates.GAME_OVER : GameStates.PLAYERS_TURN)
     if (opponentWon) setGameResult(GameResults.WINNER_OPPONENT)
     setOpponentDrop(null)
-  }, [opponentDrop])
+  }, [opponentDrop, dropDisc])
 
   useEffect(() => {
     reset()
+    // eslint-disable-next-line
   }, [])
 
   useEffect(() => {
     if (computerOpponent || !socket || !isConnected) return
     // Find Opponent
-    socket.emit("find-opponent")
-  }, [isConnected])
+    socket.emit("find-opponent")    
+  }, [isConnected, socket, computerOpponent])
 
   // delay the computer's move
   useInterval(
@@ -125,3 +124,5 @@ export default function ConnectFourGame({
     </div>
   )
 }
+
+export default ConnectFourGame

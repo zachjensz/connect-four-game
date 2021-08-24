@@ -48,6 +48,7 @@ export const GridProvider = ({ children, height, width }: Props) => {
 
   useEffect(() => {
     gridController.clear()
+    // eslint-disable-next-line
   }, [])
 
   const showWin = (newGrid: Grid, seq: number[][]) => {

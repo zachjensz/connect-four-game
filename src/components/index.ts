@@ -6,6 +6,7 @@ import NavBar from "./NavBar"
 import Page from "./Page"
 import Slot from './Slot'
 import ConnectFourGame from './ConnectFourGame'
+import GameOverBanner from "./GameOverBanner"
 
 export { 
     Board,
@@ -15,5 +16,6 @@ export {
     NavBar,
     Page,
     Slot,
-    ConnectFourGame
+    ConnectFourGame,
+    GameOverBanner
  }

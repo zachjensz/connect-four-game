@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 
-export default function Home() {
+export function Home() {
   return (
     <section className='title'>
       <div className='gamemode-select'>
@@ -21,3 +21,5 @@ export default function Home() {
     </section>
   )
 }
+
+export default Home

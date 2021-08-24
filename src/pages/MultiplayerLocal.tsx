@@ -6,7 +6,7 @@ interface Props {
   height?: number
 }
 
-export default ({ width = 7, height = 6 }: Props) => (
+const MultiplayerLocal = ({ width = 7, height = 6 }: Props) => (
   <GridProvider width={width} height={height}>
     <ConnectFourGame
       computerOpponent={false}
@@ -14,3 +14,5 @@ export default ({ width = 7, height = 6 }: Props) => (
     />
   </GridProvider>
 )
+
+export default MultiplayerLocal

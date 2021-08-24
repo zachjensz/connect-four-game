@@ -7,7 +7,7 @@ interface Props {
   height?: number
 }
 
-export default ({ width = 7, height = 6 }: Props) => {
+const MultiplayerOnline = ({ width = 7, height = 6 }: Props) => {
   const serverConnection = useServerConnection('http://localhost:5000/')
 
   return (
@@ -19,3 +19,5 @@ export default ({ width = 7, height = 6 }: Props) => {
     </GridProvider>
   )
 }
+
+export default MultiplayerOnline
