@@ -19,12 +19,14 @@ export function useServerConnection(serverUrl: string) {
   useEffect(() => {
     if (!socket) return
     socket.on("connect", () => {
+      console.log(`Connected to server as ${socket.id}`)
       setIsConnected(true)
     })
     socket.on("disconnect", () => {
+      console.log('Disconnected from server')
       setIsConnected(false)
     })
-    return () => {
+    return () => {      
       socket.close()
     }
   }, [socket])

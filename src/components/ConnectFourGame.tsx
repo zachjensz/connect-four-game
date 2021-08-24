@@ -26,7 +26,8 @@ export default function ConnectFourGame({
     isConnected: false,
     close: () => undefined,
   }
-  const { grid, dropDisc, computerMove, reset, isColumnFull } = useContext(GridContext)
+  const { grid, dropDisc, computerMove, reset, isColumnFull } =
+    useContext(GridContext)
   const [gameState, setGameState] = useState<GameStates>(initialGameState)
   const [gameResult, setGameResult] = useState<GameResults>(GameResults.PLAYING)
   const [computerMoveStart, setComputerMoveStart] = useState(false)
@@ -71,18 +72,15 @@ export default function ConnectFourGame({
 
   useEffect(() => {
     reset()
-    return () => {
-      // disconnect when component unloads
-      closeSocket()
-    }
   }, [])
 
   useEffect(() => {
     if (computerOpponent || !socket) return
-    if (socket && isConnected) {
-      console.log(`Connected to server as ${socket.id}`)
-      // Find Opponent
-      socket.emit("find-opponent")
+    if (socket) {
+      if (isConnected) {        
+        // Find Opponent
+        socket.emit("find-opponent")
+      }
     }
   }, [isConnected])
 
@@ -113,7 +111,7 @@ export default function ConnectFourGame({
       setGameResult(GameResults.PLAYING)
       return
     }
-    
+
     if (isColumnFull(x)) return
     if (gameState !== GameStates.PLAYERS_TURN && socket) return
     if (socket) socket.emit("drop", x)
