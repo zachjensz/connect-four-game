@@ -8,12 +8,12 @@ interface Props {
 }
 
 export default ({ width = 7, height = 6 }: Props) => (
-  <NetworkProvider>
-    <GridProvider width={width} height={height}>
+  <GridProvider width={width} height={height}>
+    <NetworkProvider serverUrl="http://localhost:5000">
       <ConnectFourGame
         computerOpponent={false}
         initialGameState={GameStates.WAITING_FOR_OPPONENT}
       />
-    </GridProvider>
-  </NetworkProvider>
+    </NetworkProvider>
+  </GridProvider>
 )

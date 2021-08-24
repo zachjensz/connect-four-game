@@ -1,9 +1,6 @@
 import { createContext, useEffect, useState } from "react"
 import { Grid, Player } from "../types"
-import {
-  createGrid,
-  dropDisc as dropDiscOnGrid,
-} from "../support/logic"
+import { createGrid, dropDisc as dropDiscOnGrid } from "../support/logic"
 import { computerMove as computerMoveOnGrid } from "../support/logic-dumbot"
 
 interface Props {
@@ -23,62 +20,71 @@ type ContextType = {
 
 export const GridContext = createContext<ContextType>({
   grid: [],
-  width: 0,
-  height: 0,
+  width: 7,
+  height: 6,
   dropDisc: () => false,
   computerMove: () => false,
   reset: () => undefined,
 })
 
-export const GridProvider = ({ children, height, width }: Props) => {
+function useGrid(height: number, width: number) {
   const [grid, setGrid] = useState<Grid>([])
 
   useEffect(() => {
-    console.log("grid provider init")
-    setGrid(createGrid(height, width))
-  }, [])
+    console.log("GRID CHANGED:", grid)
+  }, [grid])
+
+  return {
+    grid,
+    clear: () => {
+      console.log("CLEAR GRID")
+      setGrid(createGrid(height, width))
+    },
+    replace: (newGrid: Grid) => {
+      console.log("REPLACE GRID")
+      setGrid(newGrid)
+    }
+  }
+}
+
+export const GridProvider = ({ children, height, width }: Props) => {
+  const gridController = useGrid(height, width)
 
   useEffect(() => {
-    console.log("grid changed:", grid)
-  }, [grid])
+    console.log("grid provider init")
+    gridController.clear()
+  }, [])
 
   const showWin = (newGrid: Grid, seq: number[][]) => {
     seq.forEach(([row, column]) => {
       newGrid[row][column] = -newGrid[row][column]
     })
-    setGrid(newGrid)
-  }
-
-  const reset = () => {
-    console.log("reset")
-    setGrid(createGrid(height, width))
+    gridController.replace(newGrid)
   }
 
   const dropDisc = (column: number, player: Player) => {
-    console.log("starting grid:", grid)
-    const drop = dropDiscOnGrid(grid, column, player)
+    console.log("starting grid:", gridController.grid)
+    const drop = dropDiscOnGrid(gridController.grid, column, player)
     if (drop) {
       if (drop.seq.length > 0) {
         showWin(drop.newGrid, drop.seq)
         return true
       }
-      setGrid(drop.newGrid)
+      gridController.replace(drop.newGrid)
       console.log("ending grid:", drop.newGrid)
     }
     return false
   }
 
   const computerMove = () => {
-    const move = computerMoveOnGrid(grid)
+    const move = computerMoveOnGrid(gridController.grid)
     if (!move) return false
-    const drop = dropDiscOnGrid(grid, move.disc[1], 2)
-    console.log("drop:", drop)
+    const drop = dropDiscOnGrid(gridController.grid, move.disc[1], 2)
     if (drop) {
       if (drop.seq.length > 0) {
         showWin(drop.newGrid, drop.seq)
         return true
-      }
-      else setGrid(drop.newGrid)
+      } else gridController.replace(drop.newGrid)
     }
     return false
   }
@@ -86,12 +92,12 @@ export const GridProvider = ({ children, height, width }: Props) => {
   return (
     <GridContext.Provider
       value={{
-        grid,
+        grid: gridController.grid,
         width,
         height,
         dropDisc,
         computerMove,
-        reset,
+        reset: gridController.clear,
       }}
     >
       {children}
