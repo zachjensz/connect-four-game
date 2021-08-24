@@ -9,7 +9,6 @@ type WebSocket = Socket<DefaultEventsMap, DefaultEventsMap>
 export type ServerConnection = {
     socket: WebSocket,
     isConnected: boolean,
-    close: () => any
 }
 
 export function useServerConnection(serverUrl: string) {
@@ -31,5 +30,5 @@ export function useServerConnection(serverUrl: string) {
     }
   }, [socket])
 
-  return { socket, isConnected, close: socket.close } as ServerConnection
+  return { socket, isConnected } as ServerConnection
 }

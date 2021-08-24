@@ -20,11 +20,9 @@ export default function ConnectFourGame({
   const {
     socket,
     isConnected,
-    close: closeSocket,
   } = serverConnection ?? {
     socket: undefined,
     isConnected: false,
-    close: () => undefined,
   }
   const { grid, dropDisc, computerMove, reset, isColumnFull } =
     useContext(GridContext)
