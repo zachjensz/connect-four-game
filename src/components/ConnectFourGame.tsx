@@ -62,8 +62,6 @@ export default function ConnectFourGame({
 
   useEffect(() => {
     if (opponentDrop === null) return
-    console.log(`Opponent drop: ${opponentDrop}`)
-    console.log(grid)
     const opponentWon = dropDisc(opponentDrop, 2)
     setGameState(opponentWon ? GameStates.GAME_OVER : GameStates.PLAYERS_TURN)
     if (opponentWon) setGameResult(GameResults.WINNER_OPPONENT)
@@ -99,7 +97,6 @@ export default function ConnectFourGame({
   useInterval(
     () => {
       if (!computerMoveStart) return
-      console.log("computer move")
       const computerWon = computerMove()
       setComputerMoveStart(false)
       setGameState(computerWon ? GameStates.GAME_OVER : GameStates.PLAYERS_TURN)

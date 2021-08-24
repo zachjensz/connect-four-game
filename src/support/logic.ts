@@ -1,4 +1,4 @@
-import { Grid, Player } from '../types'
+import { Grid, Player } from "../types"
 
 export interface DiscDrop {
   disc: number[]
@@ -6,18 +6,13 @@ export interface DiscDrop {
   newGrid: Grid
 }
 
-export const createGrid = (height: number, width: number) => {
-  console.log('createGrid()')
-  return Array(height)
-    .fill(0)    
+export const createGrid = (height: number, width: number) =>
+  Array(height)
+    .fill(0)
     .map(() => Array(width).fill(0))
-}
 
-export const cloneGrid = (grid: Grid, hideLog = false) => {
-  if (!hideLog)
-    console.log('cloneGrid()')
-  return grid.map((arr) => arr.slice())
-}
+export const cloneGrid = (grid: Grid, hideLog = false) =>
+  grid.map((arr) => arr.slice())
 
 // Drop tests each column looking for any column that would create a connect four
 export function evalAllDrops(srcGrid: Grid, player: Player = 1) {
@@ -34,7 +29,7 @@ export function evalAllDrops(srcGrid: Grid, player: Player = 1) {
         const result = {
           column: x,
           player: player,
-          seq: validSeq(grid, player, i, x, min_seq)
+          seq: validSeq(grid, player, i, x, min_seq),
         }
         if (result.seq.length > 0) results.push(result)
       }
@@ -58,7 +53,7 @@ export function dropDisc(
       return {
         disc: [i, +x],
         seq: sequence.length > min_seq - 1 ? sequence : [],
-        newGrid: gameGrid as Grid
+        newGrid: gameGrid as Grid,
       } as DiscDrop
     }
   }
@@ -76,12 +71,12 @@ function validSeq(
     { v: 1, h: 0 },
     { v: 1, h: 1 },
     { v: 0, h: 1 },
-    { v: 1, h: -1 }
+    { v: 1, h: -1 },
   ]
   directions.forEach((dir) => {
     const seq: number[][] = [
       ...cast(grid, player, i, x, dir.v, dir.h),
-      ...cast(grid, player, i, x, -dir.v, -dir.h)
+      ...cast(grid, player, i, x, -dir.v, -dir.h),
     ]
     // @ts-ignore
     if (seq.length > min_sequence - 2) winningSequences.push(...seq)

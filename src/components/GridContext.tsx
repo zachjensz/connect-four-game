@@ -30,20 +30,10 @@ export const GridContext = createContext<ContextType>({
 function useGrid(height: number, width: number) {
   const [grid, setGrid] = useState<Grid>([])
 
-  useEffect(() => {
-    console.log("GRID CHANGED:", grid)
-  }, [grid])
-
   return {
     grid,
-    clear: () => {
-      console.log("CLEAR GRID")
-      setGrid(createGrid(height, width))
-    },
-    replace: (newGrid: Grid) => {
-      console.log("REPLACE GRID")
-      setGrid(newGrid)
-    }
+    clear: () => setGrid(createGrid(height, width)),
+    replace: (newGrid: Grid) => setGrid(newGrid)
   }
 }
 
@@ -51,7 +41,6 @@ export const GridProvider = ({ children, height, width }: Props) => {
   const gridController = useGrid(height, width)
 
   useEffect(() => {
-    console.log("grid provider init")
     gridController.clear()
   }, [])
 
@@ -63,7 +52,6 @@ export const GridProvider = ({ children, height, width }: Props) => {
   }
 
   const dropDisc = (column: number, player: Player) => {
-    console.log("starting grid:", gridController.grid)
     const drop = dropDiscOnGrid(gridController.grid, column, player)
     if (drop) {
       if (drop.seq.length > 0) {
@@ -71,7 +59,6 @@ export const GridProvider = ({ children, height, width }: Props) => {
         return true
       }
       gridController.replace(drop.newGrid)
-      console.log("ending grid:", drop.newGrid)
     }
     return false
   }
