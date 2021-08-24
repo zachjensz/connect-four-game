@@ -13,7 +13,6 @@ export default ({ width = 7, height = 6 }: Props) => {
   return (
     <GridProvider width={width} height={height}>
       <ConnectFourGame
-        computerOpponent={false}
         serverConnection={serverConnection}
         initialGameState={GameStates.WAITING_FOR_OPPONENT}
       />

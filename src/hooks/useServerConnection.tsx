@@ -29,9 +29,5 @@ export function useServerConnection(serverUrl: string) {
     }
   }, [socket])
 
-  function close() {
-    if (socket?.connected) socket.close()
-  }
-
-  return { socket, isConnected, close } as ServerConnection
+  return { socket, isConnected, close: socket.close } as ServerConnection
 }

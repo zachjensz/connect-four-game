@@ -7,23 +7,23 @@ import GameOverBanner from "./GameOverBanner"
 
 interface Props {
   initialGameState: GameStates
-  computerOpponent: boolean
+  computerOpponent?: boolean
   serverConnection?: ServerConnection
 }
 
 export default function ConnectFourGame({
   computerOpponent,
   initialGameState,
-  serverConnection: serverSocket,
+  serverConnection,
 }: Props) {
   const {
     socket,
     isConnected,
     close: closeSocket,
-  } = serverSocket ?? {
+  } = serverConnection ?? {
     socket: undefined,
     isConnected: false,
-    close: undefined,
+    close: () => undefined,
   }
   const { grid, dropDisc, computerMove, reset } = useContext(GridContext)
   const [gameState, setGameState] = useState<GameStates>(initialGameState)
@@ -31,6 +31,8 @@ export default function ConnectFourGame({
   const [computerMoveStart, setComputerMoveStart] = useState(false)
 
   useEffect(() => {
+    if (!socket) return
+
     const onOpponentFound = ({
       id,
       startingPlayer,
@@ -52,12 +54,12 @@ export default function ConnectFourGame({
       if (opponentWon) setGameResult(GameResults.WINNER_OPPONENT)
     }
 
-    socket?.on("drop", onOpponentDrop)
-    socket?.on("opponent-found", onOpponentFound)
+    socket.on("drop", onOpponentDrop)
+    socket.on("opponent-found", onOpponentFound)
 
     return () => {
-      socket?.off("drop", onOpponentDrop)
-      socket?.off("opponent-found", onOpponentFound)
+      socket.off("drop", onOpponentDrop)
+      socket.off("opponent-found", onOpponentFound)
     }
   }, [socket])
 
@@ -65,7 +67,7 @@ export default function ConnectFourGame({
     reset()
     return () => {
       // disconnect when component unloads
-      closeSocket?.()
+      closeSocket()
     }
   }, [])
 
