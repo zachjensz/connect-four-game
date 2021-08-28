@@ -8,6 +8,7 @@ interface Props {
 }
 
 const MultiplayerOnline = ({ width = 7, height = 6 }: Props) => {
+  //const serverConnection = useServerConnection('https://connectfourgame.com:5000/')
   const serverConnection = useServerConnection('http://localhost:5000/')
 
   return (

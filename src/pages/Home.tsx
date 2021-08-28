@@ -1,22 +1,26 @@
-import { Link } from 'react-router-dom'
+import { NavLink } from "../components"
+import { ReactComponent as Dumbot } from '../assets/Dumbot.svg'
+import { ReactComponent as Smartbot } from '../assets/Smartbot.svg'
+import { ReactComponent as Online } from '../assets/Online.svg'
+import { ReactComponent as Local } from '../assets/Local.svg'
 
 export function Home() {
   return (
-    <section className='title'>
-      <div className='gamemode-select'>
-        <Link id='dumbot' to='dumbot'>
-          Dumbot
-        </Link>
-        <Link id='smartbot' to='smartbot'>
-          Smartbot (Coming Soon)
-        </Link>
+    <section className="title">
+      <div className="gamemode-select">
+        <NavLink id="dumbot" to="dumbot">
+          <Dumbot/>
+        </NavLink>
+        <NavLink id="smartbot" to="smartbot">
+          <Smartbot />
+        </NavLink>
         <br />
-        <Link id='localMultiplayer' to='multiplayer-local'>
-          Local Multiplayer (In Progress)
-        </Link>
-        <Link id='onlineMultiplayer' to='multiplayer'>
-          Online Multiplayer (In Progress)
-        </Link>
+        <NavLink id="localMultiplayer" to="multiplayer-local">
+          <Local />
+        </NavLink>
+        <NavLink id="onlineMultiplayer" to="multiplayer">
+          <Online />
+        </NavLink>
       </div>
     </section>
   )
