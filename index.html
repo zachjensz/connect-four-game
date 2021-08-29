@@ -2,35 +2,12 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link rel="icon" type="image/svg+xml" href="/src/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="./style.css" />
-    <script src="./index.js" type="module"></script>
-    <title>Connect 4 Game</title>
+    <title>Vite App</title>
   </head>
-
   <body>
-    <h1>Connect 4</h1>
-    <main id="grid"></main>
-    <template id="slot-template">
-      <div class="slot"></div>
-    </template>
-    <template id="game-over-template">
-      <section class="game-over">
-        <h2 id="game-over-result">Winner is ...</h2>
-      </section>
-    </template>
-    <template id="title-template">
-      <section class="title">
-        <div class="gamemode-select">
-          <button id="dumbot">Dumbot</button>
-          <button id="smartbot">Smartbot</button>
-          <button id="terminator">Terminator</button>
-          <br />
-          <button id="localMultiplayer">Local Multiplayer</button>
-          <button id="onlineMultiplayer">Online Multiplayer</button>
-        </div>
-      </section>
-    </template>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
