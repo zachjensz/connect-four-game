@@ -1,9 +1,10 @@
 import { NavLink } from "."
+import { ReactComponent as Logo } from '../assets/Logo.svg'
 
 const Navbar = () => {
   return (
     <nav className="navbar">
-      <h1>ConnectFour</h1>
+      <Logo />
       <div className="links">
         <NavLink to="/">[ Home ]</NavLink>
         <NavLink to="/dumbot">[ Play Dumbot ]</NavLink>
