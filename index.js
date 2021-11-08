@@ -8,6 +8,7 @@ import {
   GAME_HEIGHT,
   GAME_WIDTH
 } from './logic.js'
+/*
 import {
   connect,
   disconnect,
@@ -16,6 +17,7 @@ import {
   onOpponentDrop,
   sendPlayerDrop
 } from './networking.js'
+*/
 
 const elementGame = document.querySelector('#grid')
 const DELAY_COMPUTER = 400
