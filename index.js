@@ -87,11 +87,11 @@ function drop(isPlayer, column) {
   }
   console.log('isPlayer', isPlayer, 'discDrop', discDrop)
   if (discDrop) {
-    if (isPlayer) {
+    if (discDrop.seq.length == 0 && isPlayer) {
       if (isConnectedToServer) {
         sendPlayerDrop(column)
       } else {
-        setTimeout(() => {
+        setTimeout(() => {         
           drop(!isPlayer, column)
         }, DELAY_COMPUTER)
       }
