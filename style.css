@@ -43,13 +43,13 @@ body {
   }
 }
 
-.slot[data-value*='1'] {
+.slot[data-value*="1"] {
   border: 2px solid hsl(0, 100%, 40%);
   background-color: hsl(0, 100%, 40%);
   animation-name: fall-animation;
   animation-duration: 300ms;
 }
-.slot[data-value*='2'] {
+.slot[data-value*="2"] {
   border: 2px solid darkgoldenrod;
   background-color: darkgoldenrod;
   animation-name: fall-animation;
@@ -65,6 +65,10 @@ body {
 }
 .slot:hover {
   cursor: pointer;
+}
+
+.slot.shine {
+  outline: 2px solid white;
 }
 
 .title {
