@@ -56,11 +56,11 @@ body {
   animation-duration: 300ms;
 }
 .slot[data-value='-1'] {
-  border: 8px solid hsl(0, 100%, 40%);
+  border: 2px solid hsl(0, 100%, 40%);
   background-color: #0f0a;
 }
 .slot[data-value='-2'] {
-  border: 8px solid darkgoldenrod;
+  border: 2px solid darkgoldenrod;
   background-color: #0f0a;
 }
 .slot:hover {
